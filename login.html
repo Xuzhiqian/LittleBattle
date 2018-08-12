@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+
+    <title>Login - Little Battle</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="style/main.css" rel="stylesheet">
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="lib/jquery.scrollex.min.js"></script>
+    <script src="lib/jquery.scrolly.min.js"></script>
+    <script src="lib/skel.min.js"></script>
+    <script src="lib/util.js"></script>
+    <script src="lib/main.js"></script>
+</head>
+
+  <body>
+
+        <!-- Page Wrapper -->
+            <div id="page-wrapper">
+
+                <!-- Header -->
+                    <header id="header">
+                       <h1><a href="index.html">Little Battle</a></h1>
+                        <nav id="nav">
+                            <ul>
+                                <li class="special">
+                                    <a href="#menu" class="menuToggle"><span>Menu</span></a>
+                                    <div id="menu">
+                                        <ul>
+                                            <li><a href="index.html">Home</a></li>
+                                            <li><a href="login.html">Sign in</a></li>
+                                            <li><a href="signup.html">Sign up</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </nav>
+                    </header>
+
+                <!-- Login -->
+                <article id="main">
+                    <header>
+                        <h2>Sign in</h2>
+                    </header>
+                    <section class="wrapper style5">
+                            <div class="inner">
+                                <section>
+                                    <form>
+                                        <div class="row uniform">
+                                            <div class="8u">
+                                                <label id="login-warning"></label>
+                                            </div>
+                                            <div class="7u">
+                                                <label for="username-text">User name</label>
+                                                <input type="text" id="username-text" placeholder="ID" />
+                                            </div>
+
+                                            
+                                            <div class="7u">
+                                                <label for="password-text">Password</label>
+                                                <input type="text" id="password-text" placeholder="Password" />
+                                            </div>
+
+                                            <div class="12u$">
+                                                <ul class="actions">
+                                                    <li id="loginBtn"><a class="button special">Log in</a></li>
+                                                </ul>
+                                            </div>
+                                            
+                                        </div>
+                                    </form>
+                                </section>
+                            </div>
+                        </section>
+                    </article>
+            </div>
+            <script src="user.js"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+.left_body {
+	padding-right: 601px;
+	position: relative;
+	height:100%;
+	z-index:100;
+	margin: 0 0 0 0;
+	background: #272822;
+}
+.right_body{
+	position:absolute;
+	width:601px;
+	right:0;
+	top:0;
+	height:100%;
+}
+
+#editor {
+    border-top: 1px #555555 solid;
+    position: absolute;
+    z-index:-1;
+    height:540px;
+    left:0; right:0; top:57px; bottom:0;
+}
+#map {
+  background:rgba(33,33,33,1);
+	border:solid 2px #444;
+	margin:0 0 0 0;
+	left:0; right:0; top:47.7px; bottom:0;
+	position: absolute;
+	z-index:100;
+}

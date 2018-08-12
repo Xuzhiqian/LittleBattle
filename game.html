@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+
+    <title>Little Battle</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="style/main.css" rel="stylesheet">
+    <link href="style/repo.css" rel="stylesheet">
+    <link href="style/game.css" rel="stylesheet">
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/ace/1.2.6/ace.js"></script>
+    <script src="lib/jquery.scrollex.min.js"></script>
+    <script src="lib/jquery.scrolly.min.js"></script>
+    <script src="lib/skel.min.js"></script>
+    <script src="lib/util.js"></script>
+    <script src="lib/main.js"></script>
+    <script src="lib/quisus.js"></script>
+    <script src="core.js"></script>
+    <script src="renderer.js"></script>
+        
+</head>
+
+  <body>
+
+        <!-- Page Wrapper -->
+            <div id="page-wrapper">
+
+                <!-- Header -->
+                    <header id="header">
+                       <h1><a href="index.html">Little Battle</a></h1>
+                        <nav id="nav">
+                            <ul>
+                                <li class="special">
+                                    <a href="#menu" class="menuToggle"><span>Menu</span></a>
+                                    <div id="menu">
+                                        <ul>
+                                            <li><a href="index.html">Home</a></li>
+                                            <li><a href="login.html">Sign in</a></li>
+                                            <li><a href="signup.html">Sign up</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </nav>
+                    </header>
+                </div>
+                <div class="left_body">
+                        <div id="repo">
+                                        <ul>
+                                            <li><span>ID</span><span>RECORD</span><span>RATE</span></li>
+
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+
+                                        </ul>
+                                    </div>                
+                        <ul>
+                            <li class="button info fit">开始</li>
+                            <li class="button info fit">结束</li>
+                            <a href="#repo" class="button info fit">库</a>
+                        </ul>
+                        <div id="editor">daedae</div>
+                        
+               
+                </div>
+                <div class="right_body">
+                    <canvas id="map"></canvas>
+                </div>
+            </div>
+                           
+        <script>
+            var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/javascript");
+        editor.setFontSize(14);
+        editor.getSession().setOptions({
+            tabSize: 2,
+            useSoftTabs: true
+        });
+        editor.getSession().on('change', function(e) {
+            window.current_code = editor.getValue();
+            
+        });
+
+        var enviroment = {
+                map: document.getElementById('map'),
+                ctx: map.getContext('2d')
+        }
+        core = new Q.core(enviroment,{width:600,height:600},{width:20,height:20});
+    </script>
+
+
+</body>
+</html>
