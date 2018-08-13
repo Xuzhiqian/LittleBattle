@@ -69,8 +69,12 @@
                     <canvas id="map"></canvas>
                 </div>
             </div>
-                           
+             
+
         <script>
+            if (!localStorage.curUser)
+                window.location.href = "login.html";
+
             var editor = ace.edit("editor");
         editor.setTheme("ace/theme/monokai");
         editor.getSession().setMode("ace/mode/javascript");

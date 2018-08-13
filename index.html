@@ -51,10 +51,18 @@
                             <h2>LittleBattle</h2>
                             <p>Automatic & Programmable</p>
                             <ul class="actions">
-                                <li><a href="login.html" class="button special">Log in</a></li>
+                                <li><a id="playBtn" class="button special">Play</a></li>
                             </ul>
                         </div>
                     </section>
             </div>
+        <script>
+            $("#playBtn").on('click',()=>{
+                if (localStorage.curUser)
+                    window.location.href = "game.html";
+                else
+                    window.location.href = "login.html";
+            });
+        </script>
 </body>
 </html>
