@@ -6,7 +6,8 @@
   "version": "1.0.0",
   "dependencies": {
     "express": "*",
-    "socket.io": "*"
+    "socket.io": "*",
+    "mysql": "*"
   },
   "engine": {
     "node": "*"

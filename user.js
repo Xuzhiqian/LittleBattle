@@ -15,11 +15,12 @@ var socket = io.connect();
 
     socket.on('wrong',()=>{
         alert('Access Denied!');
+        delete window.curUser;
     });
 
-    socket.on('accept',()=>{
+    socket.on('accept',(id)=>{
         window.location.href="game.html";
-        
+        window.curUser = id;
     });
 
     $("#loginBtn").click(()=>{

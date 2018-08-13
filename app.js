@@ -3,8 +3,19 @@ global.window = global.document = global;
 var app = require("express")();
 var server = require("http").Server(app);
 var io = require("socket.io").listen(server);
+var mysql = require("mysql");
+
+//连接数据库
+var connection = mysql.createConnection({
+	host		: 'localhost',
+	user 		: 'root',
+	password	: '990212',
+	database	: 'littlebattle'
+});
+connection.connect();
 
 
+//响应请求
 app.get('/', function (req, res) {
 	res.sendFile('/index.html', {root: __dirname});
 });
@@ -15,28 +26,41 @@ app.get('/*', function (req, res, next) {
 	
 });
 
-users = [];
 
 io.on("connection", function (socket) {
 	
 	socket.on('login',(user)=>{
-		if (users[user.id]!=undefined && users[user.id].password === user.password){
-			socket.emit('accept');
-			socket.user_id = user.id;
-		}
-		else
-			socket.emit('wrong');
+
+		let sql = "SELECT password FROM main WHERE id='" + user.id + "';";
+		connection.query(sql, function(error, results, fields){
+			if (error) throw error;
+			if (!results[0] && results[0].password === user.password) {
+				socket.emit('accept');
+				socket.user_id = user.id;
+			}
+			else
+				socket.emit('wrong');
+		});
 	});
 
 	socket.on('sign_up',(user)=>{
-		if (users[user.id]!=undefined) {
-			socket.emit('dup');
-			return;
-		}
-		users[user.id] = {};
-		users[user.id].password = user.password;
+
+		let sql = "INSERT INTO main (id,password,num_kill,num_death,code) VALUES ('" +
+				  user.id + "','" +
+				  user.password + "'," +
+				  "0," +
+				  "0," +
+				  "'');";
+
+		connection.query(sql, function(error, results, fields){
+			if (error) {
+				socket.emit('dup');
+				return;
+			}
+		});
+
 		socket.user_id = user.id;
-		socket.emit('accept');
+		socket.emit('accept', user.id);
 	});
 	
 });
