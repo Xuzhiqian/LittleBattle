@@ -80,8 +80,8 @@
                     </article>
             </div>
 <script>{
-if (!window.socket)
-    window.socket = io.connect();
+    if (!window.socket)
+window.socket = io.connect();
 
     let get_user = ()=>{
         var id = String($("#username-text").val());
