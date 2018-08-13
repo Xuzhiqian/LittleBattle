@@ -94,6 +94,8 @@
         </script>
 
     <script>
+        if (!window.socket)
+            window.socket = io.connect();
         $("#repoBtn").on('click', ()=>{
             let list = document.getElementById('repo_list');
             list.innerHTML = "<li><span>ID</span><span>K/D</span><span>RATE</span></li>";
