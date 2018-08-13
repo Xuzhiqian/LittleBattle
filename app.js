@@ -34,7 +34,7 @@ io.on("connection", function (socket) {
 		let sql = "SELECT password FROM main WHERE id='" + user.id + "';";
 		connection.query(sql, function(error, results, fields){
 			if (error) throw error;
-			if (results.password === user.password) {
+			if (results[0] && results[0].password === user.password) {
 				socket.emit('accept');
 				socket.user_id = user.id;
 			}
