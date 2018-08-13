@@ -69,6 +69,7 @@ io.on("connection", function (socket) {
 
 		connection.query(sql, function(error, results, fields){
 			if (error) throw error;
+			console.log(results);
 			socket.emit('recv_repo', results);
 		});
 	});

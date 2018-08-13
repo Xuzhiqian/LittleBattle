@@ -104,6 +104,7 @@
 
         window.socket.on('recv_repo',(results)=>{
             let list = document.getElementById('repo_list');
+            console.log(results);
             for (let i=0; i<results.length; i++)
                 if (results[i] && results[i].id && results[i].num_kill && results[i].num_death) {
                     list.innerHTML = list.innerHTML + "<li><span>" +
