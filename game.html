@@ -94,17 +94,16 @@
         </script>
 
     <script>
-        if (!window.socket)
-            window.socket = io.connect();
+        var socket = io.connect();
         $("#repoBtn").on('click', ()=>{
             let list = document.getElementById('repo_list');
             list.innerHTML = "<li><span>ID</span><span>K/D</span><span>RATE</span></li>";
-            if (window.curUser && window.curUser !== '' && window.socket) {
-                window.socket.emit('get_repo');
+            if (localStorage.curUser && localStorage.curUserr !== '') {
+                socket.emit('get_repo');
             }
         });
 
-        window.socket.on('recv_repo',(results)=>{
+        socket.on('recv_repo',(results)=>{
             let list = document.getElementById('repo_list');
             console.log(results);
             for (let i=0; i<results.length; i++)

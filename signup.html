@@ -81,8 +81,7 @@
                     </article>
             </div>
 <script>
-    if (!window.socket)             
-        window.socket = io.connect();
+    var socket = io.connect();
 
     let get_user = ()=>{
         let id = String($("#username-text").val());
@@ -92,8 +91,14 @@
         return {id:id,password:pswd,cp:cp};
     };
 
-    window.socket.on('dup',()=>{
+    socket.on('dup',()=>{
         alert('User already exists!');
+    });
+
+    socket.on('accept',(id)=>{
+        localStorage.curUser = id;
+        window.location.href="game.html";
+        
     });
 
     $("#signupBtn").click(()=>{
@@ -103,7 +108,7 @@
             return;
         }
         if (user.id!=undefined)
-            window.socket.emit('sign_up',user);
+            socket.emit('sign_up',user);
     });
 </script>
 </body>

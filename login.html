@@ -80,8 +80,7 @@
                     </article>
             </div>
 <script>{
-    if (!window.socket)
-window.socket = io.connect();
+var socket = io.connect();
 
     let get_user = ()=>{
         var id = String($("#username-text").val());
@@ -91,20 +90,21 @@ window.socket = io.connect();
         return {id:id,password:pswd,cp:cp};
     };
 
-    window.socket.on('wrong',()=>{
+    socket.on('wrong',()=>{
         alert('Access Denied!');
         delete window.curUser;
     });
 
-    window.socket.on('accept',(id)=>{
+    socket.on('accept',(id)=>{
+        localStorage.curUser = id;
         window.location.href="game.html";
-        window.curUser = id;
+        
     });
 
     $("#loginBtn").click(()=>{
         var user = get_user();
         if (user.id!=undefined)
-            window.socket.emit('login',user);
+            socket.emit('login',user);
     });
     
 }</script>
