@@ -2243,7 +2243,6 @@
 		font-size: 0.8em;
 		font-weight: 600;
 		height: 3.125em;
-		letter-spacing: 0.225em;
 		line-height: 3.125em;
 		padding: 0 2.75em;
 		text-align: center;
@@ -2284,7 +2283,7 @@
 		button.fit,
 		.button.fit {
 			display:inline-block;
-			margin: 10px -4.6px 0 0;
+			margin: 10px -4.4px 0 0;
 		}
 
 		input[type="submit"].small,

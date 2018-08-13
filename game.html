@@ -36,12 +36,12 @@
                         <nav id="nav">
                             <ul>
                                 <li class="special">
-                                    <a href="#menu" class="menuToggle"><span>Menu</span></a>
+                                    <a href="#menu" class="menuToggle"><span>MENU</span></a>
                                     <div id="menu">
                                         <ul>
-                                            <li><a href="index.html">Home</a></li>
-                                            <li><a href="login.html">Sign in</a></li>
-                                            <li><a href="signup.html">Sign up</a></li>
+                                            <li><a href="index.html">HOME</a></li>
+                                            <li><a href="login.html">SIGN IN</a></li>
+                                            <li><a href="signup.html">SIGN UP</a></li>
                                         </ul>
                                     </div>
                                 </li>
@@ -51,39 +51,17 @@
                 </div>
                 <div class="left_body">
                         <div id="repo">
-                                        <ul>
-                                            <li><span>ID</span><span>RECORD</span><span>RATE</span></li>
-
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
-                                            <li><span>JHHSW</span><span>2/3/2</span><span>66.7%</span><span class="join">Join</span></li>
+                                        <ul id="repo_list">
+                                            <li><span>ID</span><span>K/D</span><span>RATE</span></li>
 
                                         </ul>
                                     </div>                
                         <ul>
-                            <li class="button info fit">开始</li>
-                            <li class="button info fit">结束</li>
-                            <a href="#repo" class="button info fit">库</a>
+                            <li class="button info fit">START</li>
+                            <li id="clearBtn" class="button info fit">CLEAR</li>
+                            <a id="repoBtn" href="#repo" class="button info fit">ADD</a>
                         </ul>
-                        <div id="editor">daedae</div>
+                        <div id="editor"></div>
                         
                
                 </div>
@@ -105,14 +83,36 @@
             window.current_code = editor.getValue();
             
         });
+        </script>
 
+        <script>
         var enviroment = {
                 map: document.getElementById('map'),
                 ctx: map.getContext('2d')
         }
         core = new Q.core(enviroment,{width:600,height:600},{width:20,height:20});
-    </script>
+        </script>
 
+    <script>
+        $("#repoBtn").on('click', ()=>{
+            let list = document.getElementById('repo_list');
+            list.innerHTML = "<li><span>ID</span><span>K/D</span><span>RATE</span></li>";
+            if (window.curUser && window.curUser !== '' && window.socket) {
+                window.socket.emit('get_repo');
+            }
+        });
+
+        window.socket.on('recv_repo',(results)=>{
+            let list = document.getElementById('repo_list');
+            for (let i=0; i<results.length; i++)
+                if (results[i] && results[i].id && results[i].num_kill && results[i].num_death) {
+                    list.innerHTML = list.innerHTML + "<li><span>" +
+                        results[i].id + "</span><span>" +
+                        results[i].num_kill + "/" +
+                        results[i].num_death + "</span><span>RATE</span><span class='join'>Join</span></li>";
+                }
+        });
+    </script>
 
 </body>
 </html>

@@ -62,6 +62,16 @@ io.on("connection", function (socket) {
 		socket.user_id = user.id;
 		socket.emit('accept', user.id);
 	});
+
+	socket.on('get_repo', ()=>{
+
+		let sql = "SELECT id, num_kill, num_death FROM main;";
+
+		connection.query(sql, function(error, results, fields){
+			if (error) throw error;
+			socket.emit('recv_repo', results);
+		});
+	});
 	
 });
 

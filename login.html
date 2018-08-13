@@ -79,6 +79,34 @@
                         </section>
                     </article>
             </div>
-            <script src="user.js"></script>
+<script>{
+if (!window.socket)
+    window.socket = io.connect();
+
+    let get_user = ()=>{
+        var id = String($("#username-text").val());
+        var pswd = String($("#password-text").val());
+        var cp = String($("#confirm-text").val());
+        if (id.length <= 0) return{};
+        return {id:id,password:pswd,cp:cp};
+    };
+
+    window.socket.on('wrong',()=>{
+        alert('Access Denied!');
+        delete window.curUser;
+    });
+
+    window.socket.on('accept',(id)=>{
+        window.location.href="game.html";
+        window.curUser = id;
+    });
+
+    $("#loginBtn").click(()=>{
+        var user = get_user();
+        if (user.id!=undefined)
+            window.socket.emit('login',user);
+    });
+    
+}</script>
 </body>
 </html>

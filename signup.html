@@ -81,6 +81,31 @@
                         </section>
                     </article>
             </div>
-            <script src="user.js"></script>
+<script>
+    if (!window.socket)             
+        window.socket = io.connect();
+
+    let get_user = ()=>{
+        let id = String($("#username-text").val());
+        let pswd = String($("#password-text").val());
+        let cp = String($("#confirm-text").val());
+        if (id.length <= 0) return{};
+        return {id:id,password:pswd,cp:cp};
+    };
+
+    window.socket.on('dup',()=>{
+        alert('User already exists!');
+    });
+
+    $("#signupBtn").click(()=>{
+        let user = get_user();
+        if (user.password !== user.cp) {
+            alert('Inconsist password!');
+            return;
+        }
+        if (user.id!=undefined)
+            window.socket.emit('sign_up',user);
+    });
+</script>
 </body>
 </html>
