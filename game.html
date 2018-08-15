@@ -169,6 +169,10 @@
     </script>
     <script>
         $("#clearBtn").on('click', ()=>{
+            if (core.competing) {
+                alert("中途摇人？不存在的！");
+                return;
+            }
             window.current_code = editor.getValue();
 
             core = new Q.core(enviroment,{width:600,height:600},{width:20,height:20});
