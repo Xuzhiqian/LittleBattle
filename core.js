@@ -371,6 +371,7 @@ Q.core = Q.Evented.extend({
 	},
 	
 	delete_bullet: function (index) {
+		this.renderer.add_animation('bullet','fadeout',this.bullets[index]);
 		delete this.bullets[index];
 	},
 

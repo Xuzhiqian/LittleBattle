@@ -35,7 +35,6 @@ Q.renderer = Q.GameObject.extend({
 	add_animation: function(type,eff,entity) {
 		var anim = {};
 		if (eff=='underatk' || eff=='fadeout') {
-			if (entity.alpha && entity.alpha!==1) return;
 			if (!entity.size) entity.size=player_size;
 			if (!entity.alpha) entity.alpha=1;
 			anim = {type:type,
