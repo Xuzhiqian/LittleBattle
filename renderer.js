@@ -182,8 +182,8 @@ Q.renderer = Q.GameObject.extend({
 		if (!anim) return;
 		if (anim.eff==='fadeout') {
 			if (anim.type==='bullet') {
-				anim.entity.alpha-=0.1;
-				anim.entity.size+=0.2;
+				anim.entity.alpha-=0.03;
+				anim.entity.size+=0.06;
 				if (anim.entity.alpha>0)
 					this.render_bullet(anim.entity);
 				else
