@@ -126,7 +126,7 @@ Q.core = Q.Evented.extend({
 	},
 
 	add_player: function (pid, code) {
-		let origin = new Q.game_player(pid);
+		let origin = new Q.Player(pid);
 		this.players[pid] = eval(code)();
 		for (var property in origin)
 			this.players[pid][property] = origin[property];	
