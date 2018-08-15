@@ -1,8 +1,4 @@
-	*, *:before, *:after {
-		-moz-box-sizing: border-box;
-		-webkit-box-sizing: border-box;
-		box-sizing: border-box;
-	}
+
 .weapon {
 	display:none;
 }
@@ -37,7 +33,7 @@
 	width:400px;
 	height:300px;
 	position:fixed;
-	left:50%;
+	left:calc(50%-200px);
 	top:25%;
 	background:rgba(100,149,237,0.95);
 	color: #ffffff;
@@ -66,7 +62,7 @@
 				.gameover_panel ul > li > span {
 					display:inline-block;
 					width:40px;
-					margin-right:7em;
+					margin-right:6em;
 
 				}
 				.gameover_panel ul > li > span:last-child {
