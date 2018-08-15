@@ -32,7 +32,7 @@ var prop_org = {
 	speed : 240,
 	reload : 0.6,
 	bias : 0.1,
-	life : 0.5,
+	life : 4,
 	damage : 20,
 	bounce : false,
 	recoil : 0,
@@ -118,7 +118,7 @@ Q.core = Q.Evented.extend({
 		this.bullets = [];
 		this.weapons = [];
 		this.terrain = [];
-		this.genwpn={cur:0,max:720};
+		this.genwpn={cur:0,max:2400};
 		this.generate_terrain();
 		this.renderer = new Q.renderer(enviroment,size,block_size,this.terrain);
 		this.running = false;
