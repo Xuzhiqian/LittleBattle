@@ -175,7 +175,7 @@
             core.add_player(localStorage.curUser, window.current_code);
 
             socket.emit("update_code", {id:localStorage.curUser, code:window.current_code});
-            
+
             $("#repoBtn").removeAttr("disabled");
         });
         var controlBtn = document.getElementById("controlBtn");
@@ -191,7 +191,7 @@
                 }
                 core.running = true;
                 core.competing = true;
-                $("#repoBtn").attr("disabled","disabled");
+                $("#repoBtn").attr("disabled",true);
                 //$("#repoBtn").removeAttr("disabled");
                 controlBtn.innerHTML = "PAUSE";
                 socket.emit("update_code", {id:localStorage.curUser, code:window.current_code});
