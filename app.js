@@ -35,7 +35,7 @@ io.on("connection", function (socket) {
 		connection.query(sql, function(error, results, fields){
 			if (error) throw error;
 			if (results[0] && results[0].password === user.password) {
-				socket.emit('accept');
+				socket.emit('accept',user.id);
 				socket.user_id = user.id;
 			}
 			else
