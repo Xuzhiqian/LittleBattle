@@ -85,7 +85,7 @@ Q.bullet = Q.GameObject.extend({
 		//弹道偏移
 		let b = p.prop.bias;
 		let start_dir = p.dir + Math.PI / 2 * (Math.random() * 2 * b - b);
-		this.dir = {x: Q.fix(Math.cos(start_dir)), y: Q.fix(Math.sin(start_dir))};
+		this.dir = {x: Math.cos(start_dir), y: Math.sin(start_dir)};
 	},
 
 	seek: function(target) {
