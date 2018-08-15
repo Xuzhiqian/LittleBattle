@@ -72,6 +72,7 @@ Q.bullet = Q.GameObject.extend({
 		this.pos = {x: p.pos.x, y: p.pos.y};
 		this.owner_id = p.id;
 		this.alpha = 1;
+		this.size = 5;
 
 		this.speed = p.prop.speed;
 		this.life = {cur: 0, max: p.prop.life};

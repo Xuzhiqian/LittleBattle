@@ -110,7 +110,7 @@ Q.renderer = Q.GameObject.extend({
 		if (!bullet) return;
 
 		var ctx = this.ctx;
-		var r = 5;
+		var r = bullet.size;
 		ctx.save();
 
 		ctx.globalAlpha = bullet.alpha || 1;
