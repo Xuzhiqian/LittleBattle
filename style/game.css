@@ -33,7 +33,7 @@
 	width:400px;
 	height:300px;
 	position:fixed;
-	left:calc(50%-200px);
+	left:calc( 50% - 200px );
 	top:25%;
 	background:rgba(100,149,237,0.95);
 	color: #ffffff;
