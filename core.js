@@ -138,7 +138,7 @@ Q.core = Q.Evented.extend({
 		this.bullets = [];
 		this.weapons = [];
 		this.terrain = [];
-		this.genwpn={cur:0,max:2400};
+		this.genwpn={cur:0,max:2100};
 		this.generate_terrain();
 		this.renderer = new Q.renderer(enviroment,size,block_size,this.terrain);
 		this.running = false;
