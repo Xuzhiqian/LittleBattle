@@ -163,7 +163,7 @@
                     list.innerHTML = list.innerHTML + "<li><span>" +
                         results[i].id + "</span><span>" +
                         results[i].num_kill + "/" +
-                        results[i].num_death + "</span><span>RATE</span><span class='join' id='joinBtn_" + i + "' onclick='socket.emit(\'fetch_code\', " + results[i].id + ");'>Join</span></li>";
+                        results[i].num_death + "</span><span>RATE</span><span class='join' id='joinBtn_" + i + "' onclick='socket.emit(" + "'fetch_code'" + ", " + results[i].id + ");'>Join</span></li>";
                 }
         });
     </script>
