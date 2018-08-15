@@ -92,7 +92,7 @@
              
 
         <script>
-            if (!localStorage.curUser)
+            if (!localStorage.curUser || localStorage.curUser === "undefined")
                 window.location.href = "login.html";
 
             var editor = ace.edit("editor");
@@ -122,7 +122,7 @@
         $("#repoBtn").on('click', ()=>{
             let list = document.getElementById('repo_list');
             list.innerHTML = "<li><span>ID</span><span>K/D</span><span>RATE</span></li>";
-            if (localStorage.curUser && localStorage.curUser !== '') {
+            if (localStorage.curUser && localStorage.curUser !== 'undefined') {
                 socket.emit('get_repo');
             }
         });
