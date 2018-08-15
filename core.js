@@ -63,7 +63,23 @@ Q.Player = Q.GameObject.extend({
 
 	fire: function() {
 		this.opPerFrame.f = 1;
-	}
+	},
+
+	moveUp: function() {
+		this.opPerFrame.u = 1;
+	},
+
+	moveDown: function() {
+		this.opPerFrame.d = 1;
+	},
+
+	moveLeft: function() {
+		this.opPerFrame.l = 1;
+	},
+
+	moveRight: function() {
+		this.opPerFrame.r = 1;
+	},
 });
 
 Q.bullet = Q.GameObject.extend({

@@ -116,20 +116,21 @@
              
 
         <script>
+            var socket = io.connect();
             if (!localStorage.curUser || localStorage.curUser === "undefined")
                 window.location.href = "login.html";
+                
 
-            var editor = ace.edit("editor");
+        var editor = ace.edit("editor");
         editor.setTheme("ace/theme/monokai");
         editor.getSession().setMode("ace/mode/javascript");
         editor.setFontSize(14);
         editor.getSession().setOptions({
-            tabSize: 2,
+            tabSize: 4,
             useSoftTabs: true
         });
         editor.getSession().on('change', function(e) {
             window.current_code = editor.getValue();
-            
         });
         </script>
 
@@ -137,12 +138,18 @@
         var enviroment = {
                 map: document.getElementById('map'),
                 ctx: map.getContext('2d')
-        }
+        };
         core = new Q.core(enviroment,{width:600,height:600},{width:20,height:20});
+        socket.emit("fetch_code", localStorage.curUser);
+        socket.on('recv_code', (user)=>{
+            if (user.id === localStorage.curUser)
+                editor.setValue(user.code);
+            core.add_player(user.id, user.code);
+        });
+        
         </script>
 
     <script>
-        var socket = io.connect();
         $("#repoBtn").on('click', ()=>{
             let list = document.getElementById('repo_list');
             list.innerHTML = "<li><span>ID</span><span>K/D</span><span>RATE</span></li>";
@@ -158,7 +165,10 @@
                     list.innerHTML = list.innerHTML + "<li><span>" +
                         results[i].id + "</span><span>" +
                         results[i].num_kill + "/" +
-                        results[i].num_death + "</span><span>RATE</span><span class='join'>Join</span></li>";
+                        results[i].num_death + "</span><span>RATE</span><span class='join' id='joinBtn_" + i + "'>Join</span></li>";
+                    $("#joinBtn_"+i).on('click', ()=>{
+                        socket.emit('fetch_code', results[i].id);
+                    });
                 }
         });
     </script>
@@ -167,6 +177,7 @@
             window.current_code = editor.getValue();
             core = new Q.core(enviroment,{width:600,height:600},{width:20,height:20});
             core.add_player(localStorage.curUser, window.current_code);
+            socket.emit("update_code", {id:localStorage.curUser, code:window.current_code});
         });
         var controlBtn = document.getElementById("controlBtn");
         $("#controlBtn").on('click', ()=>{
@@ -177,6 +188,7 @@
             else {
                 core.running = true;
                 controlBtn.innerHTML = "PAUSE";
+                socket.emit("update_code", {id:localStorage.curUser, code:window.current_code});
             }
         });
     </script>

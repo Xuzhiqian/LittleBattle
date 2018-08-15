@@ -72,6 +72,23 @@ io.on("connection", function (socket) {
 			socket.emit('recv_repo', results);
 		});
 	});
+
+	socket.on('fetch_code', (id)=>{
+		let sql = "SELECT code FROM main WHERE id = '" + id + "';";
+
+		connection.query(sql, function(error, results, fields){
+			if (error) throw error;
+			socket.emit('recv_code', {id:id,code:results[0].code});
+		});
+	});
+
+	socket.on('update_code', (info)=>{
+		let sql = "UPDATE main SET code = '" + info.code + "' WHERE id = '" + info.id + "';";
+
+		connection.query(sql, function(error, results, fields){
+			if (error) throw error;
+		});
+	});
 	
 });
 
