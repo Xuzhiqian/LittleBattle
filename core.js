@@ -413,7 +413,7 @@ Q.core = Q.Evented.extend({
 					setTimeout( ()=>{p.fireCD = 0}, p.prop.reload*1000);
 				}
 
-				this.update_player_physics(p, dt, !p.opPerFrame.l && !p.opPerFrame.r, !p.opPerFrame.u && !p.opPerFrame.d, !p.opPerFrame.f) {
+				this.update_player_physics(p, dt, !p.opPerFrame.l && !p.opPerFrame.r, !p.opPerFrame.u && !p.opPerFrame.d, !p.opPerFrame.f);
 			
 				p.opPerFrame.u = 0;
 				p.opPerFrame.d = 0;
