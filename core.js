@@ -3,7 +3,7 @@
 var Q = Quisus();
 
 var global_width,global_height;
-
+var weapons = ['Micro_Uzi','AKM','Scar-L','M416','Kar-98K','AWM','S1897','S686','M249','Minigun','Pan'];
 var v_a=function (a, b) {
 		return {x: a.x + b.x, y: a.y + b.y}
 	},
@@ -33,15 +33,15 @@ var prop_org = {
 	reload : 0.6,
 	bias : 0.1,
 	life : 5,
-	damage : 10,
+	damage : 20,
 	bounce : false,
 	recoil : 0,
 	penetrate : false
 };
 
 Q.Player = Q.GameObject.extend({
-	init: function(prototype) {
-		this.id = alias;
+	init: function(pid) {
+		this.id = pid;
 		this.pos = {
 			x: Math.floor(Math.random() * global_width),
 			y: Math.floor(Math.random() * global_height)
@@ -52,17 +52,27 @@ Q.Player = Q.GameObject.extend({
 		this.color = 0;
 		this.prop = prop_org;
 		this.alpha = 1;
+		this.fireCD = 0;
+
+		this.opPerFrame = {u:0,d:0,l:0,r:0,f:0,j:0};
+	},
+
+	isArmed: function() {
+		return (typeof this.weapon === 'string' && this.weapon.length>0);
+	},
+
+	fire: function() {
+		this.opPerFrame.f = 1;
 	}
 });
 
 Q.bullet = Q.GameObject.extend({
 	init:function (p) {
-		//基础属性
+
 		this.pos = {x: p.pos.x, y: p.pos.y};
 		this.owner_id = p.id;
 		this.alpha = 1;
 
-		//可增强属性
 		this.speed = p.prop.speed;
 		this.life = {cur: 0, max: p.prop.life};
 		this.bounce = p.prop.bounce;
@@ -113,6 +123,21 @@ Q.core = Q.Evented.extend({
 		this.renderer = new Q.renderer(enviroment,size,block_size,this.terrain);
 		this.running = false;
 		Q.gameLoop(this.update.bind(this));
+	},
+
+	add_player: function (pid, code) {
+		let origin = new Q.game_player(pid);
+		this.players[pid] = eval(code)();
+		for (var property in origin)
+			this.players[pid][property] = origin[property];	
+
+		p = this.players[pid];
+		p.color = Math.floor(Math.random()*11);
+		this.player_count++;
+
+		//防止出生地落在地形上
+		while (this.check_terrain(p.pos)===true)
+			p.pos = this.random_pos();
 	},
 
 	move_u: function (p, dt) {
@@ -253,16 +278,6 @@ Q.core = Q.Evented.extend({
 		return true;
 	},
 	
-	add_player: function (pid) {
-		this.players[pid] = new Q.game_player(pid);
-		p = this.players[pid];
-		p.color = status.color;
-		this.player_count++;
-
-		//防止出生地落在地形上
-		while (this.check_terrain(p.pos)===true)
-			p.pos = this.random_pos();
-	},
 
 	random_pos : function() {
 		return {
@@ -374,19 +389,42 @@ Q.core = Q.Evented.extend({
 			this.update_weapons();
 			this.update_players(dt);
 			this.update_bullets(dt);
-			this.renderer.render(this.players,this.bullets,this.weapons,dt);
 		}
-		else
-			this.renderer.render([],[],[],dt);
+		this.renderer.render(this.players,this.bullets,this.weapons,dt);
 	},
 	
 	update_players: function(dt) {
 		for (let id in this.players) 
 			if (this.players[id]!=null) {
+				let p = this.players[id];
+				if (p.events.onEvent)
+					p.events.onEvent();
 
 
+				if (p.opPerFrame.u) {
+					this.move_u(p,dt);
+					p.opPerFrame.u = 0;
+				}
+				if (p.opPerFrame.d) {
+					this.move_d(p,dt);
+					p.opPerFrame.d = 0;
+				}
+				if (p.opPerFrame.l) {
+					this.move_l(p,dt);
+					p.opPerFrame.l = 0;
+				}
+				if (p.opPerFrame.r) {
+					this.move_r(p,dt);
+					p.opPerFrame.r = 0;
+				}
+				if (p.opPerFrame.f && !p.fireCD) {
+					this.player_shoot(p.id);
+					p.opPerFrame.f = 0;
+					p.fireCD = 1;
+					setTimeout( ()=>{p.fireCD = 0}, p.prop.reload*1000);
+				}
 			//TODO
-
+			/*
 			if (this.players[id].prop.seek===true) {
 				this.players[id].prop.target = '#';
 				for (let _id in this.players)
@@ -395,6 +433,7 @@ Q.core = Q.Evented.extend({
 						break;
 					}
 			}
+			*/
 		}
 	},
 
@@ -412,29 +451,8 @@ Q.core = Q.Evented.extend({
 
 			}
 	},
-	
-	player_use: function (pid) {
-		let p = this.players[pid];
-		if (p==undefined) return;
 
-		if (p.isArmed()===true)
-		{
-			this.generate_weapon(p.weapon,p.pos,p.ammo);
-			this.players[pid].unequip();
-			return;
-		}
-		for (let index in this.weapons) {
-			let w = this.weapons[index];
-			if (!!w)
-				if (dis(p.pos,w.pos)<p.size+35) {
-					this.players[pid].equip(w);
-					this.delete_weapon(index);
-					break;
-				}
-		}
-	},
-
-	player_shoot: function (pid) {
+	player_shoot: function(pid) {
 		let p = this.players[pid];
 		if (p.isArmed()) {
 			if (p.weapon==='Pan') {
@@ -452,11 +470,30 @@ Q.core = Q.Evented.extend({
 
 			if (p.ammo>0)
 				this.players[pid].ammo-=1;
-			else 
-				this.players[pid].unequip();
+			else {
+				this.players[pid].weapon = '';
+				this.players[pid].ammo = 0;
+				this.players[pid].prop = prop_org;
+			}
 		}
 		for (let i=0;i<(p.prop.bundle || 1);i++)
 			this.new_bullet(this.players[pid]);
+	}
+	
+	player_use: function (pid) {
+		let p = this.players[pid];
+
+		for (let index in this.weapons) {
+			let w = this.weapons[index];
+			if (!!w)
+				if (dis(p.pos,w.pos)<p.size+35) {
+					this.weapon = w.id;
+					this.ammo = w.ammo;
+					this.prop = Q.weapon_data[w.id];
+					this.delete_weapon(index);
+					break;
+				}
+		}
 	},
 
 	bullet_check_hit: function (bindex) {

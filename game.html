@@ -57,11 +57,27 @@
                                         </ul>
                                     </div>                
                         <ul>
-                            <li class="button info fit">START</li>
+                            <li id="controlBtn" class="button info fit">START</li>
                             <li id="clearBtn" class="button info fit">CLEAR</li>
                             <a id="repoBtn" href="#repo" class="button info fit">ADD</a>
                         </ul>
-                        <div id="editor"></div>
+                        <div id="editor">
+                            {
+                                    //每帧开始时无条件触发
+                                onEvent : function() {
+                                    this.fire();
+                                },
+
+                                onHitWall : function() {
+
+                                },
+
+                                onHitByBullet : function() {
+
+                                }
+                            }
+                        </div>
+                            
                         
                
                 </div>
@@ -102,7 +118,7 @@
         $("#repoBtn").on('click', ()=>{
             let list = document.getElementById('repo_list');
             list.innerHTML = "<li><span>ID</span><span>K/D</span><span>RATE</span></li>";
-            if (localStorage.curUser && localStorage.curUserr !== '') {
+            if (localStorage.curUser && localStorage.curUser !== '') {
                 socket.emit('get_repo');
             }
         });
@@ -116,6 +132,23 @@
                         results[i].num_kill + "/" +
                         results[i].num_death + "</span><span>RATE</span><span class='join'>Join</span></li>";
                 }
+        });
+    </script>
+    <script>
+        $("#clearBtn").on('click', ()=>{
+            core = new Q.core(enviroment,{width:600,height:600},{width:20,height:20});
+            core.add_player(localStorage.curUser, window.current_code);
+        });
+        var controlBtn = document.getElementById("controlBtn");
+        $("#controlBtn").on('click', ()=>{
+            if (core.running) {
+                core.running = false;
+                controlBtn.innerHTML = "START";
+            }
+            else {
+                core.running = true;
+                controlBtn.innerHTML = "PAUSE";
+            }
         });
     </script>
 

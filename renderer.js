@@ -1,5 +1,5 @@
 var delta_degree=2 * Math.PI / 360 * 100,
-	color_table = ['super', 'aqua', 'Aquamarine', 'Chartreuse', 'Coral', 'LightCyan', 'LightSlateBlue', 'RoyalBlue', 'Violet', 'VioletRed', 'Purple', 'orange'],
+	color_table = ['aqua', 'Aquamarine', 'Chartreuse', 'Coral', 'LightCyan', 'LightSlateBlue', 'RoyalBlue', 'Violet', 'VioletRed', 'Purple', 'orange'],
 
 	lerp = function(a,b,k) {
 		return a+k*(b-a);
@@ -162,7 +162,7 @@ Q.renderer = Q.GameObject.extend({
 		ctx.lineWidth = 5;
 		ctx.strokeStyle = 'white';
 		ctx.stroke();
-		if (player.color > 0)									//内部填充
+		if (player.color >= 0)									//内部填充
 			ctx.fillStyle = color_table[player.color];
 
 		ctx.fill();
