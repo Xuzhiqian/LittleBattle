@@ -124,7 +124,7 @@ Q.weapon = Q.GameObject.extend({
 });
 
 Q.core = Q.Evented.extend({
-	init : function(enviroment,size,block_size) {
+	init : function(enviroment,size,block_size,callback) {
 		global_width = size.width;
 		global_height = size.height;
 		this.width = size.width;
@@ -133,6 +133,7 @@ Q.core = Q.Evented.extend({
 		this.block_height = block_size.height;
 		this.player_count = 0;
 		this.clock = 120;
+		this.stat = [];
 		this.players = [];
 		this.bullets = [];
 		this.weapons = [];
@@ -142,7 +143,16 @@ Q.core = Q.Evented.extend({
 		this.renderer = new Q.renderer(enviroment,size,block_size,this.terrain);
 		this.running = false;
 		this.competing = false;
+		this.finished = false;
+		this.callback = callback;
 		Q.gameLoop(this.update.bind(this));
+	},
+
+	gameover: function() {
+		this.finished = true;
+		this.running = false;
+		this.clock = 0;
+		this.callback(this.stat);
 	},
 
 	add_player: function (pid, code) {
@@ -154,10 +164,21 @@ Q.core = Q.Evented.extend({
 		p = this.players[pid];
 		p.color = Math.floor(Math.random()*11);
 		this.player_count++;
+		this.stat[pid] = {
+			kill : 0,
+			death : 0
+		};
 
 		//防止出生地落在地形上
 		while (this.check_terrain(p.pos)===true)
 			p.pos = this.random_pos();
+	},
+
+	remove_player: function (pid) {
+		delete this.players[pid];
+		this.player_count--;
+		if (this.player_count <= 1)
+			this.gameover();
 	},
 
 	move_u: function (p, dt) {
@@ -413,6 +434,10 @@ Q.core = Q.Evented.extend({
 			this.update_players(dt);
 			this.update_bullets(dt);
 			this.clock -= dt;
+			if (this.clock <= 0) {
+				this.gameover();
+				return;
+			}
 		}
 		this.renderer.render(this.players,this.bullets,this.weapons,this.clock,dt);
 	},
@@ -545,24 +570,18 @@ Q.core = Q.Evented.extend({
 		}
 
 		if (bullet.destroyable === true) return;
-
-		for (let index in this.boxes) {
-			let b = this.boxes[index];
-			if (dis(bullet.pos, b.pos) < bullet.size + b.size) {
-				this.cause_damage_to_box(bullet.owner_id,index,bullet.damage);
-				bullet.destroyable = true;
-				break;
-			}
-		}
 	},
 
 	cause_damage_to_player: function (oid,pid,dmg) {
 		if (dmg===0) return;
 		let p = this.players[pid];
 		p.health.cur -=dmg;
-		if (p.health.cur <= 0)
+		if (p.health.cur <= 0) {
+			this.stat[oid].kill++;
+			this.stat[pid].death++;
 			this.remove_player(pid);
-	},
+		}
+	}
 	
 });
 

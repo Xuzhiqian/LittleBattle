@@ -50,6 +50,10 @@
   <img id="DeathGrenade" src="img/DeathGrenade.png"/>
   <img id="Seeker" src="img/Seeker.png"/>
 </div>
+
+    <div class="gameover">
+
+    </div>
         <!-- Page Wrapper -->
             <div id="page-wrapper">
 
@@ -133,11 +137,19 @@
         </script>
 
         <script>
+            var gameover = function(stat) {
+
+            };
+        </script>
+
+
+
+        <script>
         var enviroment = {
                 map: document.getElementById('map'),
                 ctx: map.getContext('2d')
         };
-        core = new Q.core(enviroment,{width:600,height:600},{width:20,height:20});
+        core = new Q.core(enviroment,{width:600,height:600},{width:20,height:20},gameover);
         socket.emit("fetch_code", localStorage.curUser);
         socket.on('recv_code', (user)=>{
             if (user.id === localStorage.curUser)
@@ -187,9 +199,12 @@
         });
         
         $("#controlBtn").on('click', ()=>{
+            if (core.finished) return;
             if (core.running) {
                 core.running = false;
                 controlBtn.innerHTML = "START";
+
+                $('.gameover').hide();
             }
             else {
                 if (core.player_count <= 1) {
@@ -201,6 +216,8 @@
                 $("#repoBtn").removeAttr("href");
                 controlBtn.innerHTML = "PAUSE";
                 socket.emit("update_code", {id:localStorage.curUser, code:window.current_code});
+                
+                $('.gameover').show();
             }
         });
     </script>
