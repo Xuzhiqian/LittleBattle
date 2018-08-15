@@ -97,7 +97,7 @@ Q.renderer = Q.GameObject.extend({
 	
 	render_weapon:function (weapon) {
 		if (!weapon) return;
-		var ctx = this.game.ctx;
+		var ctx = this.ctx;
 
 		ctx.save();
 		ctx.translate(weapon.pos.x, weapon.pos.y);
@@ -109,7 +109,7 @@ Q.renderer = Q.GameObject.extend({
 	render_bullet: function (bullet) {
 		if (!bullet) return;
 
-		var ctx = this.game.ctx;
+		var ctx = this.ctx;
 		var r = 5;
 		ctx.save();
 
@@ -131,7 +131,7 @@ Q.renderer = Q.GameObject.extend({
 	render_player: function (player) {
 		if (!player) return;
 
-		var ctx = this.game.ctx;
+		var ctx = this.ctx;
 		var r = this.render_list[player.id]?(this.render_list[player.id].size || player_size):15;
 		var pos = this.render_list[player.id]?(this.render_list[player.id].pos || player.pos):player.pos;
 		var dir = this.render_list[player.id]?(this.render_list[player.id].dir || player.dir):player.dir;
