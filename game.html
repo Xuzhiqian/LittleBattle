@@ -149,10 +149,6 @@
 
     <script>
         $("#repoBtn").on('click', ()=>{
-            if (core.competing) {
-                alert('中途摇人？不存在的！');
-                return;
-            }
             let list = document.getElementById('repo_list');
             list.innerHTML = "<li><span>ID</span><span>K/D</span><span>RATE</span></li>";
             if (localStorage.curUser) {
@@ -174,9 +170,13 @@
     <script>
         $("#clearBtn").on('click', ()=>{
             window.current_code = editor.getValue();
+
             core = new Q.core(enviroment,{width:600,height:600},{width:20,height:20});
             core.add_player(localStorage.curUser, window.current_code);
+
             socket.emit("update_code", {id:localStorage.curUser, code:window.current_code});
+            
+            $("#repoBtn").removeAttr("disabled");
         });
         var controlBtn = document.getElementById("controlBtn");
         $("#controlBtn").on('click', ()=>{
@@ -191,6 +191,8 @@
                 }
                 core.running = true;
                 core.competing = true;
+                $("#repoBtn").attr("disabled","disabled");
+                //$("#repoBtn").removeAttr("disabled");
                 controlBtn.innerHTML = "PAUSE";
                 socket.emit("update_code", {id:localStorage.curUser, code:window.current_code});
             }

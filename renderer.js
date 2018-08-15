@@ -205,7 +205,7 @@ Q.renderer = Q.GameObject.extend({
 	render_clock: function(time) {
 		this.ctx.save();
 		this.ctx.fillStyle = 'white';
-		this.ctx.fillText(time.toFixed(1), 100, 50);
+		this.ctx.fillText(time.toFixed(1), 50, 20);
 		this.ctx.restore();
 	},
 
