@@ -23,17 +23,17 @@
 	position: fixed;
 	width:100%;
 	height:100%;
-	background:rgba(0,0,0,0.2);
+	background:rgba(255,255,255,0.4);
 	display:none;
 	z-index:999999;
 }
 
 .gameover_panel {
-	width:250px;
-	height:150px;
+	width:400px;
+	height:300px;
 	position:fixed;
 	left:50%;
-	top:50%;
+	top:25%;
 	background:#6495ed;
 	color: #ffffff;
 	overflow-y: auto;

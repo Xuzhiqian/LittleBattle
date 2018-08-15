@@ -193,7 +193,7 @@
 
             window.current_code = editor.getValue();
 
-            core.init(enviroment,{width:600,height:600},{width:20,height:20});
+            core.init(enviroment,{width:600,height:600},{width:20,height:20},gameover);
             core.add_player(localStorage.curUser, window.current_code);
 
             socket.emit("update_code", {id:localStorage.curUser, code:window.current_code});
