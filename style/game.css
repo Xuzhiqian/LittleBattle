@@ -1,3 +1,9 @@
+.weapon {
+	display:none;
+}
+.weapon > img {
+	display:none;
+}
 .left_body {
 	padding-right: 601px;
 	position: relative;
