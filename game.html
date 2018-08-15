@@ -92,7 +92,7 @@
              
 
         <script>
-            if (!localStorage.curUser)
+            if (!localStorage.curUser || localStorage.curUser === "undefined")
                 window.location.href = "login.html";
 
             var editor = ace.edit("editor");
