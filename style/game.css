@@ -23,7 +23,7 @@
 	position: fixed;
 	width:100%;
 	height:100%;
-	background:rgba(255,255,255,0.4);
+	background:rgba(255,255,255,0.28);
 	display:none;
 	z-index:999999;
 }
@@ -32,9 +32,9 @@
 	width:400px;
 	height:300px;
 	position:fixed;
-	left:50%;
+	left:calc(50%-200px);
 	top:25%;
-	background:#6495ed;
+	background:rgba(100,149,237,0.85);
 	color: #ffffff;
 	overflow-y: auto;
 	padding: 3em 2em;
