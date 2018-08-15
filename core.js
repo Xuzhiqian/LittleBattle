@@ -397,8 +397,8 @@ Q.core = Q.Evented.extend({
 		for (let id in this.players) 
 			if (this.players[id]!=null) {
 				let p = this.players[id];
-				if (p.events.onEvent)
-					p.events.onEvent();
+				if (p.onEvent)
+					p.onEvent();
 
 
 				if (p.opPerFrame.u) {
