@@ -185,7 +185,7 @@ Q.renderer = Q.GameObject.extend({
 				anim.entity.alpha-=0.1;
 				anim.entity.size+=0.2;
 				if (anim.entity.alpha>0)
-					this.client_render_bullet(anim.entity);
+					this.render_bullet(anim.entity);
 				else
 					anim.anim_destroyable = true;
 			}
