@@ -105,8 +105,7 @@
 }
                         </div>
                             
-                        
-               
+                                 
                 </div>
                 <div class="right_body">
                     <canvas id="map"></canvas>
@@ -164,10 +163,7 @@
                     list.innerHTML = list.innerHTML + "<li><span>" +
                         results[i].id + "</span><span>" +
                         results[i].num_kill + "/" +
-                        results[i].num_death + "</span><span>RATE</span><span class='join' id='joinBtn_" + i + "'>Join</span></li>";
-                    $("#joinBtn_"+i).on('click', ()=>{
-                        socket.emit('fetch_code', results[i].id);
-                    });
+                        results[i].num_death + "</span><span>RATE</span><span class='join' id='joinBtn_" + i + "' onclick='socket.emit('fetch_code', " + results[i].id + ");'>Join</span></li>";
                 }
         });
     </script>
