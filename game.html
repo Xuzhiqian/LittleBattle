@@ -140,6 +140,7 @@
     </script>
     <script>
         $("#clearBtn").on('click', ()=>{
+            window.current_code = editor.getValue();
             core = new Q.core(enviroment,{width:600,height:600},{width:20,height:20});
             core.add_player(localStorage.curUser, window.current_code);
         });
