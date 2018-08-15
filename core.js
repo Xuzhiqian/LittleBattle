@@ -53,6 +53,7 @@ Q.Player = Q.GameObject.extend({
 		this.prop = prop_org;
 		this.alpha = 1;
 		this.fireCD = 0;
+		this.size = 15;
 
 		this.opPerFrame = {u:0,d:0,l:0,r:0,f:0,j:0};
 	},
