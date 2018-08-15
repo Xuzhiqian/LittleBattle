@@ -52,7 +52,11 @@
 </div>
 
     <div class="gameover">
-
+        <div id="msgbox" class="gameover_panel" onclick="$('.gameover').hide()">
+            <ul>
+                <li><span>ID</span><span>K/D</span><span>RATE</span></li>
+            </ul>
+        </div>
     </div>
         <!-- Page Wrapper -->
             <div id="page-wrapper">
@@ -138,7 +142,7 @@
 
         <script>
             var gameover = function(stat) {
-
+                $('.gameover').show();
             };
         </script>
 
@@ -203,8 +207,6 @@
             if (core.running) {
                 core.running = false;
                 controlBtn.innerHTML = "START";
-
-                $('.gameover').hide();
             }
             else {
                 if (core.player_count <= 1) {
@@ -215,9 +217,7 @@
                 core.competing = true;
                 $("#repoBtn").removeAttr("href");
                 controlBtn.innerHTML = "PAUSE";
-                socket.emit("update_code", {id:localStorage.curUser, code:window.current_code});
-                
-                $('.gameover').show();
+                socket.emit("update_code", {id:localStorage.curUser, code:window.current_code});        
             }
         });
     </script>
