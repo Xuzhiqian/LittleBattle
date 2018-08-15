@@ -176,7 +176,7 @@
 
             socket.emit("update_code", {id:localStorage.curUser, code:window.current_code});
 
-            $("#repoBtn").removeAttr("disabled");
+            $("#repoBtn").attr("href","#repo");
         });
         var controlBtn = document.getElementById("controlBtn");
         $("#controlBtn").on('click', ()=>{
@@ -191,8 +191,7 @@
                 }
                 core.running = true;
                 core.competing = true;
-                $("#repoBtn").attr("disabled",true);
-                //$("#repoBtn").removeAttr("disabled");
+                $("#repoBtn").removeAttr("href");
                 controlBtn.innerHTML = "PAUSE";
                 socket.emit("update_code", {id:localStorage.curUser, code:window.current_code});
             }
