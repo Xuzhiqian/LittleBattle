@@ -172,18 +172,20 @@
         });
     </script>
     <script>
+        var controlBtn = document.getElementById("controlBtn");
         $("#clearBtn").on('click', ()=>{
 
             window.current_code = editor.getValue();
 
-            core = new Q.core(enviroment,{width:600,height:600},{width:20,height:20});
+            core.init(enviroment,{width:600,height:600},{width:20,height:20});
             core.add_player(localStorage.curUser, window.current_code);
 
             socket.emit("update_code", {id:localStorage.curUser, code:window.current_code});
 
             $("#repoBtn").attr("href","#repo");
+            controlBtn.innerHTML = "START";
         });
-        var controlBtn = document.getElementById("controlBtn");
+        
         $("#controlBtn").on('click', ()=>{
             if (core.running) {
                 core.running = false;
