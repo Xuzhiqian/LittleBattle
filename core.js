@@ -32,7 +32,7 @@ var prop_org = {
 	speed : 240,
 	reload : 0.6,
 	bias : 0.1,
-	life : 5,
+	life : 0.5,
 	damage : 20,
 	bounce : false,
 	recoil : 0,
@@ -240,6 +240,7 @@ Q.core = Q.Evented.extend({
 		}
 
 		b.life.cur += dt;
+		if (b.life.cur >= b.life.max) b.destroyable=true;
 	},
 
 	
@@ -357,8 +358,9 @@ Q.core = Q.Evented.extend({
 		if (_ammo!=undefined && _ammo<=0) return;
 		let pos = _pos || this.random_pos();
 		if (this.check_terrain(pos)==true) return;
+		let id = _id || weapons[Math.floor(Math.random()*weapons.length)];
 
-		let new_wpn = new Q.weapon(pos,_id || weapons[Math.floor(Math.random()*weapons.length)],_ammo || Q.weapon_ammo[new_wpn.id]);
+		let new_wpn = new Q.weapon(pos, id, Q.weapon_ammo[id]);
 		this.weapons.push(new_wpn);
 	},
 
@@ -400,29 +402,23 @@ Q.core = Q.Evented.extend({
 				if (p.onEvent)
 					p.onEvent();
 
+				if (p.opPerFrame.u) this.move_u(p,dt);
+				if (p.opPerFrame.d) this.move_d(p,dt);
+				if (p.opPerFrame.l) this.move_l(p,dt);
+				if (p.opPerFrame.r) this.move_r(p,dt);
 
-				if (p.opPerFrame.u) {
-					this.move_u(p,dt);
-					p.opPerFrame.u = 0;
-				}
-				if (p.opPerFrame.d) {
-					this.move_d(p,dt);
-					p.opPerFrame.d = 0;
-				}
-				if (p.opPerFrame.l) {
-					this.move_l(p,dt);
-					p.opPerFrame.l = 0;
-				}
-				if (p.opPerFrame.r) {
-					this.move_r(p,dt);
-					p.opPerFrame.r = 0;
-				}
 				if (p.opPerFrame.f && !p.fireCD) {
 					this.player_shoot(p.id);
-					p.opPerFrame.f = 0;
 					p.fireCD = 1;
 					setTimeout( ()=>{p.fireCD = 0}, p.prop.reload*1000);
 				}
+
+				this.update_player_physics(p, dt, !p.opPerFrame.l && !p.opPerFrame.r, !p.opPerFrame.u && !p.opPerFrame.d, !p.opPerFrame.f) {
+			
+				p.opPerFrame.u = 0;
+				p.opPerFrame.d = 0;
+				p.opPerFrame.l = 0;
+				p.opPerFrame.r = 0;
 			//TODO
 			/*
 			if (this.players[id].prop.seek===true) {
