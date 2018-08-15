@@ -149,6 +149,10 @@
 
     <script>
         $("#repoBtn").on('click', ()=>{
+            if (core.competing) {
+                alert('中途摇人？不存在的！');
+                return;
+            }
             let list = document.getElementById('repo_list');
             list.innerHTML = "<li><span>ID</span><span>K/D</span><span>RATE</span></li>";
             if (localStorage.curUser) {
@@ -181,7 +185,12 @@
                 controlBtn.innerHTML = "START";
             }
             else {
+                if (core.player_count <= 1) {
+                    alert('就一个人，对墙撸吗？');
+                    return;
+                }
                 core.running = true;
+                core.competing = true;
                 controlBtn.innerHTML = "PAUSE";
                 socket.emit("update_code", {id:localStorage.curUser, code:window.current_code});
             }

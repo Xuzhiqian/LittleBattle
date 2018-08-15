@@ -202,11 +202,20 @@ Q.renderer = Q.GameObject.extend({
 		}
 	},
 
-	render: function (players,bullets,weapons,dt) {
+	render_clock: function(time) {
+		this.ctx.save();
+		this.ctx.fillStyle = 'white';
+		this.ctx.fillText(time.toFixed(1), 100, 50);
+		this.ctx.restore();
+	},
+
+	render: function (players,bullets,weapons,clock,dt) {
 
 		this.ctx.clearRect(0, 0, this.map.width, this.map.height);
 		
 		this.render_background();
+
+		this.render_clock(clock);
 
 		for (var index in this.anim_list) {
 			if (!!this.anim_list[index]) {

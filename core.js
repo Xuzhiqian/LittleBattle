@@ -132,6 +132,7 @@ Q.core = Q.Evented.extend({
 		this.block_width = block_size.width;
 		this.block_height = block_size.height;
 		this.player_count = 0;
+		this.clock = 120;
 		this.players = [];
 		this.bullets = [];
 		this.weapons = [];
@@ -140,6 +141,7 @@ Q.core = Q.Evented.extend({
 		this.generate_terrain();
 		this.renderer = new Q.renderer(enviroment,size,block_size,this.terrain);
 		this.running = false;
+		this.competing = false;
 		Q.gameLoop(this.update.bind(this));
 	},
 
@@ -410,8 +412,9 @@ Q.core = Q.Evented.extend({
 			this.update_weapons();
 			this.update_players(dt);
 			this.update_bullets(dt);
+			this.clock -= dt;
 		}
-		this.renderer.render(this.players,this.bullets,this.weapons,dt);
+		this.renderer.render(this.players,this.bullets,this.weapons,this.clock,dt);
 	},
 	
 	update_players: function(dt) {
