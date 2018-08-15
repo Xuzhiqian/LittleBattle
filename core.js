@@ -478,7 +478,7 @@ Q.core = Q.Evented.extend({
 		}
 		for (let i=0;i<(p.prop.bundle || 1);i++)
 			this.new_bullet(this.players[pid]);
-	}
+	},
 	
 	player_use: function (pid) {
 		let p = this.players[pid];
