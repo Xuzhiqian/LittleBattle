@@ -32,9 +32,9 @@
 	width:400px;
 	height:300px;
 	position:fixed;
-	left:calc(50%-200px);
+	left:50%;
 	top:25%;
-	background:rgba(100,149,237,0.85);
+	background:rgba(100,149,237,0.95);
 	color: #ffffff;
 	overflow-y: auto;
 	padding: 3em 2em;
