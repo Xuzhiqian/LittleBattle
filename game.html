@@ -52,7 +52,7 @@
 </div>
 
     <div class="gameover">
-        <div id="msgbox" class="gameover_panel" onclick="$('.gameover').hide()">
+        <div id="msgbox" class="gameover_panel" onclick="$('.gameover').hide(); restart();">
             <ul id="listboard">
             </ul>
         </div>
@@ -220,8 +220,7 @@ var tank = {
     </script>
     <script>
         var controlBtn = document.getElementById("controlBtn");
-        $("#clearBtn").on('click', ()=>{
-
+        var restart = function() {
             window.current_code = editor.getValue();
 
             core.init(enviroment,{width:600,height:600},{width:20,height:20},gameover);
@@ -231,7 +230,8 @@ var tank = {
 
             $("#repoBtn").attr("href","#repo");
             controlBtn.innerHTML = "START";
-        });
+        };
+        $("#clearBtn").on('click', restart);
         
         $("#controlBtn").on('click', ()=>{
             if (core.finished) return;
