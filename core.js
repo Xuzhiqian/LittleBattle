@@ -39,7 +39,7 @@ var prop_org = {
 	penetrate : false
 };
 
-Q.Auto_player = Q.Evented.extend({
+Q.Auto_player = Q.GameObject.extend({
 	init: (proto)=>{
 		this.opPerFrame = {u:0,d:0,l:0,r:0,f:0,j:0};
 		for (var event in proto)
