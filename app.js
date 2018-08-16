@@ -45,23 +45,29 @@ io.on("connection", function (socket) {
 
 	socket.on('sign_up',(user)=>{
 
-		let sql = "INSERT INTO main (id,password,num_kill,num_death,code) VALUES ('" +
+		let dup = false;
+		let sql_query = "SELECT password FROM main WHERE id='" + user.id + "';";
+		connection.query(sql_query, function(error, results, fields){
+			if (error) throw error;
+			if (results[0]!=undefined && results[0].password!=undefined) {
+				socket.emit('dup');
+				dup = true;
+			}
+		});
+		if (dup) return;
+
+		let sql_insert = "INSERT INTO main (id,password,num_kill,num_death,code) VALUES ('" +
 				  user.id + "','" +
 				  user.password + "'," +
 				  "0," +
 				  "0," +
 				  "'');";
-		let dup = false;
-		connection.query(sql, function(error, results, fields){
-			if (error) {
-				socket.emit('dup');
-				dup = true;
-			}
+		
+		connection.query(sql_insert, function(error, results, fields){
+			if (error) throw error;
 		});
-		if (!dup) {
-			socket.user_id = user.id;
-			socket.emit('accept', user.id);
-		}
+		socket.user_id = user.id;
+		socket.emit('accept', user.id);
 	});
 
 	socket.on('get_repo', ()=>{
