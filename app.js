@@ -77,10 +77,11 @@ io.on("connection", function (socket) {
 		let sql = "SELECT code FROM main WHERE id = '" + id + "';";
 
 		connection.query(sql, function(error, results, fields){
-			if (error)
-				socket.emir('unauthorized');
-			else
+			if (error) throw error;
+			if (results[0]!=undefined && results[0].code != undefined)
 				socket.emit('recv_code', {id:id,code:results[0].code});
+			else
+				socket.emit('unauthorized');
 		});
 	});
 
