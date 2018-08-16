@@ -177,6 +177,7 @@ Q.core = Q.Evented.extend({
 		}
 
 		if (!this.players[pid]) this.player_count++;
+		this.players[pid] = new Q.Player(pid);
 		this.players[pid].auto = new Q.Auto_player(proto);
 
 		p = this.players[pid];
