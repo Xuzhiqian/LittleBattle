@@ -181,8 +181,8 @@ var tank = {
         socket.emit("fetch_init_code", localStorage.curUser);
         socket.on('init_code', (code)=>{
             if (code.length > 5)
-                editor.setValue(user.code);
-            core.add_player(user.id, editor.getValue());
+                editor.setValue(code);
+            core.add_player(localStorage.curUser, editor.getValue());
         });
         socket.on('unauthorized', ()=>{
             window.location.href = "login.html";
