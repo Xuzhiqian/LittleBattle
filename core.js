@@ -39,6 +39,31 @@ var prop_org = {
 	penetrate : false
 };
 
+
+Q.Player = Q.GameObject.extend({
+	init: function(pid) {
+		this.id = pid;
+		this.pos = {
+			x: Math.floor(Math.random() * global_width),
+			y: Math.floor(Math.random() * global_height)
+		};
+		this.health = {cur: 100, max: 100};
+		this.speed = {x: {cur: 0, max: 120, acc: 180}, y: {cur: 0, max: 120, acc: 180}};
+		this.dir = 0;
+		this.color = 0;
+		this.prop = prop_org;
+		this.alpha = 1;
+		this.fireCD = 0;
+		this.size = 15;
+		this.auto = {};
+	},
+
+	isArmed: function() {
+		return (typeof this.weapon === 'string' && this.weapon.length>0);
+	}
+	
+});
+
 Q.Auto_player = Q.GameObject.extend({
 	init: (proto)=>{
 		this.opPerFrame = {u:0,d:0,l:0,r:0,f:0,j:0};
@@ -66,30 +91,6 @@ Q.Auto_player = Q.GameObject.extend({
 	moveRight: function() {
 		this.opPerFrame.r = 1;
 	}
-});
-
-Q.Player = Q.GameObject.extend({
-	init: function(pid) {
-		this.id = pid;
-		this.pos = {
-			x: Math.floor(Math.random() * global_width),
-			y: Math.floor(Math.random() * global_height)
-		};
-		this.health = {cur: 100, max: 100};
-		this.speed = {x: {cur: 0, max: 120, acc: 180}, y: {cur: 0, max: 120, acc: 180}};
-		this.dir = 0;
-		this.color = 0;
-		this.prop = prop_org;
-		this.alpha = 1;
-		this.fireCD = 0;
-		this.size = 15;
-		this.auto = {};
-	},
-
-	isArmed: function() {
-		return (typeof this.weapon === 'string' && this.weapon.length>0);
-	}
-	
 });
 
 Q.bullet = Q.GameObject.extend({
@@ -167,6 +168,7 @@ Q.core = Q.Evented.extend({
 	add_player: function (pid, code) {
 		
 		let proto;
+		let auto;
 		code = "()=>{" + code + "return tank;}";
 		try {
 			proto = eval(code)();
@@ -178,7 +180,7 @@ Q.core = Q.Evented.extend({
 
 		if (!this.players[pid]) this.player_count++;
 		this.players[pid] = new Q.Player(pid);
-		this.players[pid].auto = new Q.Auto_player(proto);
+		this.players[pid].auto = new Q.Player(pid);
 
 		p = this.players[pid];
 		p.color = Math.floor(Math.random()*11);
