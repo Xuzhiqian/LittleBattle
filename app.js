@@ -45,31 +45,27 @@ io.on("connection", function (socket) {
 
 	socket.on('sign_up',(user)=>{
 
-		var dup = 0;
+
 		let sql_query = "SELECT password FROM main WHERE id='" + user.id + "';";
 		connection.query(sql_query, function(error, results, fields){
 			if (error) throw error;
-			if (results[0]!=undefined && results[0].password!=undefined) {
+			if (results[0]!=undefined && results[0].password!=undefined)
 				socket.emit('dup');
-				dup = 1;
-				console.log('  %%%%%%%%%%%%%%%%%%% dup = '+dup);
-			}
-		});
-		if (dup === 0) {
-			console.log('wtf?!!!');
-			let sql_insert = "INSERT INTO main (id,password,num_kill,num_death,code) VALUES ('" +
+			else {
+				let sql_insert = "INSERT INTO main (id,password,num_kill,num_death,code) VALUES ('" +
 				  user.id + "','" +
 				  user.password + "'," +
 				  "0," +
 				  "0," +
 				  "'');";
 		
-			connection.query(sql_insert, function(error, results, fields){
-				if (error) throw error;
-			});
-			socket.user_id = user.id;
-			socket.emit('accept', user.id);
-		}
+				connection.query(sql_insert, function(error, results, fields){
+					if (error) throw error;
+					socket.emit('accept', user.id);
+				});
+			}
+		});
+
 	});
 
 	socket.on('get_repo', ()=>{
@@ -121,17 +117,15 @@ io.on("connection", function (socket) {
 					results[i].num_kill += stat[results[i].id].kill;
 					results[i].num_death += stat[results[i].id].death;
 				}
-			stat = results;
-		});
-
-		for (let i = 0; i< stat.length; i++)
-			if (stat[i]!=undefined) {
-				let sql_update = "UPDATE main SET num_kill = " + stat[i].num_kill + ", num_death = " + stat[i].num_death + " WHERE id = '" + stat[i].id + "';";
+			for (let i = 0; i< results.length; i++)
+			if (results[i]!=undefined) {
+				let sql_update = "UPDATE main SET num_kill = " + results[i].num_kill + ", num_death = " + results[i].num_death + " WHERE id = '" + results[i].id + "';";
 				
 				connection.query(sql_update, function(error, results){
 					if (error) throw error;
 				});
 			}
+		});	
 	});
 	
 });
