@@ -90,6 +90,18 @@ io.on("connection", function (socket) {
 		});
 	});
 
+	socket.on('fetch_init_code', (id)=>{
+		let sql = "SELECT code FROM main WHERE id = '" + id + "';";
+
+		connection.query(sql, function(error, results, fields){
+			if (error) throw error;
+			if (results[0]!=undefined && results[0].code != undefined)
+				socket.emit('init_code', results[0].code);
+			else
+				socket.emit('unauthorized');
+		});
+	});
+
 	socket.on('update_code', (info)=>{
 		let sql = "UPDATE main SET code = '" + info.code + "' WHERE id = '" + info.id + "';";
 

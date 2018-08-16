@@ -38,7 +38,6 @@ var prop_org = {
 	recoil : 0,
 	penetrate : false
 };
-
 Q.Player = Q.GameObject.extend({
 	init: function(pid) {
 		this.id = pid;
@@ -156,11 +155,21 @@ Q.core = Q.Evented.extend({
 	},
 
 	add_player: function (pid, code) {
-		if (!this.players[pid]) this.player_count++;
+		
 		let origin = new Q.Player(pid);
-
+		let proto;
 		code = "()=>{" + code + "return tank;}";
-		this.players[pid] = eval(code)();
+		try {
+			proto = eval(code)();
+		}
+		catch(err) {
+			alert('WTF?What a shitty code!');
+			return;
+		}
+
+		if (!this.players[pid]) this.player_count++;
+		this.players[pid] = proto;
+
 		for (var property in origin)
 			this.players[pid][property] = origin[property];	
 

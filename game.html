@@ -178,11 +178,11 @@ var tank = {
                 ctx: map.getContext('2d')
         };
         core = new Q.core(enviroment,{width:600,height:600},{width:20,height:20},gameover);
-        socket.emit("fetch_code", localStorage.curUser);
-        socket.on('recv_code', (user)=>{
-            if (user.id === localStorage.curUser && user.code.length > 10)
+        socket.emit("fetch_init_code", localStorage.curUser);
+        socket.on('init_code', (code)=>{
+            if (code.length > 5)
                 editor.setValue(user.code);
-            core.add_player(user.id, window.current_code);
+            core.add_player(user.id, editor.getValue());
         });
         socket.on('unauthorized', ()=>{
             window.location.href = "login.html";
@@ -212,6 +212,10 @@ var tank = {
                         results[i].num_kill + "/" +
                         results[i].num_death + "</span><span>RATE</span><span class='join' id='joinBtn_" + i + "' onclick='socket.emit(&apos;fetch_code&apos;,&apos;"  + results[i].id + "&apos;);'>Join</span></li>";
                 }
+        });
+
+        socket.on('recv_code', (user)=>{
+            core.add_player(user.id, user.code);
         });
     </script>
     <script>
