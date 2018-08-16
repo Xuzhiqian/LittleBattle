@@ -91,6 +91,7 @@
     };
 
     socket.on('dup',()=>{
+        delete localStorage.curUser;
         alert('User already exists!');
     });
 

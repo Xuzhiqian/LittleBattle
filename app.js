@@ -51,16 +51,17 @@ io.on("connection", function (socket) {
 				  "0," +
 				  "0," +
 				  "'');";
-
+		let dup = false;
 		connection.query(sql, function(error, results, fields){
 			if (error) {
 				socket.emit('dup');
-				return;
+				dup = true;
 			}
 		});
-
-		socket.user_id = user.id;
-		socket.emit('accept', user.id);
+		if (!dup) {
+			socket.user_id = user.id;
+			socket.emit('accept', user.id);
+		}
 	});
 
 	socket.on('get_repo', ()=>{
