@@ -89,6 +89,38 @@ io.on("connection", function (socket) {
 			if (error) throw error;
 		});
 	});
+
+	socket.on('update_data', (_stat)=>{
+
+		let stat = [];
+		for (let i=0; i < _stat.length; i++)
+				if (_stat[i]!=undefined)
+					stat[_stat[i][0]] = {
+						kill : _stat[i][1],
+						death : _stat[i][2]
+					};
+
+		let sql_fetch = "SELECT id, num_kill, num_death FROM main;";
+
+		connection.query(sql_fetch, function(error, results){
+		 	if (error) throw error;
+			for (let i=0; i < results.length; i++)
+				if (results[i]!=undefined && stat[results[i].id]!=undefined) {
+					results[i].num_kill += stat[results[i].id].kill;
+					results[i].num_death += stat[results[i].id].death;
+				}
+			stat = results;
+		});
+
+		for (let i = 0; i< stat.length; i++)
+			if (stat[i]!=undefined) {
+				let sql_update = "UPDATE main SET num_kill = " + stat[i].num_kill + ", num_death = " + stat[i].num_death + " WHERE id = '" + stat[i].id + "';";
+				
+				connection.query(sql_update, function(error, results){
+					if (error) throw error;
+				});
+			}
+	});
 	
 });
 

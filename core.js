@@ -31,7 +31,7 @@ var bullet_size = 5;
 var prop_org = {
 	speed : 240,
 	reload : 0.6,
-	bias : 0.1,
+	bias : 0.02,
 	life : 4,
 	damage : 20,
 	bounce : false,
@@ -157,6 +157,8 @@ Q.core = Q.Evented.extend({
 
 	add_player: function (pid, code) {
 		let origin = new Q.Player(pid);
+
+		code = "()=>{" + code + "return tank;}";
 		this.players[pid] = eval(code)();
 		for (var property in origin)
 			this.players[pid][property] = origin[property];	
@@ -460,7 +462,7 @@ Q.core = Q.Evented.extend({
 					setTimeout( ()=>{p.fireCD = 0}, p.prop.reload*1000);
 				}
 
-				this.update_player_physics(p, dt, !p.opPerFrame.l && !p.opPerFrame.r, !p.opPerFrame.u && !p.opPerFrame.d, !p.opPerFrame.f);
+				this.update_player_physics(p, dt, (p.opPerFrame.l===0 && p.opPerFrame.r===0), (p.opPerFrame.u===0 && p.opPerFrame.d===0), p.opPerFrame.f===0);
 			
 				p.opPerFrame.u = 0;
 				p.opPerFrame.d = 0;
