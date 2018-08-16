@@ -54,20 +54,20 @@ io.on("connection", function (socket) {
 				dup = 1;
 			}
 		});
-		if (dup === 1) return;
-
-		let sql_insert = "INSERT INTO main (id,password,num_kill,num_death,code) VALUES ('" +
+		if (dup === 0) {
+			let sql_insert = "INSERT INTO main (id,password,num_kill,num_death,code) VALUES ('" +
 				  user.id + "','" +
 				  user.password + "'," +
 				  "0," +
 				  "0," +
 				  "'');";
 		
-		connection.query(sql_insert, function(error, results, fields){
-			if (error) throw error;
-		});
-		socket.user_id = user.id;
-		socket.emit('accept', user.id);
+			connection.query(sql_insert, function(error, results, fields){
+				if (error) throw error;
+			});
+			socket.user_id = user.id;
+			socket.emit('accept', user.id);
+		}
 	});
 
 	socket.on('get_repo', ()=>{
