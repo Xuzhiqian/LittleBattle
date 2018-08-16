@@ -140,7 +140,7 @@ var tank = {
                 let stat = [];
                 for (var id in _stat)
                     if (_stat[id] && _stat[id].kill>=0)
-                        stat.push([id, kill, death, kill / (death===0 ? 1 : death)]);
+                        stat.push([id, _stat[id].kill, _stat[id].death, _stat[id].kill / (_stat[id].death===0 ? 1 : _stat[id].death)]);
                 stat.sort((a, b)=>{
                     if (a[3] < b[3])
                         return 1;

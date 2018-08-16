@@ -163,7 +163,7 @@ Q.core = Q.Evented.extend({
 			proto = eval(code)();
 		}
 		catch(err) {
-			alert('WTF?What a shitty code!');
+			alert('WTTTF? What a shitty code!');
 			return;
 		}
 
