@@ -182,7 +182,7 @@ var tank = {
         socket.on('recv_code', (user)=>{
             if (user.id === localStorage.curUser && user.code.length > 10)
                 editor.setValue(user.code);
-            core.add_player(user.id, user.code);
+            core.add_player(user.id, window.current_code);
         });
         socket.on('unauthorized', ()=>{
             window.location.href = "login.html";
