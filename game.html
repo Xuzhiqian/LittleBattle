@@ -167,14 +167,13 @@ var tank = {
                 for (let i = 0; i < stat.length; i++)
                     if (stat[i]!=undefined)
                         list.innerHTML = list.innerHTML + "<li><span>" + (i + 1) + "</span><span>" + stat[i][0] + "</span><span>" + stat[i][1] + "/" + stat[i][2] + "</span></li>";
+                socket.emit('update_data', stat);
 
             }
             else {
-                list.innerHTML = "<li>An error ocurred due to " + _stat + "’s fucking code.Competition aborted.</li>";
+                list.innerHTML = "<li>An error ocurred due to " + _stat + "’s fucking code. Competition aborted.</li>";
             }
-                $('.gameover').show();
-
-                socket.emit('update_data', stat);
+                $('.gameover').show();   
             };
         </script>
 
