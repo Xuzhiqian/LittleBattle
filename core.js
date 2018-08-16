@@ -156,6 +156,7 @@ Q.core = Q.Evented.extend({
 	},
 
 	add_player: function (pid, code) {
+		if (!this.players[pid]) this.player_count++;
 		let origin = new Q.Player(pid);
 
 		code = "()=>{" + code + "return tank;}";
@@ -165,7 +166,6 @@ Q.core = Q.Evented.extend({
 
 		p = this.players[pid];
 		p.color = Math.floor(Math.random()*11);
-		this.player_count++;
 		this.stat[pid] = {
 			kill : 0,
 			death : 0

@@ -92,21 +92,20 @@
                             <a id="repoBtn" href="#repo" class="button info fit">ADD</a>
                         </ul>
                         <div id="editor">
+var tank = {
+        //每帧开始时无条件触发
+    onEvent : function() {
+        this.fire();
+    },
 
-    var tank = {
-            //每帧开始时无条件触发
-        onEvent : function() {
-            this.fire();
-        },
+    onHitWall : function() {
 
-        onHitWall : function() {
+    },
 
-        },
+    onHitByBullet : function() {
 
-        onHitByBullet : function() {
-
-        }
-    };
+    }
+};
 
                         </div>
                             
