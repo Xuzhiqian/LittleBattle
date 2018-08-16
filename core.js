@@ -38,30 +38,16 @@ var prop_org = {
 	recoil : 0,
 	penetrate : false
 };
-Q.Player = Q.GameObject.extend({
-	init: function(pid) {
-		this.id = pid;
-		this.pos = {
-			x: Math.floor(Math.random() * global_width),
-			y: Math.floor(Math.random() * global_height)
-		};
-		this.health = {cur: 100, max: 100};
-		this.speed = {x: {cur: 0, max: 120, acc: 180}, y: {cur: 0, max: 120, acc: 180}};
-		this.dir = 0;
-		this.color = 0;
-		this.prop = prop_org;
-		this.alpha = 1;
-		this.fireCD = 0;
-		this.size = 15;
 
+Q.Auto_player = Q.Evented.extend({
+	init: (proto)=>{
 		this.opPerFrame = {u:0,d:0,l:0,r:0,f:0,j:0};
+		for (var event in proto)
+			if (proto.hasOwnProperty(event))
+				this[event] = proto[event];
 	},
 
-	isArmed: function() {
-		return (typeof this.weapon === 'string' && this.weapon.length>0);
-	},
-
-	fire: function() {
+	fire: ()=>{
 		this.opPerFrame.f = 1;
 	},
 
@@ -79,7 +65,31 @@ Q.Player = Q.GameObject.extend({
 
 	moveRight: function() {
 		this.opPerFrame.r = 1;
+	}
+});
+
+Q.Player = Q.GameObject.extend({
+	init: function(pid) {
+		this.id = pid;
+		this.pos = {
+			x: Math.floor(Math.random() * global_width),
+			y: Math.floor(Math.random() * global_height)
+		};
+		this.health = {cur: 100, max: 100};
+		this.speed = {x: {cur: 0, max: 120, acc: 180}, y: {cur: 0, max: 120, acc: 180}};
+		this.dir = 0;
+		this.color = 0;
+		this.prop = prop_org;
+		this.alpha = 1;
+		this.fireCD = 0;
+		this.size = 15;
+		this.auto = {};
 	},
+
+	isArmed: function() {
+		return (typeof this.weapon === 'string' && this.weapon.length>0);
+	}
+	
 });
 
 Q.bullet = Q.GameObject.extend({
@@ -111,7 +121,7 @@ Q.bullet = Q.GameObject.extend({
 		let b= {x:(target.x-bullet.pos.x)/d/8,y:(target.y-bullet.pos.y)/d/8};
 		this.dir=v_normal(v_a(b,this.dir));
 		return true;
-	},
+	}
 });
 
 Q.weapon = Q.GameObject.extend({
@@ -156,7 +166,6 @@ Q.core = Q.Evented.extend({
 
 	add_player: function (pid, code) {
 		
-		let origin = new Q.Player(pid);
 		let proto;
 		code = "()=>{" + code + "return tank;}";
 		try {
@@ -168,10 +177,7 @@ Q.core = Q.Evented.extend({
 		}
 
 		if (!this.players[pid]) this.player_count++;
-		this.players[pid] = proto;
-
-		for (var property in origin)
-			this.players[pid][property] = origin[property];	
+		this.players[pid].auto = new Q.Auto_player(proto);
 
 		p = this.players[pid];
 		p.color = Math.floor(Math.random()*11);
@@ -186,6 +192,7 @@ Q.core = Q.Evented.extend({
 	},
 
 	remove_player: function (pid) {
+		delete this.players[pid].auto;
 		delete this.players[pid];
 		this.player_count--;
 		if (this.player_count <= 1)
@@ -295,33 +302,6 @@ Q.core = Q.Evented.extend({
 		if (b.life.cur >= b.life.max) b.destroyable=true;
 	},
 
-	
-	/*
-	process_inputs: function (p, inputs, dt) {
-
-		for (let i = 0; i < inputs.kb.length; i++) {
-			switch (inputs.kb[i]) {
-				case 'w':
-					this.move_u(p, dt);
-					break;
-				case 's':
-					this.move_d(p, dt);
-					break;
-				case 'a':
-					this.move_l(p, dt);
-					break;
-				case 'd':
-					this.move_r(p, dt);
-					break;
-			}
-		}
-		this.update_player_physics(p, dt, (inputs.kb.indexOf('a') < 0 && inputs.kb.indexOf('d') < 0),
-			(inputs.kb.indexOf('w') < 0 && inputs.kb.indexOf('s') < 0), inputs.kb.indexOf('j') < 0);
-		
-		if (inputs.ms!=undefined)
-			p.dir = inputs.ms;
-	},*/
-
 	check_terrain: function(pos) {
 		let bx = Math.floor(pos.x/this.block_width);
 		let by = Math.floor(pos.y/this.block_height);
@@ -339,8 +319,6 @@ Q.core = Q.Evented.extend({
 		};
 	},
 	
-	//随机地形生成器，由主地形和分支地形构成，
-	//主地形生成较大的类陆地形，分支地形生成零散的岛屿地形，最终两者合并。
 	generate_terrain: function() {
 		let w = this.width / this.block_width;
 		let h = this.height / this.block_height;
@@ -457,26 +435,24 @@ Q.core = Q.Evented.extend({
 		for (let id in this.players) 
 			if (this.players[id]!=null) {
 				let p = this.players[id];
-				if (p.onEvent)
-					p.onEvent();
+				let a = p.auto;
+				if (a.onEvent)
+					a.onEvent();
 
-				if (p.opPerFrame.u) this.move_u(p,dt);
-				if (p.opPerFrame.d) this.move_d(p,dt);
-				if (p.opPerFrame.l) this.move_l(p,dt);
-				if (p.opPerFrame.r) this.move_r(p,dt);
+				if (a.opPerFrame.u) this.move_u(p,dt);
+				if (a.opPerFrame.d) this.move_d(p,dt);
+				if (a.opPerFrame.l) this.move_l(p,dt);
+				if (a.opPerFrame.r) this.move_r(p,dt);
 
-				if (p.opPerFrame.f && !p.fireCD) {
+				if (a.opPerFrame.f && !p.fireCD) {
 					this.player_shoot(p.id);
 					p.fireCD = 1;
 					setTimeout( ()=>{p.fireCD = 0}, p.prop.reload*1000);
 				}
 
-				this.update_player_physics(p, dt, (p.opPerFrame.l===0 && p.opPerFrame.r===0), (p.opPerFrame.u===0 && p.opPerFrame.d===0), p.opPerFrame.f===0);
+				this.update_player_physics(p, dt, (a.opPerFrame.l===0 && a.opPerFrame.r===0), (a.opPerFrame.u===0 && a.opPerFrame.d===0), a.opPerFrame.f===0);
 			
-				p.opPerFrame.u = 0;
-				p.opPerFrame.d = 0;
-				p.opPerFrame.l = 0;
-				p.opPerFrame.r = 0;
+				a.opPerFrame = {u:0,d:0,l:0,r:0,f:0,j:0};
 			//TODO
 			/*
 			if (this.players[id].prop.seek===true) {
