@@ -45,16 +45,18 @@ io.on("connection", function (socket) {
 
 	socket.on('sign_up',(user)=>{
 
-		let dup = 0;
+		var dup = 0;
 		let sql_query = "SELECT password FROM main WHERE id='" + user.id + "';";
 		connection.query(sql_query, function(error, results, fields){
 			if (error) throw error;
 			if (results[0]!=undefined && results[0].password!=undefined) {
 				socket.emit('dup');
 				dup = 1;
+				console.log('  %%%%%%%%%%%%%%%%%%% dup = '+dup);
 			}
 		});
 		if (dup === 0) {
+			console.log('wtf?!!!');
 			let sql_insert = "INSERT INTO main (id,password,num_kill,num_death,code) VALUES ('" +
 				  user.id + "','" +
 				  user.password + "'," +
