@@ -65,7 +65,7 @@ Q.Player = Q.GameObject.extend({
 });
 
 Q.Auto_player = Q.GameObject.extend({
-	init: (proto)=>{
+	init: function(proto) {
 		this.opPerFrame = {u:0,d:0,l:0,r:0,f:0,j:0};
 		for (var event in proto)
 			if (proto.hasOwnProperty(event))
@@ -180,7 +180,7 @@ Q.core = Q.Evented.extend({
 
 		if (!this.players[pid]) this.player_count++;
 		this.players[pid] = new Q.Player(pid);
-		this.players[pid].auto = new Q.Player(pid);
+		this.players[pid].auto = new Q.Auto_player(proto);
 
 		p = this.players[pid];
 		p.color = Math.floor(Math.random()*11);
