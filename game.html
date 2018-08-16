@@ -136,7 +136,10 @@ var tank = {
         </script>
 
         <script>
-            var gameover = function(_stat) {
+            var gameover = function(_stat, _is_failed) {
+
+            let list = document.getElementById("listboard");
+            if (_is_failed !== true) {
                 let stat = [];
                 for (var id in _stat)
                     if (_stat[id] && _stat[id].kill>=0)
@@ -158,12 +161,17 @@ var tank = {
                         return 0;
                 });
 
-                let list = document.getElementById("listboard");
+                
                 list.innerHTML = "<li><span>Rank</span><span>ID</span><span>K/D</span></li>";
 
                 for (let i = 0; i < stat.length; i++)
                     if (stat[i]!=undefined)
                         list.innerHTML = list.innerHTML + "<li><span>" + (i + 1) + "</span><span>" + stat[i][0] + "</span><span>" + stat[i][1] + "/" + stat[i][2] + "</span></li>";
+
+            }
+            else {
+                list.innerHTML = "<li>An error ocurred due to " + _stat + "’s fucking code.Competition aborted.</li>";
+            }
                 $('.gameover').show();
 
                 socket.emit('update_data', stat);

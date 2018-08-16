@@ -158,11 +158,14 @@ Q.core = Q.Evented.extend({
 		Q.gameLoop(this.update.bind(this));
 	},
 
-	gameover: function() {
+	gameover: function(fail_id) {
 		this.finished = true;
 		this.running = false;
 		this.clock = 0;
-		this.callback(this.stat);
+		if (fail_id!=undefined)
+			this.callback(fail_id, true);
+		else
+			this.callback(this.stat);
 	},
 
 	add_player: function (pid, code) {
@@ -437,25 +440,31 @@ Q.core = Q.Evented.extend({
 	update_players: function(dt) {
 		for (let id in this.players) 
 			if (this.players[id]!=null) {
-				let p = this.players[id];
-				let a = p.auto;
-				if (a.onEvent)
-					a.onEvent();
+				
+				try {
+					let p = this.players[id];
+					let a = p.auto;
+					if (a.onEvent)
+						a.onEvent();
 
-				if (a.opPerFrame.u) this.move_u(p,dt);
-				if (a.opPerFrame.d) this.move_d(p,dt);
-				if (a.opPerFrame.l) this.move_l(p,dt);
-				if (a.opPerFrame.r) this.move_r(p,dt);
+					if (a.opPerFrame.u) this.move_u(p,dt);
+					if (a.opPerFrame.d) this.move_d(p,dt);
+					if (a.opPerFrame.l) this.move_l(p,dt);
+					if (a.opPerFrame.r) this.move_r(p,dt);
 
-				if (a.opPerFrame.f && p.fireCD <= 0) {
-					this.player_shoot(p.id);
-					p.fireCD = p.prop.reload;
-				}
-				p.fireCD = Math.max(0, p.fireCD - dt);
+					if (a.opPerFrame.f && p.fireCD <= 0) {
+						this.player_shoot(p.id);
+						p.fireCD = p.prop.reload;
+					}
+					p.fireCD = Math.max(0, p.fireCD - dt);
 
-				this.update_player_physics(p, dt, (a.opPerFrame.l===0 && a.opPerFrame.r===0), (a.opPerFrame.u===0 && a.opPerFrame.d===0), a.opPerFrame.f===0);
+					this.update_player_physics(p, dt, (a.opPerFrame.l===0 && a.opPerFrame.r===0), (a.opPerFrame.u===0 && a.opPerFrame.d===0), a.opPerFrame.f===0);
 			
-				a.opPerFrame = {u:0,d:0,l:0,r:0,f:0,j:0};
+					a.opPerFrame = {u:0,d:0,l:0,r:0,f:0,j:0};
+				}
+				catch (err) {
+					this.gameover(id);
+				}
 			//TODO
 			/*
 			if (this.players[id].prop.seek===true) {
