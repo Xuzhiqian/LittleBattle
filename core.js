@@ -449,7 +449,7 @@ Q.core = Q.Evented.extend({
 
 				if (a.opPerFrame.f && p.fireCD <= 0) {
 					this.player_shoot(p.id);
-					p.fireCD = p.prop;
+					p.fireCD = p.prop.reload;
 				}
 				p.fireCD = Math.max(0, p.fireCD - dt);
 
