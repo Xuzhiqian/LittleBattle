@@ -122,7 +122,6 @@
             var socket = io.connect();
             if (!localStorage.curUser || localStorage.curUser === "undefined")
                 window.location.href = "login.html";
-                
 
         var editor = ace.edit("editor");
         editor.setTheme("ace/theme/monokai");
@@ -185,6 +184,9 @@
             if (user.id === localStorage.curUser && user.code.length > 10)
                 editor.setValue(user.code);
             core.add_player(user.id, user.code);
+        });
+        socket.on('unauthorized', ()=>{
+            window.location.href = "login.html";
         });
         
         </script>

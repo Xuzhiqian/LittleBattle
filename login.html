@@ -81,7 +81,6 @@
             </div>
 <script>{
 var socket = io.connect();
-
     let get_user = ()=>{
         var id = String($("#username-text").val());
         var pswd = String($("#password-text").val());
@@ -92,7 +91,6 @@ var socket = io.connect();
 
     socket.on('wrong',()=>{
         alert('Access Denied!');
-        delete window.curUser;
     });
 
     socket.on('accept',(id)=>{
