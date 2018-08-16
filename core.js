@@ -447,11 +447,11 @@ Q.core = Q.Evented.extend({
 				if (a.opPerFrame.l) this.move_l(p,dt);
 				if (a.opPerFrame.r) this.move_r(p,dt);
 
-				if (a.opPerFrame.f && !p.fireCD) {
+				if (a.opPerFrame.f && p.fireCD <= 0) {
 					this.player_shoot(p.id);
-					p.fireCD = 1;
-					setTimeout( ()=>{p.fireCD = 0}, p.prop.reload*1000);
+					p.fireCD = p.prop;
 				}
+				p.fireCD = Math.max(0, p.fireCD - dt);
 
 				this.update_player_physics(p, dt, (a.opPerFrame.l===0 && a.opPerFrame.r===0), (a.opPerFrame.u===0 && a.opPerFrame.d===0), a.opPerFrame.f===0);
 			
