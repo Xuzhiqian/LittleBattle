@@ -72,7 +72,7 @@ Q.Auto_player = Q.GameObject.extend({
 				this[event] = proto[event];
 	},
 
-	fire: ()=>{
+	fire: function() {
 		this.opPerFrame.f = 1;
 	},
 
