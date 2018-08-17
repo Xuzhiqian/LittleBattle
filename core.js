@@ -76,6 +76,7 @@ Q.Auto_player = Q.GameObject.extend({
 
 		this.opPerFrame = newOp();
 		this.opFire = 0;
+		this.opDir = {setting:false,dir:0};
 		for (var event in proto)
 			if (proto.hasOwnProperty(event))
 				this[event] = proto[event];
@@ -99,7 +100,11 @@ Q.Auto_player = Q.GameObject.extend({
 
 	moveRight: function(pri) {
 		this.opPerFrame[pri || 0].r = 1;
-	}
+	},
+
+	setDir: function(dir) {
+		this.opDir.setting = true;
+		this.opDir.dir = dir;
 });
 
 Q.bullet = Q.GameObject.extend({
@@ -462,6 +467,14 @@ Q.core = Q.Evented.extend({
 			if (dir)
 				auto.onHitWall(dir);
 		}
+
+		if (auto.onEnemySpotted) {
+			let enemies = [];
+			for (var id in this.players)
+				if (this.players[id].pos)
+					enemies.push({x:this.players[id].pos.x,y:this.players[id].pos.y});
+			auto.onEnemySpotted(enemies);
+		}
 	},
 
 	execute_ops: function(a, p, dt) {
@@ -478,6 +491,10 @@ Q.core = Q.Evented.extend({
 		if (op.l) this.move_l(p,dt);
 		if (op.r) this.move_r(p,dt);
 
+		if (a.opDir && a.opDir.setting===true) {
+			p.dir = a.opDir.dir;
+			a.opDir.setting = false;
+		}
 		if (a.opFire && p.fireCD <= 0) {
 			this.player_shoot(p.id);
 			p.fireCD = p.prop.reload;

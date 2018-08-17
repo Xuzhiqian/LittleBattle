@@ -104,6 +104,13 @@ var tank = {
         //最多三个方向同时有障碍物，最少一个方向
     onHitWall : function(dir) {
 
+    },
+
+        //每帧开始时触发，参数enemies为数组，每个元素代表一个敌方玩家的位置，
+        //例如：enemies取值为[{x:300,y:200},{x:10,y:10}]时，
+        //表示有两个玩家，一个在(300,200)，另一个在(10,10)。
+    onEnemySpotted : function(enemies) {
+
     }
 
 };
