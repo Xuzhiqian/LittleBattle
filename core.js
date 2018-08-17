@@ -105,6 +105,7 @@ Q.Auto_player = Q.GameObject.extend({
 	setDir: function(dir) {
 		this.opDir.setting = true;
 		this.opDir.dir = dir;
+	}
 });
 
 Q.bullet = Q.GameObject.extend({
