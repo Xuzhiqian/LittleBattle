@@ -293,12 +293,32 @@ var tank = {
 
         socket.on('recv_repo',(results)=>{
             let list = document.getElementById('repo_list');
+
+            for (let i=0; i<results.length; i++)
+                results[i].rate = results[i].num_kill / (results[i].num_death === 0 ? 1 : results[i].num_death);
+            results.sort((a, b)=>{
+                    if (a.rate < b.rate)
+                        return 1;
+                    else if (a.rate > b.rate)
+                        return -1;
+                    else if (a.num_death > b.num_death)
+                        return 1;
+                    else if (a.num_death < b.num_death)
+                        return -1;
+                    else if (a.id > b.id)
+                        return 1;
+                    else if (a.id < b.id)
+                        return -1;
+                    else
+                        return 0;
+                });
+
             for (let i=0; i<results.length; i++)
                 if (results[i]) {
                     list.innerHTML = list.innerHTML + "<li><span>" +
                         results[i].id + "</span><span>" +
                         results[i].num_kill + "/" +
-                        results[i].num_death + "</span><span>RATE</span><span class='join' id='joinBtn_" + i + "' onclick='socket.emit(&apos;fetch_code&apos;,&apos;"  + results[i].id + "&apos;);'>Join</span></li>";
+                        results[i].num_death + "</span><span>" +  results[i].rate.toFixed(1) + "</span><span class='join' id='joinBtn_" + i + "' onclick='socket.emit(&apos;fetch_code&apos;,&apos;"  + results[i].id + "&apos;);'>Join</span></li>";
                 }
         });
 
