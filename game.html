@@ -100,12 +100,14 @@
 2.可以被调用的方法：
     射击：this.fire() 
 
-    向上移动 ：this.moveUp()
-    向下移动 : this.moveDown()
-    向左移动 : this.moveLeft()
-    向右移动 : this.moveRight()
+    向上移动 ：this.moveUp(pri)
+    向下移动 : this.moveDown(pri)
+    向左移动 : this.moveLeft(pri)
+    向右移动 : this.moveRight(pri)
 
     ！需要注意的是，如果想一直保持向右移动，需要在每一帧触发的事件中均调用this.moveRight()
+    ！pri为可选参数，表示优先级，取值0-5，优先级高的移动会优先执行并屏蔽优先级低的移动，
+    ！若不带参数，默认为0。
 
 3.可以获得的属性
     
