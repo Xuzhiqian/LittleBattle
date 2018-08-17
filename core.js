@@ -76,6 +76,7 @@ Q.Auto_player = Q.GameObject.extend({
 
 		this.opPerFrame = newOp();
 		this.opFire = 0;
+		this.msg={msg:'',left_time:0};
 		for (var event in proto)
 			if (proto.hasOwnProperty(event))
 				this[event] = proto[event];
@@ -99,6 +100,10 @@ Q.Auto_player = Q.GameObject.extend({
 
 	moveRight: function(pri) {
 		this.opPerFrame[pri || 0].r = 1;
+	},
+
+	say: function(msg) {
+		this.msg = {msg:msg,left_time:4};
 	}
 });
 
@@ -491,6 +496,12 @@ Q.core = Q.Evented.extend({
 			p.fireCD = p.prop.reload;
 		}
 		p.fireCD = Math.max(0, p.fireCD - dt);
+
+		if (a.msg.left_time > 0) {
+			a.msg.left_time-=dt;
+			if (a.msg.left_time<=0)
+				a.msg = {msg:'',left_time:0};
+		}
 
 		return op;
 	},
