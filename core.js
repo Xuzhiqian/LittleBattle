@@ -170,7 +170,7 @@ Q.core = Q.Evented.extend({
 	gameover: function(fail_id) {
 		this.finished = true;
 		this.running = false;
-		this.clock = 0;
+		this.clock = 120;
 		if (fail_id!=undefined)
 			this.callback(fail_id, true);
 		else
