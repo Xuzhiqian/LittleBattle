@@ -52,8 +52,14 @@
                             <h2>LittleBattle : C Round Financing</h2>
                             <p>2.5亿自主研发</p>
                             <ul class="actions">
-                                <li><a id="playBtn" class="button">Play</a></li>
-                                <li><a class="button">Donate</a></li>
+                                <li><a id="playBtn" class="button"
+                                    onmouseover="this.innerHTML = 'Donate';
+                                                document.getElementById('donateBtn').innerHTML = 'Play'"
+                                    onmouseleave="this.innerHTML = 'Play'
+                                                document.getElementById('donateBtn').innerHTML = 'Donate'"
+                                    >Play</a></li>
+
+                                <li><a id="donateBtn" class="button">Donate</a></li>
                             </ul>
                         </div>
                         <a href="#one" class="more scrolly">Learn More</a>
@@ -91,22 +97,22 @@
                                     <h3>函数接口</h3>
                                     <p>我们提供了一系列函数，你可以且仅能通过调用它们实现移动和射击，或者满足其他需求。对玩家来说，这些函数是不可再编程的原子操作。</p>
                                 </li>
-                                <li class="icon fa-code">
+                                <li class="icon fa-gamepad">
                                     <h3>胜负判定</h3>
                                     <p>一局游戏至少有两名玩家设计的坦克参与对战，当战场只剩下一人存活，或是超过时间限制后，将会自动结束游戏。单局游戏的排名会由玩家的击杀/死亡数来决定。</p>
                                 </li>
-                                <li class="icon fa-headphones">
-                                    <h3>Mauris Imperdiet</h3>
-                                    <p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula consequat consequat.</p>
+                                <li class="icon fa-cloud-upload">
+                                    <h3>代码托管</h3>
+                                    <p>玩家的代码会自动上传至服务器，无需手动保存。你也可以通过购买查阅他人的代码。</p>
                                 </li>
-                                <li class="icon fa-heart-o">
-                                    <h3>Aenean Primis</h3>
-                                    <p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula consequat consequat.</p>
+                                <li class="icon fa-file-code-o">
+                                    <h3>文档</h3>
+                                    <p>如果设计过程中遇到困难，可以随时查看API文档。</p>
+                                </li><li class="icon fa-group">
+                                    <h3>积分与排名</h3>
+                                    <p>玩家最对战中击杀其他玩家、赢得胜利会增加自身积分，在库中你可以看到每位玩家的历史总击杀/死亡和积分，并且有相应的排名。当然，你总是可以挑选较弱的对手比赛，但是积分并不会显著增加。</p>
                                 </li>
-                                <li class="icon fa-flag-o">
-                                    <h3>Tortor Ut</h3>
-                                    <p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula consequat consequat.</p>
-                                </li>
+                                
                             </ul>
                         </div>
                     </section>

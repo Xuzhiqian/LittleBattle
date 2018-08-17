@@ -218,6 +218,29 @@ Q.core = Q.Evented.extend({
 		p.speed.x.cur = Math.min(p.speed.x.cur + dt * p.speed.x.acc, p.speed.x.max);
 	},
 	
+	check_hit_terrain: function(p) {
+		let check = [[0,-1],[0,1],[-1,0],[1,0]];
+		let dir = [0,0,0,0];
+
+		for (let i=0;i<3;i++) {
+			block_x = Math.floor((p.pos.x+check[i][0]*p.size) / this.block_width);
+			block_y = Math.floor((p.pos.y+check[i][1]*p.size) / this.block_height);
+			if (this.terrain[block_x]!=undefined)
+			if (this.terrain[block_x][block_y]!=undefined)
+			if (this.terrain[block_x][block_y]==1)
+				dir[i]=1;
+		}
+		if (p.pos.x - p.size< 0) dir[2]=1;
+		if (p.pos.y - p.size< 0) dir[0]=1;
+		if (p.pos.x + p.size> this.width) dir[3]=1;
+		if (p.pos.y + p.size> this.height) dir[1]=1;
+
+		if (dir[0]+dir[1]+dir[2]+dir[3] > 0)
+			return {u:dir[0],d:dir[1],l:dir[2],r:dir[3]};
+		else
+			return null;
+	},
+
 	update_player_physics: function (p, dt, is_no_x, is_no_y, is_no_j) {
 		
 		//后坐力
@@ -263,10 +286,10 @@ Q.core = Q.Evented.extend({
 		p.pos.y = p.pos.y + p.speed.y.cur * dt;
 
 		//越界检测
-		if (p.pos.x < 0) p.pos.x = 0;
-		if (p.pos.y < 0) p.pos.y = 0;
-		if (p.pos.x > this.width) p.pos.x = this.width;
-		if (p.pos.y > this.height) p.pos.y = this.height;
+		if (p.pos.x - p.size< 0) p.pos.x = p.size;
+		if (p.pos.y - p.size< 0) p.pos.y = p.size;
+		if (p.pos.x + p.size> this.width) p.pos.x = this.width - p.size;
+		if (p.pos.y + p.size> this.height) p.pos.y = this.height - p.size;
 	},
 	
 	update_bullet_physics:function (b,dt) {
@@ -437,10 +460,15 @@ Q.core = Q.Evented.extend({
 		this.renderer.render(this.players,this.bullets,this.weapons,this.clock,dt);
 	},
 	
-	trigger_events: function(auto) {
+	trigger_events: function(p, auto) {
 		if (auto.onEvent)
 			auto.onEvent();
 
+		if (auto.onHitWall) {
+			let dir = this.check_hit_terrain(p);
+			if (dir)
+				auto.onHitWall(dir);
+		}
 	},
 
 	execute_ops: function(a, p, dt) {
@@ -463,7 +491,7 @@ Q.core = Q.Evented.extend({
 				let a = p.auto;
 
 				try {
-					this.trigger_pre_events(a);	
+					this.trigger_pre_events(p, a);	
 				}
 				catch (err) {
 					this.gameover(id);

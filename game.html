@@ -98,13 +98,14 @@ var tank = {
         this.fire();
     },
 
-    onHitWall : function() {
-
-    },
-
-    onHitByBullet : function() {
+        //遇到障碍物时触发，参数dir表示哪一侧有障碍物的方向，
+        //例如：dir.u === 1时，代表上方有障碍物，dir.u === 0时即没有
+        //dir.d、dir.l、dir.r依次表示下方、左方、右方，
+        //最多三个方向同时有障碍物，最少一个方向
+    onHitWall : function(dir) {
 
     }
+
 };
 
                         </div>       
