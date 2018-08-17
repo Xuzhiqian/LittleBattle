@@ -90,6 +90,15 @@ io.on("connection", function (socket) {
 		});
 	});
 
+	socket.on('fetch_all_code', ()=>{
+		let sql = "SELECT id, code FROM main;";
+
+		connection.query(sql, function(error, results, fields){
+			if (error) throw error;
+			socket.emit('recv_all_code',results);
+		});
+	});
+
 	socket.on('fetch_init_code', (id)=>{
 		let sql = "SELECT code FROM main WHERE id = '" + id + "';";
 

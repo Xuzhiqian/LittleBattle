@@ -177,7 +177,7 @@ Q.core = Q.Evented.extend({
 			this.callback(this.stat);
 	},
 
-	add_player: function (pid, code) {
+	add_player: function (pid, code, silent) {
 		
 		let proto;
 		let auto;
@@ -186,7 +186,8 @@ Q.core = Q.Evented.extend({
 			proto = eval(code)();
 		}
 		catch(err) {
-			alert('WTTTF? What a shitty code!');
+			if (!silent)
+				alert('WTTTF? What a shitty code!');
 			return;
 		}
 
@@ -378,7 +379,6 @@ Q.core = Q.Evented.extend({
 
     	//地形参数
     	let main={p:0.465 , w:2, s:13 , d:25};
-    	let isle={p:0.397 , w:1, s:5  , d:20};
 
 		//地形随机化
 		this.main_terrain=[];
@@ -393,17 +393,7 @@ Q.core = Q.Evented.extend({
       	}
 
     	//主地形迭代
-    	this.main_terrain = evol(this.main_terrain,main);
-
-		//分支地形迭代
-		this.isle_terrain = evol(this.isle_terrain,isle);
-
-		//地形融合
-		for (let i=-1;i<=w+1;i++) {
-			this.terrain[i]=[];
-			for (let j=-1;j<=h+1;j++)
-				this.terrain[i][j]=this.main_terrain[i][j] || this.isle_terrain[i][j];
-		}
+    	this.terrain = evol(this.main_terrain,main);
 	},
 
 	generate_weapon: function(_pos,_id,_ammo) {
@@ -481,7 +471,7 @@ Q.core = Q.Evented.extend({
 						health : q.health.cur
 					});
 			}
-			auto.onEnemySpotted(enemies);
+			auto.onEnemySpotted(enemies.sort(()=>{return 0.5-Math.random()}));
 		}
 	},
 

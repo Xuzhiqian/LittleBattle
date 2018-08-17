@@ -297,7 +297,7 @@ var tank = {
                 return;
             }
             let list = document.getElementById('repo_list');
-            list.innerHTML = "<li><span>ID</span><span>K/D</span><span>RATE</span></li>";
+            list.innerHTML = "<li><span>ID</span><span>K/D</span><span>RATE</span><span class='join' onclick='socket.emit(&apos;fetch_all_code&apos;)'>All</span></li>";
             if (localStorage.curUser) {
                 socket.emit('get_repo');
             }
@@ -324,7 +324,6 @@ var tank = {
                     else
                         return 0;
                 });
-
             for (let i=0; i<results.length; i++)
                 if (results[i]) {
                     list.innerHTML = list.innerHTML + "<li><span>" +
@@ -336,6 +335,10 @@ var tank = {
 
         socket.on('recv_code', (user)=>{
             core.add_player(user.id, user.code);
+        });
+        socket.on('recv_all_code', (results)=>{
+            for (let i=0;i<results.length;i++)
+                core.add_player(results[i].id, results[i].code, true);
         });
     </script>
     <script>
