@@ -443,7 +443,6 @@ Q.core = Q.Evented.extend({
 				return;
 			}
 		}
-		console.log(dt);
 		this.renderer.render(this.players,this.bullets,this.weapons,this.clock,dt);
 	},
 	
@@ -513,6 +512,7 @@ Q.core = Q.Evented.extend({
 		a.y = p.pos.y;
 		a.health = p.health.cur;
 		a.dir = p.dir;
+		a.dt = dt;
 		a.speed = {x:p.speed.x.cur, y:p.speed.y.cur};
 	},
 
