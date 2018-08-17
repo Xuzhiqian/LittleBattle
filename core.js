@@ -491,7 +491,7 @@ Q.core = Q.Evented.extend({
 				let a = p.auto;
 
 				try {
-					this.trigger_pre_events(p, a);	
+					this.trigger_events(p, a);	
 				}
 				catch (err) {
 					this.gameover(id);
