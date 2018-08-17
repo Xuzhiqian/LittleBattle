@@ -55,6 +55,7 @@ Q.Player = Q.GameObject.extend({
 		};
 		this.health = {cur: 100, max: 100};
 		this.speed = {x: {cur: 0, max: 120, acc: 180}, y: {cur: 0, max: 120, acc: 180}};
+		this.hit = [0,0,0,0];
 		this.dir = 0;
 		this.color = 0;
 		this.prop = prop_org;
@@ -152,7 +153,6 @@ Q.core = Q.Evented.extend({
 		this.player_count = 0;
 		this.clock = 10;
 		this.stat = [];
-		this.hit = [];
 		this.players = [];
 		this.bullets = [];
 		this.weapons = [];
