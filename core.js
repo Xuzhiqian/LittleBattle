@@ -103,7 +103,7 @@ Q.Auto_player = Q.GameObject.extend({
 	},
 
 	say: function(msg) {
-		this.msg = {msg:msg,left_time:4};
+		this.msg = {msg:msg.toString(),left_time:4};
 	}
 });
 
