@@ -145,7 +145,7 @@ Q.renderer = Q.GameObject.extend({
 
 			//绘制id
 		ctx.fillStyle = 'white';
-		ctx.fillText(player.id, -r + 3, -r - 6);
+		ctx.fillText(player.id + "("+player.pos.x.toFixed(1)+","+player.pos.y.toFixed(1)+")", -r + 3, -r - 6);
 
 			//绘制血槽
 		ctx.strokeStyle = 'white';

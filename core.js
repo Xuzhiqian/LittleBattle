@@ -262,7 +262,7 @@ Q.core = Q.Evented.extend({
 		//地形碰撞检测
 		p.hit = [0,0,0,0];
 		check=[[p.speed.x.cur>=0?1:-1,0],[0,p.speed.y.cur>=0?1:-1]];
-		speed = p.speed.x.cur*p.speed.x.cur+p.speed.y.cur*p.speed.y.cur;
+		speed = Math.sqrt(p.speed.x.cur*p.speed.x.cur+p.speed.y.cur*p.speed.y.cur);
 		if (Math.abs(speed)<0.0000001) {
 			check.push([-1,0]);
 			check.push([0,-1]);
