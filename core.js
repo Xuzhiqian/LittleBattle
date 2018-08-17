@@ -511,7 +511,7 @@ Q.core = Q.Evented.extend({
 		a.y = p.pos.y;
 		a.health = p.health.cur;
 		a.dt = dt;
-		console.log('a.dt='a.dt);
+		console.log('a.dt=',a.dt);
 		a.dir = p.dir;
 		a.speed = {x:p.speed.x.cur, y:p.speed.y.cur};
 	},
