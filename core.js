@@ -477,7 +477,8 @@ Q.core = Q.Evented.extend({
 						speed : {
 							x : q.speed.x.cur,
 							y : q.speed.y.cur
-						}
+						},
+						health : q.health.cur
 					});
 			}
 			auto.onEnemySpotted(enemies);
