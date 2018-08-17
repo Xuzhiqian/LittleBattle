@@ -76,7 +76,6 @@ Q.Auto_player = Q.GameObject.extend({
 
 		this.opPerFrame = newOp();
 		this.opFire = 0;
-		this.opDir = {setting:false,dir:0};
 		for (var event in proto)
 			if (proto.hasOwnProperty(event))
 				this[event] = proto[event];
@@ -100,11 +99,6 @@ Q.Auto_player = Q.GameObject.extend({
 
 	moveRight: function(pri) {
 		this.opPerFrame[pri || 0].r = 1;
-	},
-
-	setDir: function(dir) {
-		this.opDir.setting = true;
-		this.opDir.dir = dir;
 	}
 });
 
@@ -471,9 +465,21 @@ Q.core = Q.Evented.extend({
 
 		if (auto.onEnemySpotted) {
 			let enemies = [];
-			for (var id in this.players)
-				if (this.players[id].pos)
-					enemies.push({x:this.players[id].pos.x,y:this.players[id].pos.y});
+			for (var id in this.players) {
+				let q = this.players[id];
+
+				if (id !== p.id && q.pos && q.speed)
+					enemies.push({
+						pos : {
+							x : q.pos.x,
+							y : q.pos.y
+						},
+						speed : {
+							x : q.speed.x.cur,
+							y : q.speed.y.cur
+						}
+					});
+			}
 			auto.onEnemySpotted(enemies);
 		}
 	},
@@ -492,10 +498,6 @@ Q.core = Q.Evented.extend({
 		if (op.l) this.move_l(p,dt);
 		if (op.r) this.move_r(p,dt);
 
-		if (a.opDir && a.opDir.setting===true) {
-			p.dir = a.opDir.dir;
-			a.opDir.setting = false;
-		}
 		if (a.opFire && p.fireCD <= 0) {
 			this.player_shoot(p.id);
 			p.fireCD = p.prop.reload;
@@ -505,18 +507,31 @@ Q.core = Q.Evented.extend({
 		return op;
 	},
 
+	copy_context: function(p, a) {
+		a.x = p.pos.x;
+		a.y = p.pos.y;
+		a.dir = p.dir;
+		a.speed = {x:p.speed.x.cur, y:p.speed.y.cur};
+	},
+
+	replace_context: function(p, a) {
+		p.dir = a.dir;
+	},
+
 	update_players: function(dt) {
 		for (let id in this.players) 
 			if (this.players[id]!=null) {
 				let p = this.players[id];
 				let a = p.auto;
 
+				this.copy_context(p, a);
 				try {
 					this.trigger_events(p, a);	
 				}
 				catch (err) {
 					this.gameover(id);
 				}
+				this.replace_context(p, a);
 
 				let op = this.execute_ops(a, p, dt);
 				this.update_player_physics(p, dt, (op.l===0 && op.r===0), (op.u===0 && op.d===0), a.opFire===0);
