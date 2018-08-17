@@ -378,7 +378,7 @@ Q.core = Q.Evented.extend({
     	};
 
     	//地形参数
-    	let main={p:0.465 , w:2, s:13 , d:25};
+    	let main={p:0.471 , w:2, s:13 , d:25};
 
 		//地形随机化
 		this._terrain=[];
