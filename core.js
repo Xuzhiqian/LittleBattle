@@ -443,6 +443,7 @@ Q.core = Q.Evented.extend({
 				return;
 			}
 		}
+		console.log(dt);
 		this.renderer.render(this.players,this.bullets,this.weapons,this.clock,dt);
 	},
 	
