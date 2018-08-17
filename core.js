@@ -230,10 +230,10 @@ Q.core = Q.Evented.extend({
 			if (this.terrain[block_x][block_y]==1)
 				dir[i]=1;
 		}
-		if (p.pos.x - p.size< 0) dir[2]=1;
-		if (p.pos.y - p.size< 0) dir[0]=1;
-		if (p.pos.x + p.size> this.width) dir[3]=1;
-		if (p.pos.y + p.size> this.height) dir[1]=1;
+		if (p.pos.x - p.size<= 0) dir[2]=1;
+		if (p.pos.y - p.size<= 0) dir[0]=1;
+		if (p.pos.x + p.size>= this.width) dir[3]=1;
+		if (p.pos.y + p.size>= this.height) dir[1]=1;
 
 		if (dir[0]+dir[1]+dir[2]+dir[3] > 0)
 			return {u:dir[0],d:dir[1],l:dir[2],r:dir[3]};
