@@ -511,6 +511,7 @@ Q.core = Q.Evented.extend({
 		a.y = p.pos.y;
 		a.health = p.health.cur;
 		a.dt = dt;
+		console.log('a.dt='a.dt);
 		a.dir = p.dir;
 		a.speed = {x:p.speed.x.cur, y:p.speed.y.cur};
 	},
@@ -526,6 +527,7 @@ Q.core = Q.Evented.extend({
 				let p = this.players[id];
 				let a = p.auto;
 
+				console.log('dt=',dt);
 				this.copy_context(p, a, dt);
 				try {
 					this.trigger_events(p, a);	
