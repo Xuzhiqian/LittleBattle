@@ -261,11 +261,16 @@ Q.core = Q.Evented.extend({
 
 		//地形碰撞检测
 		p.hit = [0,0,0,0];
-		check=[[p.speed.x.cur>0?1:-1,0],[0,p.speed.y.cur>0?1:-1]];
+		check=[[p.speed.x.cur>=0?1:-1,0],[0,p.speed.y.cur>=0?1:-1]];
 		speed = p.speed.x.cur*p.speed.x.cur+p.speed.y.cur*p.speed.y.cur;
-		check.push([p.speed.x.cur/speed,p.speed.y.cur/speed]);
+		if (Math.abs(speed)<0.0000001) {
+			check.push([-1,0]);
+			check.push([0,-1]);
+		}
+		else
+			check.push([p.speed.x.cur/speed,p.speed.y.cur/speed]);
 
-		for (let i=0;i<3;i++) {
+		for (let i=0;i<4;i++) if (check[i]) {
 			block_x = Math.floor((p.pos.x+check[i][0]*p.size) / this.block_width);
 			block_y = Math.floor((p.pos.y+check[i][1]*p.size) / this.block_height);
 			if (this.terrain[block_x]!=undefined)
