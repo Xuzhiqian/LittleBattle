@@ -515,7 +515,8 @@ Q.core = Q.Evented.extend({
 	},
 
 	replace_context: function(p, a) {
-		p.dir = a.dir;
+		if (a.dir)
+			p.dir = a.dir;
 	},
 
 	update_players: function(dt) {
