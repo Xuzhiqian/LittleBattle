@@ -515,7 +515,7 @@ Q.core = Q.Evented.extend({
 					this.gameover(id);
 				}
 
-				let op = his.execute_ops(a, p, dt);
+				let op = this.execute_ops(a, p, dt);
 				this.update_player_physics(p, dt, (op.l===0 && op.r===0), (op.u===0 && op.d===0), a.opFire===0);
 				a.opPerFrame = newOp();
 			//TODO
