@@ -26,6 +26,7 @@ var v_a=function (a, b) {
 	};
 
 
+
 var player_size = 15;
 var bullet_size = 5;
 var prop_org = {
@@ -38,7 +39,12 @@ var prop_org = {
 	recoil : 0,
 	penetrate : false
 };
-
+var newOp = function() {
+	let op = [];
+	for (let i=0;i<=5;i++)
+		op.push({u:0,d:0,l:0,r:0});
+	return op;
+}
 
 Q.Player = Q.GameObject.extend({
 	init: function(pid) {
@@ -66,30 +72,32 @@ Q.Player = Q.GameObject.extend({
 
 Q.Auto_player = Q.GameObject.extend({
 	init: function(proto) {
-		this.opPerFrame = {u:0,d:0,l:0,r:0,f:0,j:0};
+
+		this.opPerFrame = newOp();
+		this.opFire = 0;
 		for (var event in proto)
 			if (proto.hasOwnProperty(event))
 				this[event] = proto[event];
 	},
 
 	fire: function() {
-		this.opPerFrame.f = 1;
+		this.opFire = 1;
 	},
 
-	moveUp: function() {
-		this.opPerFrame.u = 1;
+	moveUp: function(pri) {
+		this.opPerFrame[pri || 0].u = 1;
 	},
 
-	moveDown: function() {
-		this.opPerFrame.d = 1;
+	moveDown: function(pri) {
+		this.opPerFrame[pri || 0].d = 1;
 	},
 
-	moveLeft: function() {
-		this.opPerFrame.l = 1;
+	moveLeft: function(pri) {
+		this.opPerFrame[pri || 0].l = 1;
 	},
 
-	moveRight: function() {
-		this.opPerFrame.r = 1;
+	moveRight: function(pri) {
+		this.opPerFrame[pri || 0].r = 1;
 	}
 });
 
@@ -472,16 +480,26 @@ Q.core = Q.Evented.extend({
 	},
 
 	execute_ops: function(a, p, dt) {
-		if (a.opPerFrame.u) this.move_u(p,dt);
-		if (a.opPerFrame.d) this.move_d(p,dt);
-		if (a.opPerFrame.l) this.move_l(p,dt);
-		if (a.opPerFrame.r) this.move_r(p,dt);
+		let op = {u:0,l:0,d:0,r:0};
+		for (let i=5;i>=0;i--) {
+			let _op = a.opPerFrame[i];
+			if (_op.u + _op.d + _op.l + _op.r > 0) {
+				op = _op;
+				break;
+			}
+		}
+		if (op.u) this.move_u(p,dt);
+		if (op.d) this.move_d(p,dt);
+		if (op.l) this.move_l(p,dt);
+		if (op.r) this.move_r(p,dt);
 
-		if (a.opPerFrame.f && p.fireCD <= 0) {
+		if (a.opFire && p.fireCD <= 0) {
 			this.player_shoot(p.id);
 			p.fireCD = p.prop.reload;
 		}
 		p.fireCD = Math.max(0, p.fireCD - dt);
+
+		return op;
 	},
 
 	update_players: function(dt) {
@@ -497,9 +515,9 @@ Q.core = Q.Evented.extend({
 					this.gameover(id);
 				}
 
-				this.execute_ops(a, p, dt);
-				this.update_player_physics(p, dt, (a.opPerFrame.l===0 && a.opPerFrame.r===0), (a.opPerFrame.u===0 && a.opPerFrame.d===0), a.opPerFrame.f===0);
-				a.opPerFrame = {u:0,d:0,l:0,r:0,f:0,j:0};
+				let op = his.execute_ops(a, p, dt);
+				this.update_player_physics(p, dt, (op.l===0 && op.r===0), (op.u===0 && op.d===0), a.opFire===0);
+				a.opPerFrame = newOp();
 			//TODO
 			/*
 			if (this.players[id].prop.seek===true) {
