@@ -498,6 +498,7 @@ Q.core = Q.Evented.extend({
 	copy_context: function(p, a) {
 		a.x = p.pos.x;
 		a.y = p.pos.y;
+		a.health = p.health.cur;
 		a.dir = p.dir;
 		a.speed = {x:p.speed.x.cur, y:p.speed.y.cur};
 	},
