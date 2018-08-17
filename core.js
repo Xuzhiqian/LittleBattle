@@ -381,19 +381,16 @@ Q.core = Q.Evented.extend({
     	let main={p:0.465 , w:2, s:13 , d:25};
 
 		//地形随机化
-		this.main_terrain=[];
-		this.isle_terrain=[];
+		this._terrain=[];
   		for (let i=-3;i<=w+3;i++) {
-    		this.main_terrain[i]=[];
-    		this.isle_terrain[i]=[];
+    		this._terrain[i]=[];
     		for (let j=-3;j<=h+3;j++) {
-      			this.main_terrain[i][j]=Math.random()<main.p?1:0;
-      			this.isle_terrain[i][j]=Math.random()<isle.p?1:0;
+      			this._terrain[i][j]=Math.random()<main.p?1:0;
     		}
       	}
 
     	//主地形迭代
-    	this.terrain = evol(this.main_terrain,main);
+    	this.terrain = evol(this._terrain,main);
 	},
 
 	generate_weapon: function(_pos,_id,_ammo) {
