@@ -530,6 +530,7 @@ Q.core = Q.Evented.extend({
 				}
 				catch (err) {
 					this.gameover(id);
+					return;
 				}
 				this.replace_context(p, a);
 
