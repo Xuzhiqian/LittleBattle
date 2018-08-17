@@ -292,10 +292,10 @@ Q.core = Q.Evented.extend({
 		p.pos.y = p.pos.y + p.speed.y.cur * dt;
 
 		//越界检测
-		if (p.pos.x - p.size< 0) {p.pos.x = p.size; p.hit[2]=1;}
-		if (p.pos.y - p.size< 0) {p.pos.y = p.size; p.hit[0]=1;}
-		if (p.pos.x + p.size> this.width) {p.pos.x = this.width - p.size; p.hit[3]=1;}
-		if (p.pos.y + p.size> this.height) {p.pos.y = this.height - p.size; p.hit[1]=1;}
+		if (p.pos.x - p.size<= 0) {p.pos.x = p.size; p.hit[2]=1;}
+		if (p.pos.y - p.size<= 0) {p.pos.y = p.size; p.hit[0]=1;}
+		if (p.pos.x + p.size>= this.width) {p.pos.x = this.width - p.size; p.hit[3]=1;}
+		if (p.pos.y + p.size>= this.height) {p.pos.y = this.height - p.size; p.hit[1]=1;}
 	},
 	
 	update_bullet_physics:function (b,dt) {
