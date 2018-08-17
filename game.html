@@ -127,7 +127,19 @@
 
     ！this.dir既可以直接获得也可以修改，即可以通过修改该属性直接设置游戏中炮口的方向
 
-5.编程时注意
+5.游戏参数
+    帧率：60fps
+    地图大小：600px * 600px（一下距离单为均为px，时间单位为秒）
+    
+    坦克半径：15
+    坦克最高速度（单个轴）：120
+    坦克加速度（move类函数本质就是加速）：180
+    阻力造成的加速度：-180
+
+    子弹半径：5
+    子弹速度：240
+
+6.编程时注意
 
     语法需要遵循JavaScript规范，若出现语法错误，会导致比赛无法进行。
     你可以自定义一些变量辅助计算，甚至定义一些函数，
@@ -318,7 +330,7 @@ var tank = {
                     list.innerHTML = list.innerHTML + "<li><span>" +
                         results[i].id + "</span><span>" +
                         results[i].num_kill + "/" +
-                        results[i].num_death + "</span><span>" +  results[i].rate.toFixed(1) + "</span><span class='join' id='joinBtn_" + i + "' onclick='socket.emit(&apos;fetch_code&apos;,&apos;"  + results[i].id + "&apos;);'>Join</span></li>";
+                        results[i].num_death + "</span><span>" +  results[i].rate.toFixed(3) + "</span><span class='join' id='joinBtn_" + i + "' onclick='socket.emit(&apos;fetch_code&apos;,&apos;"  + results[i].id + "&apos;);'>Join</span></li>";
                 }
         });
 
