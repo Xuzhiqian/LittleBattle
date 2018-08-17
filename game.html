@@ -92,18 +92,88 @@
                             <a id="repoBtn" href="#repo" class="button info fit">ADD</a>
                         </ul>
                         <div id="editor">
+/* ----以下为注释，删去不影响代码-------
+1.流程：
+
+    游戏某一帧开始-->检测事件是否触发-->触发事件，执行玩家代码-->引擎计算速度和位置，发射子弹-->该帧结束
+
+2.可以被调用的方法：
+    射击：this.fire() 
+
+    向上移动 ：this.moveUp()
+    向下移动 : this.moveDown()
+    向左移动 : this.moveLeft()
+    向右移动 : this.moveRight()
+
+    ！需要注意的是，如果想一直保持向右移动，需要在每一帧触发的事件中均调用this.moveRight()
+
+3.可以获得的属性
+    
+    当前帧所处的x坐标：this.x
+    当前帧所处的y坐标：this.y
+    当前炮口方向（以弧度为单位，x轴为0度)：this.dir
+    当前速度x分量：this.speed.x
+    当前速度y分量：this.speed.y
+
+    ！注意，可以获得表示可以参与计算，如果尝试修改它的值，将不会对游戏产生任何影响
+    ！游戏的x轴为正常的从左至右
+    ！游戏的y轴为从上至下
+
+4.可以直接修改的属性
+
+    当前炮口方向：this.dir
+
+    ！this.dir既可以直接获得也可以修改，即可以通过修改该属性直接设置游戏中炮口的方向
+
+5.编程时注意
+
+    语法需要遵循JavaScript规范，若出现语法错误，会导致比赛无法进行。
+    你可以自定义一些变量辅助计算，甚至定义一些函数，
+    但请保证代码开始时的语句"var tank = {"和最后的大括号不变，否则无法被加入比赛。
+
+    JavaScript中的数字没有整数和小数之分，且变量声明无需类型，如声明一个变量a并让其初始值为3：
+    
+        var a = 3;
+
+    再执行下列代码：
+
+        a = 0.2;
+        a = a*a;
+        var b= a;
+
+    结果为a = 0.04, b = 0.04。
+
+
+-------注释结束--------------------*/
 var tank = {
+
         //每帧开始时无条件触发
     onEvent : function() {
-        this.fire();
+        
+        /*示例代码1：
+            this.fire();
+            表示每帧均射击
+        */
+
+        /*示例代码2：
+            this.moveRight();
+            this.moveUp();
+            表示一直向右上方移动
+        */
     },
 
         //遇到障碍物时触发，参数dir表示哪一侧有障碍物的方向，
-        //例如：dir.u === 1时，代表上方有障碍物，dir.u === 0时即没有
+        //例如：dir.u === 1时，代表上方有障碍物，dir.u === 0时即没有障碍物
         //dir.d、dir.l、dir.r依次表示下方、左方、右方，
         //最多三个方向同时有障碍物，最少一个方向
     onHitWall : function(dir) {
 
+        /*示例代码：
+            if (dir.u === 1)
+                this.moveRight();
+
+            表示若上方有障碍物，则向右移动
+        */
     },
 
         //每帧开始时触发，参数enemies为数组，每个元素代表一个敌方玩家的位置和速度，
@@ -124,47 +194,6 @@ var tank = {
                     <canvas id="map"></canvas>
                 </div>
             </div>
-
-        <section class="wrapper style5">
-                            <div class="inner">
-
-                                <section>
-                                    <h4>Text</h4>
-                                    <p>This is <b>bold</b> and this is <strong>strong</strong>. This is <i>italic</i> and this is <em>emphasized</em>.
-                                    This is <sup>superscript</sup> text and this is <sub>subscript</sub> text.
-                                    This is <u>underlined</u> and this is code: <code>for (;;) { ... }</code>. Finally, <a href="#">this is a link</a>.</p>
-                                    <hr />
-                                    <header>
-                                        <h4>Heading with a Subtitle</h4>
-                                        <p>Lorem ipsum dolor sit amet nullam id egestas urna aliquam</p>
-                                    </header>
-                                    <p>Nunc lacinia ante nunc ac lobortis. Interdum adipiscing gravida odio porttitor sem non mi integer non faucibus ornare mi ut ante amet placerat aliquet. Volutpat eu sed ante lacinia sapien lorem accumsan varius montes viverra nibh in adipiscing blandit tempus accumsan.</p>
-                                    <header>
-                                        <h5>Heading with a Subtitle</h5>
-                                        <p>Lorem ipsum dolor sit amet nullam id egestas urna aliquam</p>
-                                    </header>
-                                    <p>Nunc lacinia ante nunc ac lobortis. Interdum adipiscing gravida odio porttitor sem non mi integer non faucibus ornare mi ut ante amet placerat aliquet. Volutpat eu sed ante lacinia sapien lorem accumsan varius montes viverra nibh in adipiscing blandit tempus accumsan.</p>
-                                    <hr />
-                                    <h2>Heading Level 2</h2>
-                                    <h3>Heading Level 3</h3>
-                                    <h4>Heading Level 4</h4>
-                                    <h5>Heading Level 5</h5>
-                                    <h6>Heading Level 6</h6>
-                                    <hr />
-                                    <h5>Blockquote</h5>
-                                    <blockquote>Fringilla nisl. Donec accumsan interdum nisi, quis tincidunt felis sagittis eget tempus euismod. Vestibulum ante ipsum primis in faucibus vestibulum. Blandit adipiscing eu felis iaculis volutpat ac adipiscing accumsan faucibus. Vestibulum ante ipsum primis in faucibus lorem ipsum dolor sit amet nullam adipiscing eu felis.</blockquote>
-                                    <h5>Preformatted</h5>
-                                    <pre><code>i = 0;
-
-while (!deck.isInOrder()) {
-  print 'Iteration ' + i;
-  deck.shuffle();
-  i++;
-}
-
-print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
-                                </section>
-
              
 
         <script>
