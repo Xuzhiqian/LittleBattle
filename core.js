@@ -169,6 +169,7 @@ Q.core = Q.Evented.extend({
 		this.competing = false;
 		this.finished = false;
 		this.callback = callback;
+		Q.pauseGame();
 		Q.gameLoop(this.update.bind(this));
 	},
 
@@ -432,7 +433,6 @@ Q.core = Q.Evented.extend({
 	},
 
 	update: function (dt) {
-		console.log(dt);
 		if (this.running) {
 			this.update_weapons();
 			this.update_players(dt);
