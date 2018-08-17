@@ -151,7 +151,7 @@ Q.core = Q.Evented.extend({
 		this.block_width = block_size.width;
 		this.block_height = block_size.height;
 		this.player_count = 0;
-		this.clock = 120;
+		this.clock = 60;
 		this.stat = [];
 		this.players = [];
 		this.bullets = [];
@@ -170,7 +170,7 @@ Q.core = Q.Evented.extend({
 	gameover: function(fail_id) {
 		this.finished = true;
 		this.running = false;
-		this.clock = 120;
+		this.clock = 60;
 		if (fail_id!=undefined)
 			this.callback(fail_id, true);
 		else
