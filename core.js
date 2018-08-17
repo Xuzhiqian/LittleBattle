@@ -261,35 +261,17 @@ Q.core = Q.Evented.extend({
 
 		//地形碰撞检测
 		p.hit = [0,0,0,0];
-		check=[[p.speed.x.cur>=0?1:-1,0],[0,p.speed.y.cur>=0?1:-1]];
-		speed = Math.sqrt(p.speed.x.cur*p.speed.x.cur+p.speed.y.cur*p.speed.y.cur);
-		if (Math.abs(speed)<0.0000001) {
-			check.push([-1,0]);
-			check.push([0,-1]);
-		}
-		else
-			check.push([p.speed.x.cur/speed,p.speed.y.cur/speed]);
+		check=[[0,-1],[0,1],[-1,0],[1,0]];
 
-		for (let i=0;i<4;i++) if (check[i]) {
+		for (let i=0;i<4;i++) {
 			block_x = Math.floor((p.pos.x+check[i][0]*p.size) / this.block_width);
 			block_y = Math.floor((p.pos.y+check[i][1]*p.size) / this.block_height);
 			if (this.terrain[block_x]!=undefined)
 			if (this.terrain[block_x][block_y]!=undefined)
 			if (this.terrain[block_x][block_y]==1) {
-				if (Math.abs(check[i][0])>0.01) {
-					if (check[i][0]<0)
-						p.hit[2]=1;
-					else
-						p.hit[3]=1;
-					p.speed.x.cur = 0;
-				}
-				if (Math.abs(check[i][1])>0.01) {
-					if (check[i][1]<0)
-						p.hit[0]=1;
-					else
-						p.hit[1]=1;
-					p.speed.y.cur = 0;
-				}
+				p.hit[i] = 1;
+				if ((i===0 && p.speed.y.cur<0) || (i===1 && p.speed.y.cur>0)) p.speed.y.cur = 0;
+				if ((i===2 && p.speed.x.cur<0) || (i===3 && p.speed.x.cur>0)) p.speed.x.cur = 0;
 			}
 		}
 
@@ -297,10 +279,10 @@ Q.core = Q.Evented.extend({
 		p.pos.y = p.pos.y + p.speed.y.cur * dt;
 
 		//越界检测
-		if (p.pos.x - p.size<= 0) {p.pos.x = p.size; p.hit[2]=1;}
-		if (p.pos.y - p.size<= 0) {p.pos.y = p.size; p.hit[0]=1;}
-		if (p.pos.x + p.size>= this.width) {p.pos.x = this.width - p.size; p.hit[3]=1;}
-		if (p.pos.y + p.size>= this.height) {p.pos.y = this.height - p.size; p.hit[1]=1;}
+		if (p.pos.x - p.size<= 0) {p.speed.cur.x=0; p.pos.x = p.size; p.hit[2]=1;}
+		if (p.pos.y - p.size<= 0) {p.speed.cur.y=0; p.pos.y = p.size; p.hit[0]=1;}
+		if (p.pos.x + p.size>= this.width) {p.speed.cur.x=0; p.pos.x = this.width - p.size; p.hit[3]=1;}
+		if (p.pos.y + p.size>= this.height) {p.speed.cur.y=0; p.pos.y = this.height - p.size; p.hit[1]=1;}
 	},
 	
 	update_bullet_physics:function (b,dt) {
