@@ -700,7 +700,7 @@ Q.weapon_data['Micro_Uzi']={
 			bias : 0.05,
 			life : 7,
 			damage : 4,
-			recoil : 1,
+			recoil : 0.3,
 			size : 2,
 			penetrate : false,
 			bounce : false
@@ -711,10 +711,10 @@ Q.weapon_ammo['Micro_Uzi']=90;
 Q.weapon_data['AKM']={
 			speed : 300,
 			reload : 0.25,
-			bias : 0.15,
+			bias : 0.1,
 			life : 8,
 			damage : 25,
-			recoil : 5,
+			recoil : 1.3,
 			sight : 1,
 			penetrate : false,
 			bounce : false
@@ -724,10 +724,10 @@ Q.weapon_ammo['AKM']=30;
 Q.weapon_data['Scar-L']={
 			speed : 310,
 			reload : 0.23,
-			bias : 0.08,
+			bias : 0.03,
 			life : 6,
 			damage : 12,
-			recoil : 1.5,
+			recoil : 0.5,
 			penetrate : false,
 			bounce : false
 		};
@@ -736,10 +736,10 @@ Q.weapon_ammo['Scar-L']=40;
 Q.weapon_data['M416']={
 			speed : 330,
 			reload : 0.26,
-			bias : 0.08,
+			bias : 0.05,
 			life : 6,
 			damage : 10,
-			recoil : 1.5,
+			recoil : 0.5,
 			penetrate : false,
 			bounce : false
 		};
@@ -749,10 +749,10 @@ Q.weapon_ammo['M416']=40;
 Q.weapon_data['Kar-98K']={
 			speed : 600,
 			reload : 1.2,
-			bias : 0.04,
+			bias : 0.02,
 			life : 12,
 			damage : 50,
-			recoil : 12,
+			recoil : 4,
 			size : 3,
 			penetrate : true,
 			bounce : false
@@ -762,10 +762,10 @@ Q.weapon_ammo['Kar-98K']=15;
 Q.weapon_data['AWM']={
 			speed : 600,
 			reload : 2.5,
-			bias : 0.01,
+			bias : 0,
 			life : 13,
 			damage : 80,
-			recoil : 5,
+			recoil : 2,
 			size : 2.5,
 			penetrate : true,
 			bounce : false
@@ -780,7 +780,7 @@ Q.weapon_data['S1897']={
 			bias : 0.2,
 			life : 4,
 			damage : 15,
-			recoil : 45,
+			recoil : 10,
 			size : 4,
 			penetrate : false,
 			bounce : false,
@@ -794,7 +794,7 @@ Q.weapon_data['S686']={
 			bias : 0.3,
 			life : 3,
 			damage : 32,
-			recoil : 50,
+			recoil : 15,
 			size : 5,
 			penetrate : false,
 			bounce : false,
@@ -809,7 +809,7 @@ Q.weapon_data['M249']={
 			bias : 0.05,
 			life : 12,
 			damage : 10,
-			recoil : 1,
+			recoil : 0.3,
 			size : 4,
 			penetrate : false,
 			bounce : false
@@ -822,7 +822,7 @@ Q.weapon_data['Minigun']={
 			bias : 0.04,
 			life : 10,
 			damage : 8,
-			recoil : 2,
+			recoil : 0.6,
 			penetrate : false,
 			bounce : false
 		};
