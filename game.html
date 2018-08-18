@@ -93,54 +93,6 @@
                         </ul>
                         <div id="editor">
 /* ----以下为注释，删去不影响代码-------
-1.流程：
-
-    游戏某一帧开始-->检测事件是否触发-->触发事件，执行玩家代码-->引擎计算速度和位置，发射子弹-->该帧结束
-
-2.可以被调用的方法：
-    射击：this.fire() 
-
-    向上移动 ：this.moveUp(pri)
-    向下移动 : this.moveDown(pri)
-    向左移动 : this.moveLeft(pri)
-    向右移动 : this.moveRight(pri)
-
-    ！需要注意的是，如果想一直保持向右移动，需要在每一帧触发的事件中均调用this.moveRight()
-    ！pri为可选参数，表示优先级，取值0-5，优先级高的移动会优先执行并屏蔽优先级低的移动，
-    ！若不带参数，默认为0。
-
-3.可以获得的属性
-    
-    当前帧所处的x坐标：this.x
-    当前帧所处的y坐标：this.y
-    当前炮口方向（以弧度为单位，x轴为0度)：this.dir
-    当前速度x分量：this.speed.x
-    当前速度y分量：this.speed.y
-
-    ！注意，可以获得表示可以参与计算，如果尝试修改它的值，将不会对游戏产生任何影响
-    ！游戏的x轴为正常的从左至右
-    ！游戏的y轴为从上至下
-
-4.可以直接修改的属性
-
-    当前炮口方向：this.dir
-
-    ！this.dir既可以直接获得也可以修改，即可以通过修改该属性直接设置游戏中炮口的方向
-
-5.游戏参数
-    帧率：60fps
-    地图大小：600px * 600px（一下距离单为均为px，时间单位为秒）
-    
-    坦克半径：15
-    坦克最高速度（单个轴）：120
-    坦克加速度（move类函数本质就是加速）：180
-    阻力造成的加速度：-180
-
-    子弹半径：5
-    子弹速度：240
-
-6.编程时注意
-
     语法需要遵循JavaScript规范，若出现语法错误，会导致比赛无法进行。
     你可以自定义一些变量辅助计算，甚至定义一些函数，
     但请保证代码开始时的语句"var tank = {"和最后的大括号不变，否则无法被加入比赛。
@@ -208,8 +160,151 @@ var tank = {
                     <canvas id="map"></canvas>
                 </div>
             </div>
-             
+             <section class="wrapper style5">
+                    <div class="inner">
+                        <br><br><br><br><br><br><br><br><br><br><br><br>
+                        <br><br><br><br><br><br>
+    <h2>流程</h2>
+    <p>游戏某一帧开始-->检测事件是否触发-->触发事件，执行玩家代码-->引擎计算速度和位置，发射子弹-->该帧结束</p>
 
+            <h2>可调用的方法</h2>
+            <div class="table-wrapper">
+                        <table class="alt">
+                                            <thead>
+                                                <tr>
+                                                    <th>调用方式</th>
+                                                    <th>描述</th>
+                                                    <th>参数意义</th>
+                                                    <th>参数取值</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>this.moveUp(pri)</td>
+                                                    <td>向上加速</td>
+                                                    <td>优先级</td>
+                                                    <td>0-5，默认为0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>this.moveDown(pri)</td>
+                                                    <td>向下加速</td>
+                                                    <td>优先级</td>
+                                                    <td>0-5，默认为0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>this.moveLeft(pri)</td>
+                                                    <td>向左加速</td>
+                                                    <td>优先级</td>
+                                                    <td>0-5，默认为0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>this.moveRight(pri)</td>
+                                                    <td>向右加速</td>
+                                                    <td>优先级</td>
+                                                    <td>0-5，默认为0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>this.say(msg)</td>
+                                                    <td>游戏中显示信息</td>
+                                                    <td>你想要发送的信息</td>
+                                                    <td>数字或字符串</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+            <h2>属性</h2>
+            <div class="table-wrapper">
+                        <table class="alt">
+                                            <thead>
+                                                <tr>
+                                                    <th>语句</th>
+                                                    <th>描述</th>
+                                                    <th>单位</th>
+                                                    <th>是否可被修改</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>this.x</td>
+                                                    <td>当前x轴坐标</td>
+                                                    <td>像素</td>
+                                                    <td>否</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>this.y</td>
+                                                    <td>当前y轴坐标</td>
+                                                    <td>像素</td>
+                                                    <td>否</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>this.speed.x</td>
+                                                    <td>当前速度x分量</td>
+                                                    <td>像素/秒</td>
+                                                    <td>否</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>this.speed.y</td>
+                                                    <td>当前速度y分量</td>
+                                                    <td>像素/秒</td>
+                                                    <td>否</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>this.dir</td>
+                                                    <td>当前射击方向</td>
+                                                    <td>弧度</td>
+                                                    <td>是</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+        <h2>游戏参数</h2>
+        <div class="table-wrapper">
+            <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>参数</th>
+                                                    <th>值</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>逻辑/渲染帧率</td>
+                                                    <td>60FPS</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>地图大小</td>
+                                                    <td>600px*600px</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>坦克半径</td>
+                                                    <td>15px</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>坦克最高速度</td>
+                                                    <td>120px/s</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>坦克加速度</td>
+                                                    <td>180px/(s*s)</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>坦克粘滞阻力</td>
+                                                    <td>-180px/(s*s)</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>子弹速度</td>
+                                                    <td>240px/s</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>子弹半径</td>
+                                                    <td>5px</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+</div>
+</section>
         <script>
             var socket = io.connect();
             if (!localStorage.curUser || localStorage.curUser === "undefined")
