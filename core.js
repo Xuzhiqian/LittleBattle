@@ -29,6 +29,7 @@ var v_a=function (a, b) {
 
 var player_size = 15;
 var bullet_size = 5;
+var pickCD = 1;
 var prop_org = {
 	speed : 240,
 	reload : 0.6,
@@ -61,6 +62,7 @@ Q.Player = Q.GameObject.extend({
 		this.prop = prop_org;
 		this.alpha = 1;
 		this.fireCD = 0;
+		this.pickCD = 0;
 		this.size = 15;
 		this.auto = {};
 	},
@@ -76,6 +78,7 @@ Q.Auto_player = Q.GameObject.extend({
 
 		this.opPerFrame = newOp();
 		this.opFire = 0;
+		this.opPick = 0;
 		this.msg={msg:'',left_time:0};
 		for (var event in proto)
 			if (proto.hasOwnProperty(event))
@@ -84,6 +87,10 @@ Q.Auto_player = Q.GameObject.extend({
 
 	fire: function() {
 		this.opFire = 1;
+	},
+
+	pick: function() {
+		this.opPick = 1;
 	},
 
 	moveUp: function(pri) {
@@ -456,6 +463,24 @@ Q.core = Q.Evented.extend({
 				auto.onHitWall(dir);
 		}
 
+		if (auto.onWeaponSpotted) {
+			let weapons = [];
+			for (var id in this.weapons) {
+				let w = this.weapons[id];
+				if (w!=null && w.id) {
+					weapons.push({
+						id : w.id,
+						pos : {
+							x : w.pos.x,
+							y : w.pos.y
+						}
+					});
+				}
+			}
+			if (weapons.length>0)
+				auto.onWeaponSpotted(weapons);
+		}
+
 		if (auto.onEnemySpotted) {
 			let enemies = [];
 			for (var id in this.players) {
@@ -491,6 +516,12 @@ Q.core = Q.Evented.extend({
 		if (op.d) this.move_d(p,dt);
 		if (op.l) this.move_l(p,dt);
 		if (op.r) this.move_r(p,dt);
+
+		if (a.opPick && p.pickCD <= 0) {
+			this.player_use(p.id);
+			p.pickCD = pickCD;
+		}
+		p.pickCD = Math.max(0, p.pickCD - dt);
 
 		if (a.opFire && p.fireCD <= 0) {
 			this.player_shoot(p.id);
