@@ -617,15 +617,15 @@ Q.core = Q.Evented.extend({
 			}
 
 			if (p.ammo>0)
-				this.players[pid].ammo-=1;
+				p.ammo-=1;
 			else {
-				this.players[pid].weapon = '';
-				this.players[pid].ammo = 0;
-				this.players[pid].prop = prop_org;
+				p.weapon = '';
+				p.ammo = 0;
+				p.prop = prop_org;
 			}
 		}
 		for (let i=0;i<(p.prop.bundle || 1);i++)
-			this.new_bullet(this.players[pid]);
+			this.new_bullet(p);
 	},
 	
 	player_use: function (pid) {
@@ -635,9 +635,9 @@ Q.core = Q.Evented.extend({
 			let w = this.weapons[index];
 			if (!!w)
 				if (dis(p.pos,w.pos)<p.size+35) {
-					this.weapon = w.id;
-					this.ammo = w.ammo;
-					this.prop = Q.weapon_data[w.id];
+					p.weapon = w.id;
+					p.ammo = w.ammo;
+					p.prop = Q.weapon_data[w.id];
 					this.delete_weapon(index);
 					break;
 				}
@@ -682,7 +682,7 @@ Q.core = Q.Evented.extend({
 		let p = this.players[pid];
 		p.health.cur -=dmg;
 		if (p.health.cur <= 0) {
-			this.stat[oid].kill++;
+			if (this.stat[oid]) this.stat[oid].kill++;
 			this.stat[pid].death++;
 			this.remove_player(pid);
 		}
