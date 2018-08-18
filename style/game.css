@@ -76,6 +76,7 @@
     position: absolute;
     z-index:-1;
     height:540px;
+    width:calc(100% - 600px);
     left:0; right:0; top:57px; bottom:0;
 }
 #map {
