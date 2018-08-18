@@ -542,6 +542,7 @@ Q.core = Q.Evented.extend({
 		a.y = p.pos.y;
 		a.health = p.health.cur;
 		a.dir = p.dir;
+		a.bullet_speed = p.prop.speed;
 		a.dt = dt;
 		a.speed = {x:p.speed.x.cur, y:p.speed.y.cur};
 	},
@@ -699,13 +700,13 @@ Q.weapon_data['Micro_Uzi']={
 			reload : 0.1,
 			bias : 0.05,
 			life : 7,
-			damage : 4,
+			damage : 3,
 			recoil : 0.3,
 			size : 2,
 			penetrate : false,
 			bounce : false
 		};
-Q.weapon_ammo['Micro_Uzi']=90;
+Q.weapon_ammo['Micro_Uzi']=60;
 
 //突击步枪
 Q.weapon_data['AKM']={
@@ -713,7 +714,7 @@ Q.weapon_data['AKM']={
 			reload : 0.25,
 			bias : 0.1,
 			life : 8,
-			damage : 25,
+			damage : 20,
 			recoil : 1.3,
 			sight : 1,
 			penetrate : false,
@@ -726,24 +727,24 @@ Q.weapon_data['Scar-L']={
 			reload : 0.23,
 			bias : 0.03,
 			life : 6,
-			damage : 12,
+			damage : 16,
 			recoil : 0.5,
 			penetrate : false,
 			bounce : false
 		};
-Q.weapon_ammo['Scar-L']=40;
+Q.weapon_ammo['Scar-L']=30;
 
 Q.weapon_data['M416']={
 			speed : 330,
 			reload : 0.26,
 			bias : 0.05,
 			life : 6,
-			damage : 10,
+			damage : 12,
 			recoil : 0.5,
 			penetrate : false,
 			bounce : false
 		};
-Q.weapon_ammo['M416']=40;
+Q.weapon_ammo['M416']=30;
 
 //狙击步枪
 Q.weapon_data['Kar-98K']={
@@ -757,7 +758,7 @@ Q.weapon_data['Kar-98K']={
 			penetrate : true,
 			bounce : false
 		};
-Q.weapon_ammo['Kar-98K']=15;
+Q.weapon_ammo['Kar-98K']=10;
 
 Q.weapon_data['AWM']={
 			speed : 600,
@@ -770,7 +771,7 @@ Q.weapon_data['AWM']={
 			penetrate : true,
 			bounce : false
 		};
-Q.weapon_ammo['AWM']=10;
+Q.weapon_ammo['AWM']=7;
 
 
 //霰弹枪
@@ -808,13 +809,13 @@ Q.weapon_data['M249']={
 			reload : 0.12,
 			bias : 0.05,
 			life : 12,
-			damage : 10,
+			damage : 8,
 			recoil : 0.3,
 			size : 4,
 			penetrate : false,
 			bounce : false
 		};
-Q.weapon_ammo['M249']=100;
+Q.weapon_ammo['M249']=80;
 
 Q.weapon_data['Minigun']={
 			speed : 400,
@@ -826,7 +827,7 @@ Q.weapon_data['Minigun']={
 			penetrate : false,
 			bounce : false
 		};
-Q.weapon_ammo['Minigun']=100;
+Q.weapon_ammo['Minigun']=80;
 
 Q.weapon_data['Pan']={
 			reload : 1,
