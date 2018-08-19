@@ -228,6 +228,14 @@ Q.core = Q.Evented.extend({
 			this.gameover();
 	},
 
+	get_players: function() {
+		let players = [];
+		for (let id in this.players) 
+			if (this.players[id] && this.players[id].id)
+				players.push(id);
+		return players;
+	},
+
 	move_u: function (p, dt) {
 		p.speed.y.cur = Math.max(p.speed.y.cur - dt * p.speed.y.acc, -p.speed.y.max);
 	},
