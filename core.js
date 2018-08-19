@@ -32,7 +32,7 @@ var bullet_size = 5;
 var pickCD = 1;
 var prop_org = {
 	speed : 240,
-	reload : 0.6,
+	reload : 0.8,
 	bias : 0.02,
 	life : 4,
 	damage : 10,
@@ -701,7 +701,7 @@ Q.weapon_data['Micro_Uzi']={
 			bias : 0.05,
 			life : 7,
 			damage : 3,
-			recoil : 0.3,
+			recoil : 0.1,
 			size : 2,
 			penetrate : false,
 			bounce : false
@@ -715,7 +715,7 @@ Q.weapon_data['AKM']={
 			bias : 0.1,
 			life : 8,
 			damage : 20,
-			recoil : 1.3,
+			recoil : 0.5,
 			sight : 1,
 			penetrate : false,
 			bounce : false
@@ -728,7 +728,7 @@ Q.weapon_data['Scar-L']={
 			bias : 0.03,
 			life : 6,
 			damage : 16,
-			recoil : 0.5,
+			recoil : 0.3,
 			penetrate : false,
 			bounce : false
 		};
@@ -740,7 +740,7 @@ Q.weapon_data['M416']={
 			bias : 0.05,
 			life : 6,
 			damage : 12,
-			recoil : 0.5,
+			recoil : 0.2,
 			penetrate : false,
 			bounce : false
 		};
@@ -781,7 +781,7 @@ Q.weapon_data['S1897']={
 			bias : 0.2,
 			life : 4,
 			damage : 15,
-			recoil : 10,
+			recoil : 5,
 			size : 4,
 			penetrate : false,
 			bounce : false,
@@ -795,7 +795,7 @@ Q.weapon_data['S686']={
 			bias : 0.3,
 			life : 3,
 			damage : 32,
-			recoil : 15,
+			recoil : 10,
 			size : 5,
 			penetrate : false,
 			bounce : false,
@@ -810,7 +810,7 @@ Q.weapon_data['M249']={
 			bias : 0.05,
 			life : 12,
 			damage : 8,
-			recoil : 0.3,
+			recoil : 0.2,
 			size : 4,
 			penetrate : false,
 			bounce : false
@@ -823,7 +823,7 @@ Q.weapon_data['Minigun']={
 			bias : 0.04,
 			life : 10,
 			damage : 8,
-			recoil : 0.6,
+			recoil : 0.35,
 			penetrate : false,
 			bounce : false
 		};

@@ -131,14 +131,14 @@ Q.renderer = Q.GameObject.extend({
 		if (!player) return;
 
 		var ctx = this.ctx;
-		var r = this.render_list[player.id]?(this.render_list[player.id].size || player_size):15;
+		var r = this.render_list[player.id]?(this.render_list[player.id].size || player_size):player.size;
 		var pos = this.render_list[player.id]?(this.render_list[player.id].pos || player.pos):player.pos;
 		var dir = this.render_list[player.id]?(this.render_list[player.id].dir || player.dir):player.dir;
 		var health = this.render_list[player.id]?(this.render_list[player.id].health || player.health):player.health;
 
 		ctx.save();
 
-		ctx.globalAlpha = this.render_list[player.id]?(this.render_list[player.id].alpha || 1):1;
+		ctx.globalAlpha = this.render_list[player.id]?(this.render_list[player.id].alpha || 1):player.alpha;
 
 			//画布偏移，以玩家为中心
 		ctx.translate(pos.x, pos.y);
@@ -185,7 +185,7 @@ Q.renderer = Q.GameObject.extend({
 		if (!anim) return;
 		if (anim.eff==='fadeout') {
 			if (anim.type==='bullet') {
-				anim.entity.alpha-=0.03;
+				anim.entity.alpha-=0.05;
 				anim.entity.size+=0.06;
 				if (anim.entity.alpha>0)
 					this.render_bullet(anim.entity);
