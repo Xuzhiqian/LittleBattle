@@ -4,6 +4,8 @@ var Q = Quisus();
 
 var global_width,global_height;
 var weapons = ['Micro_Uzi','AKM','Scar-L','M416','Kar-98K','AWM','S1897','S686','M249','Minigun','Pan'];
+var tools = ['clone','heal',];
+
 var v_a=function (a, b) {
 		return {x: a.x + b.x, y: a.y + b.y}
 	},
@@ -261,8 +263,8 @@ Q.core = Q.Evented.extend({
 		
 		//后坐力
 		if (!is_no_j) {
-			p.speed.x.cur -= Math.cos(p.dir) * p.prop.recoil * 20;
-			p.speed.y.cur -= Math.sin(p.dir) * p.prop.recoil * 20;
+			p.speed.x.cur -= Math.cos(p.dir) * p.prop.recoil * 10;
+			p.speed.y.cur -= Math.sin(p.dir) * p.prop.recoil * 10;
 			p.speed.x.cur = Math.max(Math.min(p.speed.x.cur,p.speed.x.max),-p.speed.x.max);
 			p.speed.y.cur = Math.max(Math.min(p.speed.y.cur,p.speed.y.max),-p.speed.y.max);
 		}
@@ -717,7 +719,18 @@ Q.core = Q.Evented.extend({
 
 Q.weapon_data = [];
 Q.weapon_ammo = [];
-
+Q.weapon_data['Vector']={
+			speed : 320,
+			reload : 0.05,
+			bias : 0.03,
+			life : 7,
+			damage : 2,
+			recoil : 0,
+			size : 1.5,
+			penetrate : false,
+			bounce : false
+		};
+Q.weapon_ammo['Vector']=80;
 Q.weapon_data['Micro_Uzi']={
 			speed : 280,
 			reload : 0.1,

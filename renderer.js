@@ -95,7 +95,7 @@ Q.renderer = Q.GameObject.extend({
 		ctx.save();
 		ctx.translate(weapon.pos.x, weapon.pos.y);
 		var img = document.getElementById(weapon.id);
-		ctx.drawImage(img,0,0,60,60);
+		ctx.drawImage(img,0,0,50,50);
 		ctx.restore();
 	},
 
