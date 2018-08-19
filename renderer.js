@@ -35,9 +35,7 @@ Q.renderer = Q.GameObject.extend({
 			if (!entity.alpha) entity.alpha=1;
 			anim = {type:type,
 					eff:eff,
-					entity:entity,
-					origin:{alpha:entity.alpha,
-							size:entity.size}};
+					entity:entity
 
 		}
 		else return;
@@ -193,8 +191,8 @@ Q.renderer = Q.GameObject.extend({
 				anim.entity.alpha-=0.03;
 				anim.entity.size+=0.08;
 				if (anim.entity.alpha<0.25) {
-					anim.entity.alpha = anim.origin.alpha;	//恢复到原始状态
-					anim.entity.size = anim.origin.size;
+					anim.entity.alpha = 1;
+					anim.entity.size = player_size;
 					anim.anim_destroyable = true;
 				}
 
