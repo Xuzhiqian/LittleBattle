@@ -35,7 +35,7 @@ Q.renderer = Q.GameObject.extend({
 			if (!entity.alpha) entity.alpha=1;
 			anim = {type:type,
 					eff:eff,
-					entity:entity
+					entity:entity}
 
 		}
 		else return;
