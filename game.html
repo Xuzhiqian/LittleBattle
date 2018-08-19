@@ -501,6 +501,7 @@ var tank = {
             }
         });
         $("#againBtn").on('click', ()=>{
+        	restart();
         	last_players.forEach((id)=>{
         		socket.emit('fetch_code', id);
         	});

@@ -50,10 +50,7 @@ var newOp = function() {
 Q.Player = Q.GameObject.extend({
 	init: function(pid) {
 		this.id = pid;
-		this.pos = {
-			x: Math.floor(Math.random() * global_width),
-			y: Math.floor(Math.random() * global_height)
-		};
+		this.pos = this.random_pos();
 		this.health = {cur: 100, max: 100};
 		this.speed = {x: {cur: 0, max: 120, acc: 180}, y: {cur: 0, max: 120, acc: 180}};
 		this.hit = [0,0,0,0];
@@ -154,6 +151,13 @@ Q.weapon = Q.GameObject.extend({
 	}
 });
 
+Q.tool = Q.GameObject.extend({
+	init : function(pos, id) {
+		this.id = id;
+		this.pos = {x:pos.x, y:pos.y};
+	}
+});
+
 Q.core = Q.Evented.extend({
 	init : function(enviroment,size,block_size,callback) {
 		global_width = size.width;
@@ -168,6 +172,7 @@ Q.core = Q.Evented.extend({
 		this.players = [];
 		this.bullets = [];
 		this.weapons = [];
+		this.tools = [];
 		this.terrain = [];
 		this.genwpn={cur:0,max:300};
 		this.generate_terrain();
@@ -214,10 +219,6 @@ Q.core = Q.Evented.extend({
 			kill : 0,
 			death : 0
 		};
-
-		//防止出生地落在地形上
-		while (this.check_terrain(p.pos)===true)
-			p.pos = this.random_pos();
 	},
 
 	remove_player: function (pid) {
@@ -357,10 +358,17 @@ Q.core = Q.Evented.extend({
 	
 
 	random_pos : function() {
-		return {
+		let pos = {
 			x: Math.floor(Math.random() * this.width),
 			y: Math.floor(Math.random() * this.height)
 		};
+		while (this.check_terrain(pos)) {
+			pos = {
+				x: Math.floor(Math.random() * this.width),
+				y: Math.floor(Math.random() * this.height)
+			}
+		}
+		return pos;
 	},
 	
 	generate_terrain: function() {
@@ -417,11 +425,17 @@ Q.core = Q.Evented.extend({
 	generate_weapon: function(_pos,_id,_ammo) {
 		if (_ammo!=undefined && _ammo<=0) return;
 		let pos = _pos || this.random_pos();
-		if (this.check_terrain(pos)==true) return;
 		let id = _id || weapons[Math.floor(Math.random()*weapons.length)];
 
 		let new_wpn = new Q.weapon(pos, id, Q.weapon_ammo[id]);
 		this.weapons.push(new_wpn);
+	},
+
+	generate_tool: function(_pos, _id) {
+		let pos = _pos || this.random_pos();
+		let id = _id || tools[Math.floor(Math.random()*tools.length)];
+		let new_tool = new Q.tool(pos, id);
+		this.tools.push(new_tool);
 	},
 
 	new_bullet: function (player) {
