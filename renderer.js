@@ -28,10 +28,6 @@ Q.renderer = Q.GameObject.extend({
 		this.ctx.scale(2,2);
 	},
 
-	under_attack:function(pid) {
-		this.add_animation('player','underatk',this.render_list[pid]);
-	},
-	
 	add_animation: function(type,eff,entity) {
 		var anim = {};
 		if (eff=='underatk' || eff=='fadeout') {
@@ -185,7 +181,7 @@ Q.renderer = Q.GameObject.extend({
 		if (!anim) return;
 		if (anim.eff==='fadeout') {
 			if (anim.type==='bullet') {
-				anim.entity.alpha-=0.05;
+				anim.entity.alpha-=0.06;
 				anim.entity.size+=0.06;
 				if (anim.entity.alpha>0)
 					this.render_bullet(anim.entity);

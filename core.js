@@ -682,6 +682,7 @@ Q.core = Q.Evented.extend({
 		if (dmg===0) return;
 		let p = this.players[pid];
 		p.health.cur -=dmg;
+		this.renderer.add_animation('player','underatk',p);
 		if (p.health.cur <= 0) {
 			if (this.stat[oid]) this.stat[oid].kill++;
 			this.stat[pid].death++;
