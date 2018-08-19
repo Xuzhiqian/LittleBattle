@@ -4,7 +4,7 @@ var Q = Quisus();
 
 var global_width,global_height;
 var weapons = ['Micro_Uzi','AKM','Scar-L','M416','Kar-98K','AWM','S1897','S686','M249','Minigun','Pan'];
-var tools = ['clone','heal',];
+var tools = ['clone','heal','invisible','bounce','jet','gravity'];
 
 var v_a=function (a, b) {
 		return {x: a.x + b.x, y: a.y + b.y}
@@ -42,6 +42,8 @@ var prop_org = {
 	recoil : 0,
 	penetrate : false
 };
+var speed_max = 120;
+var speed_acc = 180;
 var newOp = function() {
 	let op = [];
 	for (let i=0;i<=5;i++)
@@ -54,7 +56,7 @@ Q.Player = Q.GameObject.extend({
 		this.id = pid;
 		this.pos = this.random_pos();
 		this.health = {cur: 100, max: 100};
-		this.speed = {x: {cur: 0, max: 120, acc: 180}, y: {cur: 0, max: 120, acc: 180}};
+		this.speed = {x: {cur: 0, max: speed_max, acc: speed_acc}, y: {cur: 0, max: speed_max, acc: speed_acc}};
 		this.hit = [0,0,0,0];
 		this.dir = 0;
 		this.color = 0;
@@ -123,7 +125,7 @@ Q.bullet = Q.GameObject.extend({
 
 		this.speed = p.prop.speed;
 		this.life = {cur: 0, max: p.prop.life};
-		this.bounce = p.prop.bounce;
+		this.bounce = p.prop.bounce || (p.bounce_clock && p.bounce_clock > 0);
 		this.damage = p.prop.damage;
 		this.color = p.color;
 		this.penetrate = p.prop.penetrate;
@@ -177,6 +179,7 @@ Q.core = Q.Evented.extend({
 		this.tools = [];
 		this.terrain = [];
 		this.genwpn={cur:0,max:300};
+		this.gentool={cur:0,max:600};
 		this.generate_terrain();
 		this.renderer = new Q.renderer(enviroment,size,block_size,this.terrain);
 		this.running = false;
@@ -197,7 +200,7 @@ Q.core = Q.Evented.extend({
 			this.callback(this.stat);
 	},
 
-	add_player: function (pid, code, silent) {
+	add_player: function (pid, code, silent, ghost) {
 		
 		let proto;
 		let auto;
@@ -212,11 +215,23 @@ Q.core = Q.Evented.extend({
 		}
 
 		if (!this.players[pid]) this.player_count++;
+
+		if (ghost && ghost===true) {
+			this.players[pid].ghost = new Q.Player(pid);
+			let p = this.players[pid];
+			let g = this.players[pid].ghost;
+			g.auto = new Q.Auto_player(proto);
+			g.color = this.players[pid].color;
+			g.health = {cur:p.health.cur,max:p.health.max};
+			g.pos = {x:p.pos.x,y:p.pos.y};
+			g.code = p.code;
+		}
 		this.players[pid] = new Q.Player(pid);
 		this.players[pid].auto = new Q.Auto_player(proto);
 
 		p = this.players[pid];
 		p.color = Math.floor(Math.random()*11);
+		p.code = code;
 		this.stat[pid] = {
 			kill : 0,
 			death : 0
@@ -236,6 +251,7 @@ Q.core = Q.Evented.extend({
 		for (let id in this.players) 
 			if (this.players[id] && this.players[id].id)
 				players.push(id);
+
 		return players;
 	},
 
@@ -453,6 +469,10 @@ Q.core = Q.Evented.extend({
 	delete_weapon: function (index) {
 		delete this.weapons[index];
 	},
+
+	delete_tool: function(index) {
+		delete this.tools[index];
+	},
 	
 	update_weapons:function() {
 		this.genwpn.cur+=1;
@@ -462,9 +482,43 @@ Q.core = Q.Evented.extend({
 		}
 	},
 
+	update_tools:function() {
+		this.gentool.cur+=1;
+		if (this.gentool.cur>=this.gentool.max) {
+			this.generate_tool();
+			this.gentool.cur=0;
+		}
+	},
+
+	player_get_tool: function(p, tid) {
+		var tools = ['clone','heal','invisible','bounce','jet','gravity'];
+
+		if (tid === 'clone' && !p.ghost) {
+			this.add_player(p.id, p.code, true, true);
+		}
+		if (tid === 'heal' && p.health) {
+			p.health.cur = Math.min(p.health.cur + 30, p.health.max);
+		}
+		if (tid === 'invisible') {
+			p.invisible_clock = 10;
+		}
+		if (tid === 'bounce') {
+			p.bounce_clock = 15;
+		}
+		if (tid === 'jet') {
+			p.jet_clock = 10;
+			p.speed.x.max = p.speed.x.max + speed_max;
+			p.speed.y.max = p.speed.y.max + speed_max;
+			p.speed.x.acc = p.speed.x.acc + speed_acc;
+			p.speed.y.acc = p.speed.y.acc + speed_acc;
+		}
+
+	},
+
 	update: function (dt) {
 		if (this.running) {
 			this.update_weapons();
+			this.update_tools();
 			this.update_players(dt);
 			this.update_bullets(dt);
 			this.clock -= dt;
@@ -509,7 +563,8 @@ Q.core = Q.Evented.extend({
 			for (var id in this.players) {
 				let q = this.players[id];
 
-				if (id !== p.id && q.pos && q.speed)
+				if (id !== p.id && q.pos && q.speed && !(q.invisible_clock && q.invisible_clock>0)) {
+
 					enemies.push({
 						pos : {
 							x : q.pos.x,
@@ -521,6 +576,21 @@ Q.core = Q.Evented.extend({
 						},
 						health : q.health.cur
 					});
+					while (q.ghost && q.ghost.pos && q.ghost.speed) {
+						enemies.push({
+						pos : {
+							x : q.ghost.pos.x,
+							y : q.ghost.pos.y
+						},
+						speed : {
+							x : q.ghost.speed.x.cur,
+							y : q.ghost.speed.y.cur
+						},
+						health : q.ghost.health.cur
+						});
+						q = q.ghost;
+					}
+				}
 			}
 			auto.onEnemySpotted(enemies.sort(()=>{return 0.5-Math.random()}));
 		}
@@ -541,16 +611,37 @@ Q.core = Q.Evented.extend({
 		if (op.r) this.move_r(p,dt);
 
 		if (a.opPick && p.pickCD <= 0) {
-			this.player_use(p.id);
+			this.player_use(p);
 			p.pickCD = pickCD;
 		}
 		p.pickCD = Math.max(0, p.pickCD - dt);
 
 		if (a.opFire && p.fireCD <= 0) {
-			this.player_shoot(p.id);
+			this.player_shoot(p);
 			p.fireCD = p.prop.reload;
 		}
 		p.fireCD = Math.max(0, p.fireCD - dt);
+
+		if (p.invisible_clock && p.invisible_clock > 0) {
+			p.invisible_clock -= dt;
+			if (p.invisible_clock <= 0)
+				delete p.invisible_clock;
+		}
+		if (p.bounce_clock && p.bounce_clock > 0) {
+			p.bounce_clock -= dt;
+			if (p.bounce_clock <= 0)
+				delete p.bounce_clock;
+		}
+		if (p.jet_clock && p.jet_clock > 0) {
+			p.jet_clock -= dt;
+			if (p.jet_clock <= 0) {
+				delete p.jet_clock;
+				p.speed.x.max = p.speed.x.max - speed_max;
+				p.speed.y.max = p.speed.y.max - speed_max;
+				p.speed.x.acc = p.speed.x.acc - speed_acc;
+				p.speed.y.acc = p.speed.y.acc - speed_acc;
+			}
+		}
 
 		if (a.msg.left_time > 0) {
 			a.msg.left_time-=dt;
@@ -576,26 +667,35 @@ Q.core = Q.Evented.extend({
 			p.dir = a.dir;
 	},
 
+	player_workflow:function(p, a, dt) {
+		this.player_check_tools(p);
+		this.copy_context(p, a, dt);
+		try {
+			this.trigger_events(p, a);	
+		}
+		catch (err) {
+			this.gameover(p.id);
+			return;
+		}
+		this.replace_context(p, a);
+
+		let op = this.execute_ops(a, p, dt);
+		this.update_player_physics(p, dt, (op.l===0 && op.r===0), (op.u===0 && op.d===0), a.opFire===0);
+		a.opFire = 0;
+		a.opPerFrame = newOp();
+	},
+
 	update_players: function(dt) {
 		for (let id in this.players) 
 			if (this.players[id]!=null) {
 				let p = this.players[id];
 				let a = p.auto;
 
-				this.copy_context(p, a, dt);
-				try {
-					this.trigger_events(p, a);	
+				this.player_workflow(p, a, dt);
+				while (p.ghost && p.ghost.auto) {
+					this.player_workflow(p.ghost, p.ghost.auto, dt);
+					p = p.ghost;
 				}
-				catch (err) {
-					this.gameover(id);
-					return;
-				}
-				this.replace_context(p, a);
-
-				let op = this.execute_ops(a, p, dt);
-				this.update_player_physics(p, dt, (op.l===0 && op.r===0), (op.u===0 && op.d===0), a.opFire===0);
-				a.opFire = 0;
-				a.opPerFrame = newOp();
 			//TODO
 			/*
 			if (this.players[id].prop.seek===true) {
@@ -625,8 +725,7 @@ Q.core = Q.Evented.extend({
 			}
 	},
 
-	player_shoot: function(pid) {
-		let p = this.players[pid];
+	player_shoot: function(p) {
 		if (p.isArmed()) {
 			if (p.weapon==='Pan') {
 				
@@ -634,9 +733,9 @@ Q.core = Q.Evented.extend({
 				setTimeout(()=>{p.reflect=false},850);
 				for (let id in this.players) {
 					let q = this.players[id];
-					if (id !== pid)
+					if (id !== p.id)
 						if (dis(p.pos,q.pos)<5*p.size)
-							this.cause_damage_to_player(pid,id,p.prop.damage);
+							this.cause_damage_to_player(p.id,q,p.prop.damage);
 				}
 				return;
 			}
@@ -653,12 +752,10 @@ Q.core = Q.Evented.extend({
 			this.new_bullet(p);
 	},
 	
-	player_use: function (pid) {
-		let p = this.players[pid];
-
+	player_use: function (p) {
 		for (let index in this.weapons) {
 			let w = this.weapons[index];
-			if (!!w)
+			if (w)
 				if (dis(p.pos,w.pos)<p.size+35) {
 					p.weapon = w.id;
 					p.ammo = w.ammo;
@@ -669,11 +766,19 @@ Q.core = Q.Evented.extend({
 		}
 	},
 
-	bullet_check_hit: function (bindex) {
-		let bullet = this.bullets[bindex];
-		for (let id in this.players) {
-			let p = this.players[id];
-			if (id != bullet.owner_id)
+	player_check_tools: function(p) {
+		for (let index in this.tools) {
+			let t = this.tools[index];
+			if (t)
+				if (dis(p.pos,t.pos)<p.size+25) {
+					this.player_get_tool(p, t.id);
+					this.delete_tool(index);
+				}
+		}
+	},
+
+	bullet_check_hit_core: function(bullet, p) {
+		if (p.id !== bullet.owner_id)
 				if (dis(bullet.pos, p.pos) < bullet.size + p.size) {
 
 					if (p.reflect===true) {
@@ -685,32 +790,47 @@ Q.core = Q.Evented.extend({
 
 							let new_dir = 2*r+Math.PI - a;
 							bullet.dir = {x:Math.cos(new_dir),y:Math.sin(new_dir)};
-							bullet.owner_id = id;
+							bullet.owner_id = p.id;
+							/*
 							if (this.players[id]!=undefined)
-								this.players[id].prop.seek = bullet.seek;
+								this.players[id].prop.seek = bullet.seek;*/
 							bullet.color = p.color;
-							continue;
+							return false;
 
 					}
 
-					this.cause_damage_to_player(bullet.owner_id,id,bullet.damage);
+					this.cause_damage_to_player(bullet.owner_id,p,bullet.damage);
 					bullet.destroyable = true;
-					break;
+					return true;
 				}
-		}
-
-		if (bullet.destroyable === true) return;
+		return false;
 	},
 
-	cause_damage_to_player: function (oid,pid,dmg) {
+	bullet_check_hit: function (bindex) {
+		let bullet = this.bullets[bindex];
+		if (!bullet) return;
+		for (let id in this.players) {
+			let p = this.players[id];
+			if (p) {
+				let flag = this.bullet_check_hit_core(bullet, p);
+				while (p.ghost && !flag) {
+					flag = this.bullet_check_hit_core(bullet, p.ghost);
+				}
+				if (flag) return;
+			}
+		}
+	},
+
+	cause_damage_to_player: function (oid,p,dmg) {
 		if (dmg===0) return;
-		let p = this.players[pid];
 		p.health.cur -=dmg;
 		this.renderer.add_animation('player','underatk',p);
 		if (p.health.cur <= 0) {
 			if (this.stat[oid]) this.stat[oid].kill++;
-			this.stat[pid].death++;
-			this.remove_player(pid);
+			if (this.players[p.id].health.cur<=0) {
+				this.stat[pid].death++;
+				this.remove_player(pid);
+			}
 		}
 	}
 	
