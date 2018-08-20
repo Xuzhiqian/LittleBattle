@@ -3,7 +3,7 @@
 var Q = Quisus();
 
 var global_width,global_height;
-var weapons = ['Micro_Uzi','AKM','Scar-L','M416','Kar-98K','AWM','S1897','S686','M249','Minigun','Pan'];
+var weapons = ['Vector','Micro_Uzi','AKM','Scar-L','M416','Kar-98K','AWM','S1897','S686','M249','Minigun','Pan'];
 var tools = ['clone'];//,'heal','invisible','bounce','jet','gravity'];
 
 var v_a=function (a, b) {
@@ -465,6 +465,7 @@ Q.core = Q.Evented.extend({
 		if (_ammo!=undefined && _ammo<=0) return;
 		let pos = _pos || this.random_pos();
 		let id = _id || weapons[Math.floor(Math.random()*weapons.length)];
+		if (id === 'clone') alert('fuck');
 
 		let new_wpn = new Q.weapon(pos, id, Q.weapon_ammo[id]);
 		this.weapons.push(new_wpn);
