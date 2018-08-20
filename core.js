@@ -35,7 +35,8 @@ var v_a=function (a, b) {
 var player_size = 15;
 var bullet_size = 5;
 var pickCD = 1;
-var prop_org = {
+var prop_org = function(){
+	return {
 	speed : 240,
 	reload : 0.8,
 	bias : 0.02,
@@ -44,6 +45,7 @@ var prop_org = {
 	bounce : false,
 	recoil : 0,
 	penetrate : false
+	};
 };
 var speed_max = 120;
 var speed_acc = 180;
@@ -62,7 +64,7 @@ Q.Player = Q.GameObject.extend({
 		this.hit = [0,0,0,0];
 		this.dir = 0;
 		this.color = 0;
-		this.prop = prop_org;
+		this.prop = prop_org();
 		this.alpha = 1;
 		this.fireCD = 0;
 		this.pickCD = 0;
@@ -227,6 +229,7 @@ Q.core = Q.Evented.extend({
 			g.health = {cur:p.health.cur,max:p.health.max};
 			g.pos = {x:p.pos.x,y:p.pos.y};
 			g.code = p.code;
+			return;
 		}
 		this.players[pid] = new Q.Player(pid);
 		this.players[pid].auto = new Q.Auto_player(proto);
@@ -797,7 +800,7 @@ Q.core = Q.Evented.extend({
 			else {
 				p.weapon = '';
 				p.ammo = 0;
-				p.prop = prop_org;
+				p.prop = prop_org();
 			}
 		}
 		for (let i=0;i<(p.prop.bundle || 1);i++)
