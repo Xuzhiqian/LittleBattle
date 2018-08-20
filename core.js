@@ -59,7 +59,7 @@ var newOp = function() {
 Q.Player = Q.GameObject.extend({
 	init: function(pid) {
 		this.id = pid;
-		this.health = {cur: 100, max: 100};
+		this.health = {cur: 300, max: 300};
 		this.speed = {x: {cur: 0, max: speed_max, acc: speed_acc}, y: {cur: 0, max: speed_max, acc: speed_acc}};
 		this.hit = [0,0,0,0];
 		this.dir = 0;
