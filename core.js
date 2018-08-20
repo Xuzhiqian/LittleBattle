@@ -4,7 +4,7 @@ var Q = Quisus();
 
 var global_width,global_height;
 var weapons = ['Vector','Micro_Uzi','AKM','Scar-L','M416','Kar-98K','AWM','S1897','S686','M249','Minigun','Pan'];
-var tools = ['clone'];//,'heal','invisible','bounce','jet','gravity'];
+var tools = ['clone','heal','invisible','bounce','jet','gravity'];
 
 var v_a=function (a, b) {
 		return {x: a.x + b.x, y: a.y + b.y}
@@ -183,7 +183,7 @@ Q.core = Q.Evented.extend({
 		this.tools = [];
 		this.terrain = [];
 		this.genwpn={cur:0,max:300};
-		this.gentool={cur:0,max:400};
+		this.gentool={cur:0,max:500};
 		this.generate_terrain();
 		this.renderer = new Q.renderer(enviroment,size,block_size,this.terrain);
 		this.running = false;
