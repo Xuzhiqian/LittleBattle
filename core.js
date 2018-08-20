@@ -562,11 +562,6 @@ Q.core = Q.Evented.extend({
 				return;
 			}
 		}
-		if (this.gravity && this.gravity_clock>0) {
-			let theta = Math.atan(this.gravity.y.cur / this.gravity.x.cur);
-			if (this.gravity.x.cur < 0) theta += Math.PI;
-			this.rotate_map(Math.PI/2-theta.toFixed(1));
-		}
 		this.renderer.render(this.players,this.bullets,this.weapons,this.tools,this.clock,this.gravity,dt);
 	},
 	
@@ -974,7 +969,7 @@ Q.weapon_ammo['M416']=30;
 
 //狙击步枪
 Q.weapon_data['Kar-98K']=function(){ return {
-			speed : 600,
+			speed : 700,
 			reload : 1.2,
 			bias : 0.02,
 			life : 12,
@@ -987,7 +982,7 @@ Q.weapon_data['Kar-98K']=function(){ return {
 Q.weapon_ammo['Kar-98K']=10;
 
 Q.weapon_data['AWM']=function(){ return {
-			speed : 600,
+			speed : 900,
 			reload : 2.5,
 			bias : 0,
 			life : 13,
