@@ -22,7 +22,7 @@
 		position: fixed;
 		left: 0;
 		top: 47.7px;
-		width: 30em;
+		width: 40em;
 		z-index: 10002;
 	}
 
@@ -46,7 +46,7 @@
 				#repo ul > li > span {
 					display:inline-block;
 					width:40px;
-					margin-right:5em;
+					margin-right:4em;
 
 				}
 				#repo ul > li > span:last-child {

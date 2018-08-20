@@ -196,6 +196,9 @@ Q.core = Q.Evented.extend({
 		Q.gameLoop(this.update.bind(this));
 	},
 
+	compute_score: function() {
+	},
+
 	gameover: function(fail_id) {
 		this.finished = true;
 		this.running = false;
@@ -203,7 +206,8 @@ Q.core = Q.Evented.extend({
 		if (fail_id!=undefined)
 			this.callback(fail_id, true);
 		else
-			this.callback(this.stat);
+			this.compute_score();
+			//this.callback(this.stat);
 	},
 
 	add_player: function (pid, code, silent, ghost) {
@@ -243,7 +247,9 @@ Q.core = Q.Evented.extend({
 		p.code = code;
 		this.stat[pid] = {
 			kill : 0,
-			death : 0
+			death : 0,
+			output : 0,
+			score : 0
 		};
 	},
 
@@ -518,7 +524,7 @@ Q.core = Q.Evented.extend({
 			this.add_player(p.id, p.code, true, true);
 		}
 		if (tid === 'heal' && p.health) {
-			p.health.cur = Math.min(p.health.cur + 100, p.health.max);
+			p.health.cur = Math.min(p.health.cur + 200, p.health.max);
 		}
 		if (tid === 'invisible') {
 			p.invisible_clock = 10;
@@ -881,6 +887,7 @@ Q.core = Q.Evented.extend({
 	cause_damage_to_player: function (oid,p,dmg) {
 		if (dmg===0) return;
 		p.health.cur -=dmg;
+		this.stat[oid].output += dmg;
 		this.renderer.add_animation('player','underatk',p);
 		if (p.health.cur <= 0) {
 			if (this.stat[oid]) this.stat[oid].kill++;

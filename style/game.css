@@ -30,10 +30,10 @@
 }
 
 .gameover_panel {
-	width:400px;
+	width:600px;
 	height:300px;
 	position:fixed;
-	left:calc( 50% - 200px );
+	left:calc( 50% - 300px );
 	top:25%;
 	background:rgba(100,149,237,0.95);
 	color: #ffffff;

@@ -88,7 +88,7 @@
                 <div class="left_body">
                         <div id="repo">
                                         <ul id="repo_list">
-                                            <li><span>ID</span><span>K/D</span><span>RATE</span></li>
+                                            <li><span>ID</span><span>K/D</span><span>RATE</span><span>SCORE</span</li>
 
                                         </ul>
                                     </div>                
@@ -379,9 +379,17 @@ var tank = {
                 let stat = [];
                 for (var id in _stat)
                     if (_stat[id] && _stat[id].kill>=0)
-                        stat.push([id, _stat[id].kill, _stat[id].death, _stat[id].kill / (_stat[id].death===0 ? 1 : _stat[id].death)]);
+                        stat.push([id, _stat[id].kill, _stat[id].death, _stat[id].kill / (_stat[id].death===0 ? 1 : _stat[id].death), _stat[id].score, _stat[id].output]);
                 stat.sort((a, b)=>{
-                    if (a[3] < b[3])
+                	if (a[4] < b[4])
+                		return 1;
+                	else if (a[4] > b[4])
+                		return -1;
+                	else if (a[5] < b[5])
+                		return 1;
+                	else if (a[5] > b[5])
+                		return -1;
+                    else if (a[3] < b[3])
                         return 1;
                     else if (a[3] > b[3])
                         return -1;
@@ -398,11 +406,11 @@ var tank = {
                 });
 
                 
-                list.innerHTML = "<li><span>Rank</span><span>ID</span><span>K/D</span></li>";
+                list.innerHTML = "<li><span>Rank</span><span>ID</span><span>K/D</span><span>OUTPUT</span><span>SCORE</span></li>";
 
                 for (let i = 0; i < stat.length; i++)
                     if (stat[i]!=undefined)
-                        list.innerHTML = list.innerHTML + "<li><span>" + (i + 1) + "</span><span>" + stat[i][0] + "</span><span>" + stat[i][1] + "/" + stat[i][2] + "</span></li>";
+                        list.innerHTML = list.innerHTML + "<li><span>" + (i + 1) + "</span><span>" + stat[i][0] + "</span><span>" + stat[i][1] + "/" + stat[i][2] + "</span><span>" + stat[i][5] + "</span><span>" + stat[i][4] + "</span></li>";
                 socket.emit('update_data', stat);
 
             }
@@ -440,7 +448,7 @@ var tank = {
                 return;
             }
             let list = document.getElementById('repo_list');
-            list.innerHTML = "<li><span>ID</span><span>K/D</span><span>RATE</span><span class='join' onclick='socket.emit(&apos;fetch_all_code&apos;)'>All</span></li>";
+            list.innerHTML = "<li><span>ID</span><span>K/D</span><span>RATE</span><span>SCORE</span><span class='join' onclick='socket.emit(&apos;fetch_all_code&apos;)'>All</span></li>";
             if (localStorage.curUser) {
                 socket.emit('get_repo');
             }
@@ -452,7 +460,11 @@ var tank = {
             for (let i=0; i<results.length; i++)
                 results[i].rate = results[i].num_kill / (results[i].num_death === 0 ? 1 : results[i].num_death);
             results.sort((a, b)=>{
-                    if (a.rate < b.rate)
+            		if (a.score < b.score)
+            			return 1;
+                    else if (a.score > b.score)
+                    	return -1;
+                    else if (a.rate < b.rate)
                         return 1;
                     else if (a.rate > b.rate)
                         return -1;
@@ -472,7 +484,9 @@ var tank = {
                     list.innerHTML = list.innerHTML + "<li><span>" +
                         results[i].id + "</span><span>" +
                         results[i].num_kill + "/" +
-                        results[i].num_death + "</span><span>" +  results[i].rate.toFixed(3) + "</span><span class='join' id='joinBtn_" + i + "' onclick='socket.emit(&apos;fetch_code&apos;,&apos;"  + results[i].id + "&apos;);'>Join</span></li>";
+                        results[i].num_death + "</span><span>" +  
+                        results[i].rate.toFixed(3) + "</span><span>" +
+                        results[i].score + "</span><span class='join' id='joinBtn_" + i + "' onclick='socket.emit(&apos;fetch_code&apos;,&apos;"  + results[i].id + "&apos;);'>Join</span></li>";
                 }
         });
 

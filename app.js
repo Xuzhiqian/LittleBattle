@@ -52,12 +52,12 @@ io.on("connection", function (socket) {
 			if (results[0]!=undefined && results[0].password!=undefined)
 				socket.emit('dup');
 			else {
-				let sql_insert = "INSERT INTO main (id,password,num_kill,num_death,code) VALUES ('" +
+				let sql_insert = "INSERT INTO main (id,password,num_kill,num_death,code,score) VALUES ('" +
 				  user.id + "','" +
 				  user.password + "'," +
 				  "0," +
 				  "0," +
-				  "'');";
+				  "'',1000);";
 		
 				connection.query(sql_insert, function(error, results, fields){
 					if (error) throw error;
