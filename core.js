@@ -345,7 +345,7 @@ Q.core = Q.Evented.extend({
 	
 	update_bullet_physics:function (b,dt) {
 		if (this.gravity && this.gravity_clock > 0) {
-			let v_speed = v_a(v_n(b.dir, b.speed), {x:this.gravity.x.cur*dt,y:this.gravity.y.cur*dt});
+			let v_speed = v_a(v_n(b.dir, b.speed), {x:this.gravity.x.cur*dt*1000,y:this.gravity.y.cur*dt*1000});
 			b.dir = v_normal(v_speed);
 			b.speed = v_mod(v_speed);
 		}
