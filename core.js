@@ -288,8 +288,8 @@ Q.core = Q.Evented.extend({
 			is_no_x = false;
 			is_no_y = false;
 			speed_limit = false;
-			p.speed.x.cur += this.gravity.x.cur * dt * 10;
-			p.speed.y.cur += this.gravity.y.cur * dt * 10;
+			p.speed.x.cur += this.gravity.x.cur * dt * 20;
+			p.speed.y.cur += this.gravity.y.cur * dt * 20;
 		}
 
 		//后坐力
@@ -547,8 +547,19 @@ Q.core = Q.Evented.extend({
 			delete this.gravity;
 			delete this.gravity_clock;
 			delete this.gravity_immune_id;
+			this.rotate_map(0);
 		}
 	},
+
+	rotate_map: function(r) {
+		$("#map").css({
+			"transform":"rotate("+r+"rad)",
+			"-ms-transform":"rotate("+r+"rad)", /* Internet Explorer 9*/
+			"-moz-transform":"rotate("+r+"rad)", /* Firefox */
+			"-webkit-transform":"rotate("+r+"rad)", /* Safari 和 Chrome */
+			"-o-transform":"rotate("+r+"rad)" /* Opera */
+		});
+	}
 
 	update: function (dt) {
 		if (this.running) {
@@ -561,6 +572,11 @@ Q.core = Q.Evented.extend({
 				this.gameover();
 				return;
 			}
+		}
+		if (this.gravity && this.gravity_clock>0) {
+			let theta = Math.atan(this.gravity.y.cur / this.gravity.x.cur);
+			if (this.gravity.x.cur < 0) theta += Math.PI;
+			this.rotate_map(theta.toFixed(1));
 		}
 		this.renderer.render(this.players,this.bullets,this.weapons,this.tools,this.clock,dt);
 	},
