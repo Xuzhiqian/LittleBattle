@@ -645,7 +645,8 @@ Q.core = Q.Evented.extend({
 					}
 				}
 			}
-			auto.onEnemySpotted(enemies.sort(()=>{return 0.5-Math.random()}));
+			if (enemies.length > 0)
+				auto.onEnemySpotted(enemies.sort(()=>{return 0.5-Math.random()}));
 		}
 	},
 
