@@ -175,7 +175,7 @@ Q.core = Q.Evented.extend({
 		this.block_width = block_size.width;
 		this.block_height = block_size.height;
 		this.player_count = 0;
-		this.clock = 60;
+		this.clock = 100;
 		this.stat = [];
 		this.players = [];
 		this.bullets = [];
@@ -197,7 +197,7 @@ Q.core = Q.Evented.extend({
 	gameover: function(fail_id) {
 		this.finished = true;
 		this.running = false;
-		this.clock = 60;
+		this.clock = 100;
 		if (fail_id!=undefined)
 			this.callback(fail_id, true);
 		else
@@ -562,7 +562,7 @@ Q.core = Q.Evented.extend({
 				return;
 			}
 		}
-		this.renderer.render(this.players,this.bullets,this.weapons,this.tools,this.clock,this.gravity,dt);
+		this.renderer.render(this.players,this.bullets,this.weapons,this.tools,this.clock,dt);
 	},
 	
 	trigger_events: function(p, auto) {
@@ -905,7 +905,7 @@ Q.core = Q.Evented.extend({
 Q.weapon_data = [];
 Q.weapon_ammo = [];
 Q.weapon_data['Vector']=function(){ return {
-			speed : 320,
+			speed : 300,
 			reload : 0.05,
 			bias : 0.03,
 			life : 7,
@@ -918,8 +918,8 @@ Q.weapon_data['Vector']=function(){ return {
 Q.weapon_ammo['Vector']=80;
 Q.weapon_data['Micro_Uzi']=function(){ return {
 			speed : 280,
-			reload : 0.1,
-			bias : 0.05,
+			reload : 0.02,
+			bias : 0.5,
 			life : 7,
 			damage : 3,
 			recoil : 0.1,
@@ -927,7 +927,7 @@ Q.weapon_data['Micro_Uzi']=function(){ return {
 			penetrate : false,
 			bounce : false
 		}};
-Q.weapon_ammo['Micro_Uzi']=60;
+Q.weapon_ammo['Micro_Uzi']=200;
 
 //突击步枪
 Q.weapon_data['AKM']=function(){ return {
@@ -935,7 +935,7 @@ Q.weapon_data['AKM']=function(){ return {
 			reload : 0.25,
 			bias : 0.1,
 			life : 8,
-			damage : 20,
+			damage : 25,
 			recoil : 0.5,
 			sight : 1,
 			penetrate : false,
@@ -948,7 +948,7 @@ Q.weapon_data['Scar-L']=function(){ return {
 			reload : 0.23,
 			bias : 0.03,
 			life : 6,
-			damage : 16,
+			damage : 20,
 			recoil : 0.3,
 			penetrate : false,
 			bounce : false
@@ -960,20 +960,33 @@ Q.weapon_data['M416']=function(){ return {
 			reload : 0.26,
 			bias : 0.05,
 			life : 6,
-			damage : 12,
+			damage : 18,
 			recoil : 0.2,
 			penetrate : false,
 			bounce : false
 		}};
 Q.weapon_ammo['M416']=30;
 
+Q.weapon_data['Groza']=function(){ return {
+			speed : 330,
+			reload : 0.26,
+			bias : 1,
+			life : 6,
+			damage : 10,
+			recoil : 0.2,
+			penetrate : false,
+			bounce : false,
+			bundle : 40,
+		}};
+Q.weapon_ammo['Groza']=20;
+
 //狙击步枪
 Q.weapon_data['Kar-98K']=function(){ return {
-			speed : 700,
+			speed : 900,
 			reload : 1.2,
 			bias : 0.02,
 			life : 12,
-			damage : 50,
+			damage : 80,
 			recoil : 4,
 			size : 3,
 			penetrate : true,
@@ -982,12 +995,12 @@ Q.weapon_data['Kar-98K']=function(){ return {
 Q.weapon_ammo['Kar-98K']=10;
 
 Q.weapon_data['AWM']=function(){ return {
-			speed : 900,
+			speed : 1500,
 			reload : 2.5,
 			bias : 0,
 			life : 13,
-			damage : 80,
-			recoil : 2,
+			damage : 200,
+			recoil : 20,
 			size : 2.5,
 			penetrate : true,
 			bounce : false
@@ -1001,12 +1014,12 @@ Q.weapon_data['S1897']=function(){ return {
 			reload : 0.8,
 			bias : 0.2,
 			life : 4,
-			damage : 15,
+			damage : 20,
 			recoil : 5,
 			size : 4,
 			penetrate : false,
 			bounce : false,
-			bundle : 5
+			bundle : 8
 		}};
 Q.weapon_ammo['S1897']=10;
 
@@ -1016,11 +1029,11 @@ Q.weapon_data['S686']=function(){ return {
 			bias : 0.3,
 			life : 3,
 			damage : 32,
-			recoil : 10,
+			recoil : 15,
 			size : 5,
 			penetrate : false,
 			bounce : false,
-			bundle : 6
+			bundle : 12
 		}};
 Q.weapon_ammo['S686']=8;
 
@@ -1040,15 +1053,15 @@ Q.weapon_ammo['M249']=80;
 
 Q.weapon_data['Minigun']=function(){ return {
 			speed : 400,
-			reload : 0.11,
+			reload : 0.07,
 			bias : 0.04,
 			life : 10,
 			damage : 8,
-			recoil : 0.35,
+			recoil : 0.15,
 			penetrate : false,
 			bounce : false
 		}};
-Q.weapon_ammo['Minigun']=80;
+Q.weapon_ammo['Minigun']=120;
 
 Q.weapon_data['Pan']=function(){return {
 			reload : 1,

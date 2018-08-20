@@ -219,14 +219,10 @@ Q.renderer = Q.GameObject.extend({
 		this.ctx.restore();
 	},
 
-	render: function (players,bullets,weapons,tools,clock,gravity,dt) {
+	render: function (players,bullets,weapons,tools,clock,dt) {
 
 		this.ctx.clearRect(0, 0, this.map.width, this.map.height);
-		if (gravity) {
-			let theta = Math.atan(gravity.y.cur / gravity.x.cur);
-			if (gravity.x.cur < 0) theta += Math.PI;
-			this.ctx.rotate(Math.PI/2-theta);
-		}
+
 		this.render_background();
 
 		this.render_clock(clock);
