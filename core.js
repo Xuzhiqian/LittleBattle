@@ -547,18 +547,7 @@ Q.core = Q.Evented.extend({
 			delete this.gravity;
 			delete this.gravity_clock;
 			delete this.gravity_immune_id;
-			this.rotate_map(0);
 		}
-	},
-
-	rotate_map: function(r) {
-		$("#map").css({
-			"transform":"rotate("+r+"rad)",
-			"-ms-transform":"rotate("+r+"rad)", /* Internet Explorer 9*/
-			"-moz-transform":"rotate("+r+"rad)", /* Firefox */
-			"-webkit-transform":"rotate("+r+"rad)", /* Safari 和 Chrome */
-			"-o-transform":"rotate("+r+"rad)" /* Opera */
-		});
 	},
 
 	update: function (dt) {
@@ -578,7 +567,7 @@ Q.core = Q.Evented.extend({
 			if (this.gravity.x.cur < 0) theta += Math.PI;
 			this.rotate_map(Math.PI/2-theta.toFixed(1));
 		}
-		this.renderer.render(this.players,this.bullets,this.weapons,this.tools,this.clock,dt);
+		this.renderer.render(this.players,this.bullets,this.weapons,this.tools,this.clock,this.gravity,dt);
 	},
 	
 	trigger_events: function(p, auto) {
