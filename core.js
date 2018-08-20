@@ -223,10 +223,11 @@ Q.core = Q.Evented.extend({
 		if (ghost && ghost===true) {
 			this.players[pid].ghost = new Q.Player(pid);
 			let p = this.players[pid];
-			let g = this.players[pid].ghost;
+			let g = p.ghost;
 			g.auto = new Q.Auto_player(proto);
 			g.color = this.players[pid].color;
 			g.health = {cur:p.health.cur,max:p.health.max};
+			p.health.cur = p.health.max;
 			g.pos = {x:p.pos.x,y:p.pos.y};
 			g.code = code;
 			return;
