@@ -465,8 +465,8 @@ Q.core = Q.Evented.extend({
 		if (_ammo!=undefined && _ammo<=0) return;
 		let pos = _pos || this.random_pos();
 		let id = _id || weapons[Math.floor(Math.random()*weapons.length)];
-		if (id === 'clone') alert('fuck');
-
+		console.log(_id);
+		console.log(id);
 		let new_wpn = new Q.weapon(pos, id, Q.weapon_ammo[id]);
 		this.weapons.push(new_wpn);
 	},
@@ -513,8 +513,6 @@ Q.core = Q.Evented.extend({
 	},
 
 	player_get_tool: function(p, tid) {
-		var tools = ['clone','heal','invisible','bounce','jet','gravity'];
-
 		if (tid === 'clone' && !p.ghost) {
 			this.add_player(p.id, p.code, true, true);
 		}
@@ -815,7 +813,7 @@ Q.core = Q.Evented.extend({
 				if (dis(p.pos,w.pos)<p.size+35) {
 					p.weapon = w.id;
 					p.ammo = w.ammo;
-					p.prop = Q.weapon_data[w.id];
+					p.prop = Q.weapon_data[w.id]();
 					this.delete_weapon(index);
 					break;
 				}
@@ -895,7 +893,7 @@ Q.core = Q.Evented.extend({
 
 Q.weapon_data = [];
 Q.weapon_ammo = [];
-Q.weapon_data['Vector']={
+Q.weapon_data['Vector']=function(){ return {
 			speed : 320,
 			reload : 0.05,
 			bias : 0.03,
@@ -905,9 +903,9 @@ Q.weapon_data['Vector']={
 			size : 1.5,
 			penetrate : false,
 			bounce : false
-		};
+		}};
 Q.weapon_ammo['Vector']=80;
-Q.weapon_data['Micro_Uzi']={
+Q.weapon_data['Micro_Uzi']=function(){ return {
 			speed : 280,
 			reload : 0.1,
 			bias : 0.05,
@@ -917,11 +915,11 @@ Q.weapon_data['Micro_Uzi']={
 			size : 2,
 			penetrate : false,
 			bounce : false
-		};
+		}};
 Q.weapon_ammo['Micro_Uzi']=60;
 
 //突击步枪
-Q.weapon_data['AKM']={
+Q.weapon_data['AKM']=function(){ return {
 			speed : 300,
 			reload : 0.25,
 			bias : 0.1,
@@ -931,10 +929,10 @@ Q.weapon_data['AKM']={
 			sight : 1,
 			penetrate : false,
 			bounce : false
-		};
+		}};
 Q.weapon_ammo['AKM']=30;
 
-Q.weapon_data['Scar-L']={
+Q.weapon_data['Scar-L']=function(){ return {
 			speed : 310,
 			reload : 0.23,
 			bias : 0.03,
@@ -943,10 +941,10 @@ Q.weapon_data['Scar-L']={
 			recoil : 0.3,
 			penetrate : false,
 			bounce : false
-		};
+		}};
 Q.weapon_ammo['Scar-L']=30;
 
-Q.weapon_data['M416']={
+Q.weapon_data['M416']=function(){ return {
 			speed : 330,
 			reload : 0.26,
 			bias : 0.05,
@@ -955,11 +953,11 @@ Q.weapon_data['M416']={
 			recoil : 0.2,
 			penetrate : false,
 			bounce : false
-		};
+		}};
 Q.weapon_ammo['M416']=30;
 
 //狙击步枪
-Q.weapon_data['Kar-98K']={
+Q.weapon_data['Kar-98K']=function(){ return {
 			speed : 600,
 			reload : 1.2,
 			bias : 0.02,
@@ -969,10 +967,10 @@ Q.weapon_data['Kar-98K']={
 			size : 3,
 			penetrate : true,
 			bounce : false
-		};
+		}};
 Q.weapon_ammo['Kar-98K']=10;
 
-Q.weapon_data['AWM']={
+Q.weapon_data['AWM']=function(){ return {
 			speed : 600,
 			reload : 2.5,
 			bias : 0,
@@ -982,12 +980,12 @@ Q.weapon_data['AWM']={
 			size : 2.5,
 			penetrate : true,
 			bounce : false
-		};
+		}};
 Q.weapon_ammo['AWM']=7;
 
 
 //霰弹枪
-Q.weapon_data['S1897']={
+Q.weapon_data['S1897']=function(){ return {
 			speed : 600,
 			reload : 0.8,
 			bias : 0.2,
@@ -998,10 +996,10 @@ Q.weapon_data['S1897']={
 			penetrate : false,
 			bounce : false,
 			bundle : 5
-		};
+		}};
 Q.weapon_ammo['S1897']=10;
 
-Q.weapon_data['S686']={
+Q.weapon_data['S686']=function(){ return {
 			speed : 620,
 			reload : 2,
 			bias : 0.3,
@@ -1012,11 +1010,11 @@ Q.weapon_data['S686']={
 			penetrate : false,
 			bounce : false,
 			bundle : 6
-		};
+		}};
 Q.weapon_ammo['S686']=8;
 
 //轻机枪
-Q.weapon_data['M249']={
+Q.weapon_data['M249']=function(){ return {
 			speed : 380,
 			reload : 0.12,
 			bias : 0.05,
@@ -1026,10 +1024,10 @@ Q.weapon_data['M249']={
 			size : 4,
 			penetrate : false,
 			bounce : false
-		};
+		}};
 Q.weapon_ammo['M249']=80;
 
-Q.weapon_data['Minigun']={
+Q.weapon_data['Minigun']=function(){ return {
 			speed : 400,
 			reload : 0.11,
 			bias : 0.04,
@@ -1038,27 +1036,14 @@ Q.weapon_data['Minigun']={
 			recoil : 0.35,
 			penetrate : false,
 			bounce : false
-		};
+		}};
 Q.weapon_ammo['Minigun']=80;
 
-Q.weapon_data['Pan']={
+Q.weapon_data['Pan']=function(){return {
 			reload : 1,
 			damage : 35,
 			recoil : 0,
-		};
+		}};
 Q.weapon_ammo['Pan']=0;
 
 
-Q.weapon_data['Seeker']={
-			reload : 3,
-			speed : 380,
-			bias : 0,
-			life : 45,
-			damage : 50,
-			recoil : 40,
-			size : 6,
-			penetrate : false,
-			bounce : false,
-			seek : true
-		};
-Q.weapon_ammo['Seeker']=5;
