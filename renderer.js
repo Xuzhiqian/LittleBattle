@@ -108,7 +108,7 @@ Q.renderer = Q.GameObject.extend({
 		var img = document.getElementById(tool.id);
 		ctx.drawImage(img,0,0,35,35);
 		ctx.restore();
-	}
+	},
 
 	render_bullet: function (bullet) {
 		if (!bullet) return;
