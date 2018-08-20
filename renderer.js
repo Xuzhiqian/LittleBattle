@@ -242,8 +242,10 @@ Q.renderer = Q.GameObject.extend({
 			let p = players[id];
 			if (p) {
 				this.render_player(p);
-				while (p.ghost)
+				while (p.ghost) {
 					this.render_player(p.ghost);
+					p = p.ghost;
+				}
 			}
 		}
 
