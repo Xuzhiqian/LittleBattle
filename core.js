@@ -576,7 +576,7 @@ Q.core = Q.Evented.extend({
 		if (this.gravity && this.gravity_clock>0) {
 			let theta = Math.atan(this.gravity.y.cur / this.gravity.x.cur);
 			if (this.gravity.x.cur < 0) theta += Math.PI;
-			this.rotate_map(theta.toFixed(1));
+			this.rotate_map(Math.PI/2-theta.toFixed(1));
 		}
 		this.renderer.render(this.players,this.bullets,this.weapons,this.tools,this.clock,dt);
 	},
