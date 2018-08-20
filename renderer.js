@@ -238,8 +238,14 @@ Q.renderer = Q.GameObject.extend({
 			}
 		}
 
-		for (var id in players)
-			this.render_player(players[id]);
+		for (var id in players) {
+			let p = players[id];
+			if (p) {
+				this.render_player(p);
+				while (p.ghost)
+					this.render_player(p.ghost);
+			}
+		}
 
 		for (var index in bullets)
 			this.render_bullet(bullets[index]);
