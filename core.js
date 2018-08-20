@@ -176,6 +176,8 @@ Q.core = Q.Evented.extend({
 		this.block_height = block_size.height;
 		this.player_count = 0;
 		this.clock = 100;
+		delete this.gravity;
+		delete this.gravity_clock;
 		this.stat = [];
 		this.players = [];
 		this.bullets = [];
@@ -288,8 +290,8 @@ Q.core = Q.Evented.extend({
 			is_no_x = false;
 			is_no_y = false;
 			speed_limit = false;
-			p.speed.x.cur += this.gravity.x.cur * dt * 20;
-			p.speed.y.cur += this.gravity.y.cur * dt * 20;
+			p.speed.x.cur += this.gravity.x.cur * dt * 5;
+			p.speed.y.cur += this.gravity.y.cur * dt * 5;
 		}
 
 		//后坐力
@@ -345,7 +347,7 @@ Q.core = Q.Evented.extend({
 	
 	update_bullet_physics:function (b,dt) {
 		if (this.gravity && this.gravity_clock > 0) {
-			let v_speed = v_a(v_n(b.dir, b.speed), {x:this.gravity.x.cur*dt*10,y:this.gravity.y.cur*dt*10});
+			let v_speed = v_a(v_n(b.dir, b.speed), {x:this.gravity.x.cur*dt*8,y:this.gravity.y.cur*dt*8});
 			b.dir = v_normal(v_speed);
 			b.speed = v_mod(v_speed);
 		}
@@ -516,7 +518,7 @@ Q.core = Q.Evented.extend({
 			this.add_player(p.id, p.code, true, true);
 		}
 		if (tid === 'heal' && p.health) {
-			p.health.cur = Math.min(p.health.cur + 30, p.health.max);
+			p.health.cur = Math.min(p.health.cur + 100, p.health.max);
 		}
 		if (tid === 'invisible') {
 			p.invisible_clock = 10;
