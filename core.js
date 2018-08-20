@@ -288,8 +288,8 @@ Q.core = Q.Evented.extend({
 			is_no_x = false;
 			is_no_y = false;
 			speed_limit = false;
-			p.speed.x.cur += this.gravity.x.cur * dt;
-			p.speed.y.cur += this.gravity.y.cur * dt;
+			p.speed.x.cur += this.gravity.x.cur * dt * 10;
+			p.speed.y.cur += this.gravity.y.cur * dt * 10;
 		}
 
 		//后坐力
