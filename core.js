@@ -183,7 +183,7 @@ Q.core = Q.Evented.extend({
 		this.tools = [];
 		this.terrain = [];
 		this.genwpn={cur:0,max:300};
-		this.gentool={cur:0,max:600};
+		this.gentool={cur:0,max:400};
 		this.generate_terrain();
 		this.renderer = new Q.renderer(enviroment,size,block_size,this.terrain);
 		this.running = false;
@@ -221,8 +221,9 @@ Q.core = Q.Evented.extend({
 		if (!this.players[pid]) this.player_count++;
 
 		if (ghost && ghost===true) {
-			this.players[pid].ghost = new Q.Player(pid);
 			let p = this.players[pid];
+			while (p.ghost) p = p.ghost;
+			p.ghost = new Q.Player(pid);
 			let g = p.ghost;
 			g.auto = new Q.Auto_player(proto);
 			g.color = this.players[pid].color;
