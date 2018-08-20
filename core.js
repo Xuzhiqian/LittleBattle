@@ -465,8 +465,6 @@ Q.core = Q.Evented.extend({
 		if (_ammo!=undefined && _ammo<=0) return;
 		let pos = _pos || this.random_pos();
 		let id = _id || weapons[Math.floor(Math.random()*weapons.length)];
-		console.log(_id);
-		console.log(id);
 		let new_wpn = new Q.weapon(pos, id, Q.weapon_ammo[id]);
 		this.weapons.push(new_wpn);
 	},
@@ -599,7 +597,7 @@ Q.core = Q.Evented.extend({
 			for (var id in this.tools) {
 				let t = this.tools[id];
 				if (t && t.id) {
-					weapons.push({
+					tools.push({
 						id : t.id,
 						pos : {
 							x : t.pos.x,
