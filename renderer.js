@@ -99,6 +99,17 @@ Q.renderer = Q.GameObject.extend({
 		ctx.restore();
 	},
 
+	render_tool:function (tool) {
+		if (!tool) return;
+		var ctx = this.ctx;
+
+		ctx.save();
+		ctx.translate(tool.pos.x, tool.pos.y);
+		var img = document.getElementById(tool.id);
+		ctx.drawImage(img,0,0,35,35);
+		ctx.restore();
+	}
+
 	render_bullet: function (bullet) {
 		if (!bullet) return;
 
@@ -208,7 +219,7 @@ Q.renderer = Q.GameObject.extend({
 		this.ctx.restore();
 	},
 
-	render: function (players,bullets,weapons,clock,dt) {
+	render: function (players,bullets,weapons,tools,clock,dt) {
 
 		this.ctx.clearRect(0, 0, this.map.width, this.map.height);
 		
@@ -235,5 +246,8 @@ Q.renderer = Q.GameObject.extend({
 		
 		for (var index in weapons)
 			this.render_weapon(weapons[index]);
+
+		for (var index in tools)
+			this.render_tool(tools[index]);
 	}
 });

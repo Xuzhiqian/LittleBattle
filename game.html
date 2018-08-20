@@ -49,6 +49,12 @@
   <img id="Grenade" src="img/Grenade.png"/>
   <img id="DeathGrenade" src="img/DeathGrenade.png"/>
   <img id="Seeker" src="img/Seeker.png"/>
+  <img id="jet" src="img/jet.png"/>
+  <img id="gravity" src="img/gravity.png"/>
+  <img id="bounce" src="img/bounce.png"/>
+  <img id="heal" src="img/heal.png"/>
+  <img id="invisible" src="img/invisible.png"/>
+  <img id="clone" src="img/clone.png"/>
 </div>
 
     <div class="gameover">
@@ -175,6 +181,19 @@ var tank = {
 }</code></pre>
 
             <p>场上有可被拾取的武器时触发</p>
+        </li>
+        <li>onToolSpotted
+            <h4>示例</h4>
+    
+            <pre><code>onToolSpotted : function(tools) {
+    //tools[0]表示tools数组中的第一个道具
+    //获取tools数组长度：tools.length
+    //获取第一个道具的属性：
+    //位置：tools[0].pos.x和tools[0].pos.y
+    //名称：tools[0].id
+}</code></pre>
+
+            <p>场上有可被拾取的道具时触发</p>
         </li>
     </ul>
 

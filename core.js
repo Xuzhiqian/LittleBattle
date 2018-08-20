@@ -13,9 +13,12 @@ var v_a=function (a, b) {
 		return {x: a.x * b, y: a.y * b}
 	},
 	v_normal=function (a) {
-		var s = Math.sqrt(power2(a.x)+power2(a.y));
+		var s = v_mod(a);
 		return {x:a.x/s,y:a.y/s};
-	}
+	},
+	v_mod=function(a) {
+		return Math.sqrt(power2(a.x)+power2(a.y));
+	},
 	power2 = function (a) {
 		return a * a;
 	},
@@ -54,7 +57,6 @@ var newOp = function() {
 Q.Player = Q.GameObject.extend({
 	init: function(pid) {
 		this.id = pid;
-		this.pos = this.random_pos();
 		this.health = {cur: 100, max: 100};
 		this.speed = {x: {cur: 0, max: speed_max, acc: speed_acc}, y: {cur: 0, max: speed_max, acc: speed_acc}};
 		this.hit = [0,0,0,0];
@@ -231,6 +233,7 @@ Q.core = Q.Evented.extend({
 
 		p = this.players[pid];
 		p.color = Math.floor(Math.random()*11);
+		p.pos = this.random_pos();
 		p.code = code;
 		this.stat[pid] = {
 			kill : 0,
@@ -276,13 +279,23 @@ Q.core = Q.Evented.extend({
 	},
 
 	update_player_physics: function (p, dt, is_no_x, is_no_y, is_no_j) {
-		
+		let speed_limit = true;
+		if (this.gravity && this.gravity_clock > 0 && this.gravity_immune_id && this.gravity_immune_id !== p.id) {
+			is_no_x = false;
+			is_no_y = false;
+			speed_limit = false;
+			p.speed.x.cur += this.gravity.x.cur * dt;
+			p.speed.y.cur += this.gravity.y.cur * dt;
+		}
+
 		//后坐力
 		if (!is_no_j) {
 			p.speed.x.cur -= Math.cos(p.dir) * p.prop.recoil * 10;
 			p.speed.y.cur -= Math.sin(p.dir) * p.prop.recoil * 10;
-			p.speed.x.cur = Math.max(Math.min(p.speed.x.cur,p.speed.x.max),-p.speed.x.max);
-			p.speed.y.cur = Math.max(Math.min(p.speed.y.cur,p.speed.y.max),-p.speed.y.max);
+			if (speed_limit) {
+				p.speed.x.cur = Math.max(Math.min(p.speed.x.cur,p.speed.x.max),-p.speed.x.max);
+				p.speed.y.cur = Math.max(Math.min(p.speed.y.cur,p.speed.y.max),-p.speed.y.max);
+			}
 		}
 		else {
 			//粘滞阻力
@@ -327,6 +340,11 @@ Q.core = Q.Evented.extend({
 	},
 	
 	update_bullet_physics:function (b,dt) {
+		if (this.gravity && this.gravity_clock > 0) {
+			let v_speed = v_a(v_n(b.dir, b.speed), {x:this.gravity.x.cur*dt,y:this.gravity.y.cur*dt});
+			b.dir = v_normal(v_speed);
+			b.speed = v_mod(v_speed);
+		}
 		b.pos = v_a(b.pos, v_n(b.dir, dt * b.speed));
 
 		if (b.pos.x < 0 || b.pos.x > this.width)
@@ -512,7 +530,23 @@ Q.core = Q.Evented.extend({
 			p.speed.x.acc = p.speed.x.acc + speed_acc;
 			p.speed.y.acc = p.speed.y.acc + speed_acc;
 		}
+		if (tid === 'gravity' && !this.gravity && !this.gravity_clock && !this.gravity_immune_id) {
+			this.gravity_clock = 10;
+			this.gravity_immune_id = p.id;
+			this.gravity = p.speed;
+		}
 
+	},
+
+	update_clocks: function(dt) {
+		this.clock -= dt;
+
+		this.gravity_clock -= dt;
+		if (this.gravity_clock <= 0) {
+			delete this.gravity;
+			delete this.gravity_clock;
+			delete this.gravity_immune_id;
+		}
 	},
 
 	update: function (dt) {
@@ -521,13 +555,13 @@ Q.core = Q.Evented.extend({
 			this.update_tools();
 			this.update_players(dt);
 			this.update_bullets(dt);
-			this.clock -= dt;
+			this.update_clocks(dt);
 			if (this.clock <= 0) {
 				this.gameover();
 				return;
 			}
 		}
-		this.renderer.render(this.players,this.bullets,this.weapons,this.clock,dt);
+		this.renderer.render(this.players,this.bullets,this.weapons,this.tools,this.clock,dt);
 	},
 	
 	trigger_events: function(p, auto) {
@@ -556,6 +590,24 @@ Q.core = Q.Evented.extend({
 			}
 			if (weapons.length>0)
 				auto.onWeaponSpotted(weapons);
+		}
+
+		if (auto.onToolSpotted) {
+			let tools = [];
+			for (var id in this.tools) {
+				let t = this.tools[id];
+				if (t && t.id) {
+					weapons.push({
+						id : t.id,
+						pos : {
+							x : t.pos.x,
+							y : t.pos.y
+						}
+					});
+				}
+			}
+			if (tools.length>0)
+				auto.onToolSpotted(tools);
 		}
 
 		if (auto.onEnemySpotted) {
