@@ -559,7 +559,7 @@ Q.core = Q.Evented.extend({
 			"-webkit-transform":"rotate("+r+"rad)", /* Safari 和 Chrome */
 			"-o-transform":"rotate("+r+"rad)" /* Opera */
 		});
-	}
+	},
 
 	update: function (dt) {
 		if (this.running) {
