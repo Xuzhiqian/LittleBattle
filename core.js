@@ -969,14 +969,14 @@ Q.weapon_ammo['M416']=30;
 
 Q.weapon_data['Groza']=function(){ return {
 			speed : 330,
-			reload : 0.26,
+			reload : 0.36,
 			bias : 1,
 			life : 6,
 			damage : 10,
 			recoil : 0.2,
 			penetrate : false,
 			bounce : false,
-			bundle : 40,
+			bundle : 36,
 		}};
 Q.weapon_ammo['Groza']=20;
 
