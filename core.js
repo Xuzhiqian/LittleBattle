@@ -884,8 +884,9 @@ Q.core = Q.Evented.extend({
 			if (this.stat[oid]) this.stat[oid].kill++;
 			if (this.players[p.id].health.cur<=0) {
 				this.stat[p.id].death++;
-				this.remove_player(p.id);
 				console.log(this.players[p.id]);
+				this.remove_player(p.id);
+				
 			}
 		}
 	}
