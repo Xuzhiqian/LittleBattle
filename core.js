@@ -208,9 +208,9 @@ Q.core = Q.Evented.extend({
 		
 		let proto;
 		let auto;
-		code = "()=>{" + code + "return tank;}";
+		let com_code = "()=>{" + code + "return tank;}";
 		try {
-			proto = eval(code)();
+			proto = eval(com_code)();
 		}
 		catch(err) {
 			if (!silent)
@@ -228,7 +228,7 @@ Q.core = Q.Evented.extend({
 			g.color = this.players[pid].color;
 			g.health = {cur:p.health.cur,max:p.health.max};
 			g.pos = {x:p.pos.x,y:p.pos.y};
-			g.code = p.code;
+			g.code = code;
 			return;
 		}
 		this.players[pid] = new Q.Player(pid);
