@@ -228,7 +228,6 @@ Q.core = Q.Evented.extend({
 			g.auto = new Q.Auto_player(proto);
 			g.color = this.players[pid].color;
 			g.health = {cur:p.health.cur,max:p.health.max};
-			p.health.cur = p.health.max;
 			g.pos = {x:p.pos.x,y:p.pos.y};
 			g.code = code;
 			return;
@@ -513,7 +512,7 @@ Q.core = Q.Evented.extend({
 	},
 
 	player_get_tool: function(p, tid) {
-		if (tid === 'clone' && !p.ghost) {
+		if (tid === 'clone') {
 			this.add_player(p.id, p.code, true, true);
 		}
 		if (tid === 'heal' && p.health) {
@@ -882,11 +881,19 @@ Q.core = Q.Evented.extend({
 		this.renderer.add_animation('player','underatk',p);
 		if (p.health.cur <= 0) {
 			if (this.stat[oid]) this.stat[oid].kill++;
-			if (this.players[p.id].health.cur<=0) {
+			if (this.players[p.id].health.cur <= 0) {
 				this.stat[p.id].death++;
-				console.log(this.players[p.id]);
 				this.remove_player(p.id);
-				
+			}
+			else {
+				let f = this.players[p.id];
+				let g = f.ghost;
+				while (g.health.cur > 0 && g.ghost) {
+					f = g;
+					g = g.ghost;
+				}
+				if (g.health.cur <= 0)
+					f.ghost = g.ghost;
 			}
 		}
 	}
