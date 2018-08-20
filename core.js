@@ -867,6 +867,7 @@ Q.core = Q.Evented.extend({
 				let flag = this.bullet_check_hit_core(bullet, p);
 				while (p.ghost && !flag) {
 					flag = this.bullet_check_hit_core(bullet, p.ghost);
+					p = p.ghost;
 				}
 				if (flag) return;
 			}
