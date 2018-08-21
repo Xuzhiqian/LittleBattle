@@ -569,7 +569,7 @@ Q.core = Q.Evented.extend({
 
 	player_get_tool: function(p, tid) {
 		if (tid === 'clone') {
-			this.add_player(p.id, p.code, ,true, true);
+			this.add_player(p.id, p.code, null,true, true);
 		}
 		if (tid === 'heal' && p.health) {
 			p.health.cur = Math.min(p.health.cur + 200, p.health.max);
