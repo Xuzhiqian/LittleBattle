@@ -84,7 +84,7 @@ io.on("connection", function (socket) {
 		connection.query(sql, function(error, results, fields){
 			if (error) throw error;
 			if (results[0]!=undefined && results[0].code != undefined)
-				socket.emit('recv_code', {id:results[0].id,code:results[0].code,score:results[0].score});
+				socket.emit('recv_code', {id:id,code:results[0].code,score:results[0].score});
 			else
 				socket.emit('unauthorized');
 		});
