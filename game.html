@@ -379,7 +379,7 @@ var tank = {
                 let stat = [];
                 for (var id in _stat)
                     if (_stat[id] && _stat[id].kill>=0)
-                        stat.push([id, _stat[id].kill, _stat[id].death, _stat[id].kill / (_stat[id].death===0 ? 1 : _stat[id].death), _stat[id].score, _stat[id].output]);
+                        stat.push([id, _stat[id].kill, _stat[id].death, _stat[id].kill / (_stat[id].death===0 ? 1 : _stat[id].death), _stat[id].d_score, _stat[id].output]);
                 stat.sort((a, b)=>{
                 	if (a[4] < b[4])
                 		return 1;
@@ -410,7 +410,7 @@ var tank = {
 
                 for (let i = 0; i < stat.length; i++)
                     if (stat[i]!=undefined)
-                        list.innerHTML = list.innerHTML + "<li><span>" + (i + 1) + "</span><span>" + stat[i][0] + "</span><span>" + stat[i][1] + "/" + stat[i][2] + "</span><span>" + stat[i][5] + "</span><span>" + stat[i][4] + "</span></li>";
+                        list.innerHTML = list.innerHTML + "<li><span>" + (i + 1) + "</span><span>" + stat[i][0] + "</span><span>" + stat[i][1] + "/" + stat[i][2] + "</span><span>" + stat[i][5] + "</span><span>" + (stat[i][4]>0?'+':'') + stat[i][4] + "</span></li>";
                 socket.emit('update_data', stat);
 
             }
@@ -424,16 +424,18 @@ var tank = {
 
 
         <script>
+        var my_score = 1000;
         var enviroment = {
                 map: document.getElementById('map'),
                 ctx: map.getContext('2d')
         };
         core = new Q.core(enviroment,{width:600,height:600},{width:20,height:20},gameover);
         socket.emit("fetch_init_code", localStorage.curUser);
-        socket.on('init_code', (code)=>{
-            if (code.length > 5)
-                editor.setValue(code);
-            core.add_player(localStorage.curUser, editor.getValue());
+        socket.on('init_code', (result)=>{
+            if (result.code.length > 5)
+                editor.setValue(result.code);
+            core.add_player(localStorage.curUser, editor.getValue(), result.score);
+            my_score = result.score;
         });
         socket.on('unauthorized', ()=>{
             window.location.href = "login.html";
@@ -491,11 +493,11 @@ var tank = {
         });
 
         socket.on('recv_code', (user)=>{
-            core.add_player(user.id, user.code);
+            core.add_player(user.id, user.code, user.score);
         });
         socket.on('recv_all_code', (results)=>{
             for (let i=0;i<results.length;i++)
-                core.add_player(results[i].id, results[i].code, true);
+                core.add_player(results[i].id, results[i].code, results[i].score, true);
         });
     </script>
     <script>
@@ -505,7 +507,7 @@ var tank = {
             window.current_code = editor.getValue();
 
             core.init(enviroment,{width:600,height:600},{width:20,height:20},gameover);
-            core.add_player(localStorage.curUser, window.current_code);
+            core.add_player(localStorage.curUser, window.current_code, my_score);
 
             socket.emit("update_code", {id:localStorage.curUser, code:window.current_code});
 

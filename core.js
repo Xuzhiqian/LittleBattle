@@ -28,6 +28,9 @@ var v_a=function (a, b) {
 	lerp = function(a,b,k) {
 		if (k>1) return b;
 		return a+(b-a)*k;
+	},
+	f_score = function(x) {
+		return -142.8959*Math.exp(-0.3437*x)+121.3334;
 	};
 
 
@@ -49,6 +52,7 @@ var prop_org = function(){
 };
 var speed_max = 120;
 var speed_acc = 180;
+var max_health = 300;
 var newOp = function() {
 	let op = [];
 	for (let i=0;i<=5;i++)
@@ -59,7 +63,7 @@ var newOp = function() {
 Q.Player = Q.GameObject.extend({
 	init: function(pid) {
 		this.id = pid;
-		this.health = {cur: 300, max: 300};
+		this.health = {cur: max_health, max: max_health};
 		this.speed = {x: {cur: 0, max: speed_max, acc: speed_acc}, y: {cur: 0, max: speed_max, acc: speed_acc}};
 		this.hit = [0,0,0,0];
 		this.dir = 0;
@@ -197,6 +201,49 @@ Q.core = Q.Evented.extend({
 	},
 
 	compute_score: function() {
+		let n = 0;
+		let total_socre = 0;
+		let winner = [];
+		for (let id in this.stat)
+			if (this.stat[id] && this.stat[id].score) {
+				n++;
+				total_socre += this.stat[id].score;
+				if (this.players[id] && this.players[id].health && this.players[id].health.cur > 0) {
+					winner.push(this.players[id]);
+				}
+			}
+
+		winner.sort((a, b)=>{
+			if (a.health.cur < b.health.cur)
+				return 1;
+			else (a.health.cur > b.health.cur)
+				return -1;
+			else if (this.stat[a.id].kill < this.stat[b.id])
+				return 1;
+			else if (this.stat[a.id].kill > this.stat[b.id])
+				return -1;
+			else if (this.stat[a.id].output < this.stat[b.id].output)
+				return 1;
+			else if (this.stat[a.id].output > this.stat[b.id].output)
+				return -1;
+			else
+				return 0;
+		});
+		let winner_id = winner[0].id;
+
+		for (let id in this.stat)
+			if (this.stat[id] && this.stat[id].score) {
+				let score0 = this.stat[id].score;
+				let score1 = (total - score0)/(n-1);
+				let k = this.stat[id].kill;
+				let d = this.stat[id].death === 0 ? 1 : this.stat[id].death;
+				let o = this.stat[id].output / max_health;
+
+				if (id === winner_id)
+					this.stat[id].d_score = Math.round(Math.max(0, f_score(score1/score0))*(0.5*k+o)/(1.5*d));
+				else
+					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1))+(0.5*k+o)/(1.5*d));
+			}
 	},
 
 	gameover: function(fail_id) {
@@ -205,12 +252,13 @@ Q.core = Q.Evented.extend({
 		this.clock = 100;
 		if (fail_id!=undefined)
 			this.callback(fail_id, true);
-		else
+		else {
 			this.compute_score();
-			//this.callback(this.stat);
+			this.callback(this.stat);
+		}
 	},
 
-	add_player: function (pid, code, silent, ghost) {
+	add_player: function (pid, code, score, silent, ghost) {
 		
 		let proto;
 		let auto;
@@ -249,7 +297,7 @@ Q.core = Q.Evented.extend({
 			kill : 0,
 			death : 0,
 			output : 0,
-			score : 0
+			score : score
 		};
 	},
 
@@ -521,7 +569,7 @@ Q.core = Q.Evented.extend({
 
 	player_get_tool: function(p, tid) {
 		if (tid === 'clone') {
-			this.add_player(p.id, p.code, true, true);
+			this.add_player(p.id, p.code, ,true, true);
 		}
 		if (tid === 'heal' && p.health) {
 			p.health.cur = Math.min(p.health.cur + 200, p.health.max);
