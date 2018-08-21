@@ -133,7 +133,7 @@ Q.bullet = Q.GameObject.extend({
 
 		this.speed = p.prop.speed;
 		this.life = {cur: 0, max: p.prop.life};
-		this.bounce = p.prop.bounce || (p.bounce_clock && p.bounce_clock > 0);
+		this.bounce = p.prop.bounce || p.bounce;
 		this.damage = p.prop.damage;
 		this.color = p.color;
 		this.penetrate = p.prop.penetrate;
@@ -181,8 +181,9 @@ Q.core = Q.Evented.extend({
 		this.player_count = 0;
 		this.clock = 100;
 		delete this.gravity;
-		delete this.gravity_clock;
+		delete this.gravity_immune_id;
 		this.stat = [];
+		this.timers = [];
 		this.players = [];
 		this.bullets = [];
 		this.weapons = [];
@@ -301,6 +302,10 @@ Q.core = Q.Evented.extend({
 		};
 	},
 
+	add_timer : function(callback, timeout) {
+		this.timers.push({clock:timeout,callback:callback});
+	},
+
 	remove_player: function (pid) {
 		delete this.players[pid].auto;
 		delete this.players[pid];
@@ -340,7 +345,7 @@ Q.core = Q.Evented.extend({
 
 	update_player_physics: function (p, dt, is_no_x, is_no_y, is_no_j) {
 		let speed_limit = true;
-		if (this.gravity && this.gravity_clock > 0 && this.gravity_immune_id && this.gravity_immune_id !== p.id) {
+		if (this.gravity && this.gravity_immune_id && this.gravity_immune_id !== p.id) {
 			is_no_x = false;
 			is_no_y = false;
 			speed_limit = false;
@@ -400,7 +405,7 @@ Q.core = Q.Evented.extend({
 	},
 	
 	update_bullet_physics:function (b,dt) {
-		if (this.gravity && this.gravity_clock > 0) {
+		if (this.gravity) {
 			let v_speed = v_a(v_n(b.dir, b.speed), {x:this.gravity.x.cur*dt*8,y:this.gravity.y.cur*dt*8});
 			b.dir = v_normal(v_speed);
 			b.speed = v_mod(v_speed);
@@ -567,7 +572,9 @@ Q.core = Q.Evented.extend({
 		}
 	},
 
+
 	player_get_tool: function(p, tid) {
+
 		if (tid === 'clone') {
 			this.add_player(p.id, p.code, null,true, true);
 		}
@@ -575,34 +582,50 @@ Q.core = Q.Evented.extend({
 			p.health.cur = Math.min(p.health.cur + 200, p.health.max);
 		}
 		if (tid === 'invisible') {
-			p.invisible_clock = 10;
+			p.invisible = true;
+			this.add_timer(()=>{delete p.invisible}, 10);
 		}
 		if (tid === 'bounce') {
-			p.bounce_clock = 15;
+			p.bounce = true;
+			this.add_timer(()=>{delete p.bounce}, 15);
 		}
 		if (tid === 'jet') {
-			p.jet_clock = 10;
 			p.speed.x.max = p.speed.x.max + speed_max;
 			p.speed.y.max = p.speed.y.max + speed_max;
 			p.speed.x.acc = p.speed.x.acc + speed_acc;
 			p.speed.y.acc = p.speed.y.acc + speed_acc;
+
+			this.add_timer(()=>{
+				p.speed.x.max = p.speed.x.max - speed_max;
+				p.speed.y.max = p.speed.y.max - speed_max;
+				p.speed.x.acc = p.speed.x.acc - speed_acc;
+				p.speed.y.acc = p.speed.y.acc - speed_acc;
+			}, 15);
 		}
-		if (tid === 'gravity' && !this.gravity && !this.gravity_clock && !this.gravity_immune_id) {
-			this.gravity_clock = 10;
+		if (tid === 'gravity' && !this.gravity && !this.gravity_immune_id) {
+
 			this.gravity_immune_id = p.id;
 			this.gravity = p.speed;
+			this.add_timer((()=>{
+				delete this.gravity_immune_id;
+				delete this.gravity;
+			}).bind(this), 10);
 		}
 
 	},
 
 	update_clocks: function(dt) {
 		this.clock -= dt;
-
-		this.gravity_clock -= dt;
-		if (this.gravity_clock <= 0) {
-			delete this.gravity;
-			delete this.gravity_clock;
-			delete this.gravity_immune_id;
+		let i = 0;
+		while (i < this.timers.length) {
+			let t = this.timers[i];
+			t.clock -= dt;
+			if (t.clock <= 0) {
+				t.callback();
+				this.timers.splice(i, 1);
+			}
+			else
+				i++;
 		}
 	},
 
@@ -672,7 +695,7 @@ Q.core = Q.Evented.extend({
 			for (var id in this.players) {
 				let q = this.players[id];
 
-				if (id !== p.id && q.pos && q.speed && !(q.invisible_clock && q.invisible_clock>0)) {
+				if (id !== p.id && q.pos && q.speed && !q.invisible) {
 
 					enemies.push({
 						pos : {
@@ -732,26 +755,6 @@ Q.core = Q.Evented.extend({
 		}
 		p.fireCD = Math.max(0, p.fireCD - dt);
 
-		if (p.invisible_clock && p.invisible_clock > 0) {
-			p.invisible_clock -= dt;
-			if (p.invisible_clock <= 0)
-				delete p.invisible_clock;
-		}
-		if (p.bounce_clock && p.bounce_clock > 0) {
-			p.bounce_clock -= dt;
-			if (p.bounce_clock <= 0)
-				delete p.bounce_clock;
-		}
-		if (p.jet_clock && p.jet_clock > 0) {
-			p.jet_clock -= dt;
-			if (p.jet_clock <= 0) {
-				delete p.jet_clock;
-				p.speed.x.max = p.speed.x.max - speed_max;
-				p.speed.y.max = p.speed.y.max - speed_max;
-				p.speed.x.acc = p.speed.x.acc - speed_acc;
-				p.speed.y.acc = p.speed.y.acc - speed_acc;
-			}
-		}
 
 		if (a.msg.left_time > 0) {
 			a.msg.left_time-=dt;
@@ -962,11 +965,11 @@ Q.core = Q.Evented.extend({
 Q.weapon_data = [];
 Q.weapon_ammo = [];
 Q.weapon_data['Vector']=function(){ return {
-			speed : 300,
+			speed : 360,
 			reload : 0.05,
 			bias : 0.03,
 			life : 7,
-			damage : 2,
+			damage : 4,
 			recoil : 0,
 			size : 1.5,
 			penetrate : false,
@@ -989,7 +992,7 @@ Q.weapon_ammo['Micro_Uzi']=200;
 //突击步枪
 Q.weapon_data['AKM']=function(){ return {
 			speed : 300,
-			reload : 0.25,
+			reload : 0.2,
 			bias : 0.1,
 			life : 8,
 			damage : 25,
@@ -1026,7 +1029,7 @@ Q.weapon_ammo['M416']=30;
 
 Q.weapon_data['Groza']=function(){ return {
 			speed : 330,
-			reload : 0.36,
+			reload : 0.3,
 			bias : 1,
 			life : 6,
 			damage : 10,
@@ -1035,7 +1038,7 @@ Q.weapon_data['Groza']=function(){ return {
 			bounce : false,
 			bundle : 36,
 		}};
-Q.weapon_ammo['Groza']=20;
+Q.weapon_ammo['Groza']=12;
 
 //狙击步枪
 Q.weapon_data['Kar-98K']=function(){ return {
@@ -1081,8 +1084,8 @@ Q.weapon_data['S1897']=function(){ return {
 Q.weapon_ammo['S1897']=10;
 
 Q.weapon_data['S686']=function(){ return {
-			speed : 620,
-			reload : 2,
+			speed : 720,
+			reload : 2.2,
 			bias : 0.3,
 			life : 3,
 			damage : 32,
@@ -1090,7 +1093,7 @@ Q.weapon_data['S686']=function(){ return {
 			size : 5,
 			penetrate : false,
 			bounce : false,
-			bundle : 12
+			bundle : 15
 		}};
 Q.weapon_ammo['S686']=8;
 
