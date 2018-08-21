@@ -70,7 +70,7 @@ io.on("connection", function (socket) {
 
 	socket.on('get_repo', ()=>{
 
-		let sql = "SELECT id, num_kill, num_death FROM main;";
+		let sql = "SELECT id, num_kill, num_death, score FROM main;";
 
 		connection.query(sql, function(error, results, fields){
 			if (error) throw error;

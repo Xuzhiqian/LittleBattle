@@ -4,14 +4,14 @@
 		box-sizing: border-box;
 	}
 #repo {
-		-moz-transform: translateX(-30em);
-		-webkit-transform: translateX(-30em);
-		-ms-transform: translateX(-30em);
-		transform: translateX(-30em);
-		-moz-transition: -moz-transform 0.5s ease;
-		-webkit-transition: -webkit-transform 0.5s ease;
-		-ms-transition: -ms-transform 0.5s ease;
-		transition: transform 0.5s ease;
+		-moz-transform: translateX(-40em);
+		-webkit-transform: translateX(-40em);
+		-ms-transform: translateX(-40em);
+		transform: translateX(-40em);
+		-moz-transition: -moz-transform 0.6s ease;
+		-webkit-transition: -webkit-transform 0.6s ease;
+		-ms-transition: -ms-transform 0.6s ease;
+		transition: transform 0.6s ease;
 		-webkit-overflow-scrolling: touch;
 		background: #6495ed;
 		color: #ffffff;
