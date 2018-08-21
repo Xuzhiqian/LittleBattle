@@ -202,12 +202,12 @@ Q.core = Q.Evented.extend({
 
 	compute_score: function() {
 		let n = 0;
-		let total_socre = 0;
+		let total_score = 0;
 		let winner = [];
 		for (let id in this.stat)
 			if (this.stat[id] && this.stat[id].score) {
 				n++;
-				total_socre += this.stat[id].score;
+				total_score += this.stat[id].score;
 				if (this.players[id] && this.players[id].health && this.players[id].health.cur > 0) {
 					winner.push(this.players[id]);
 				}
