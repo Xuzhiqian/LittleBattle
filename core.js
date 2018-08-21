@@ -237,12 +237,12 @@ Q.core = Q.Evented.extend({
 				let score1 = (total_score - score0)/(n-1);
 				let k = this.stat[id].kill;
 				let d = this.stat[id].death === 0 ? 1 : this.stat[id].death;
-				let o = 2* this.stat[id].output / max_health;
+				let o = this.stat[id].output / max_health;
 
 				if (id === winner_id)
 					this.stat[id].d_score = Math.round(Math.max(0, f_score(score1/score0))*(0.5*k+o)/(1.5*d));
 				else
-					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1))+10*(0.5*k+o)/d);
+					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1))+10*(k+o)/d);
 			}
 	},
 
