@@ -234,7 +234,7 @@ Q.core = Q.Evented.extend({
 		for (let id in this.stat)
 			if (this.stat[id] && this.stat[id].score) {
 				let score0 = this.stat[id].score;
-				let score1 = (total - score0)/(n-1);
+				let score1 = (total_score - score0)/(n-1);
 				let k = this.stat[id].kill;
 				let d = this.stat[id].death === 0 ? 1 : this.stat[id].death;
 				let o = this.stat[id].output / max_health;
