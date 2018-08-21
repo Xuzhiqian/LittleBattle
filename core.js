@@ -240,7 +240,7 @@ Q.core = Q.Evented.extend({
 				let o = this.stat[id].output / max_health;
 
 				if (id === winner_id)
-					this.stat[id].d_score = Math.round(Math.max(0, f_score(score1/score0))*(0.5*k+o)/(1.5*d));
+					this.stat[id].d_score = Math.round(Math.max(0, f_score(score1/score0))*(k+o)/(d));
 				else
 					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1))+10*(k+o)/d);
 			}
