@@ -4,10 +4,10 @@
 		box-sizing: border-box;
 	}
 #repo {
-		-moz-transform: translateX(-40em);
-		-webkit-transform: translateX(-40em);
-		-ms-transform: translateX(-40em);
-		transform: translateX(-40em);
+		-moz-transform: translateX(-32em);
+		-webkit-transform: translateX(-32em);
+		-ms-transform: translateX(-32em);
+		transform: translateX(-32em);
 		-moz-transition: -moz-transform 0.6s ease;
 		-webkit-transition: -webkit-transform 0.6s ease;
 		-ms-transition: -ms-transform 0.6s ease;
@@ -22,7 +22,7 @@
 		position: fixed;
 		left: 0;
 		top: 47.7px;
-		width: 40em;
+		width: 32em;
 		z-index: 10002;
 	}
 
