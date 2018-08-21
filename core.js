@@ -216,7 +216,7 @@ Q.core = Q.Evented.extend({
 		winner.sort((a, b)=>{
 			if (a.health.cur < b.health.cur)
 				return 1;
-			else (a.health.cur > b.health.cur)
+			else if (a.health.cur > b.health.cur)
 				return -1;
 			else if (this.stat[a.id].kill < this.stat[b.id])
 				return 1;
