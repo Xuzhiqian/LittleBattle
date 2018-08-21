@@ -144,7 +144,7 @@ Q.renderer = Q.GameObject.extend({
 		ctx.save();
 
 		ctx.globalAlpha = this.render_list[player.id]?(this.render_list[player.id].alpha || 1):player.alpha;
-		if (player.invisible_clock && player.invisible_clock > 0)
+		if (player.invisible)
 			ctx.globalAlpha = 0.25;
 
 			//画布偏移，以玩家为中心
