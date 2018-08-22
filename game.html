@@ -97,6 +97,7 @@
                             <li id="againBtn" class="button info fit">AGAIN</li>
                             <li id="clearBtn" class="button info fit">CLEAR</li>
                             <a id="repoBtn" href="#repo" class="button info fit">ADD</a>
+                            <li id="autoBtn" class="button info fit" style="float:right">AUTO</li>
                             
                         </ul>
                         <div id="editor">
@@ -452,7 +453,12 @@ var tank = {
             else {
                 list.innerHTML = "<li>An error ocurred due to " + _stat + "’s fucking code. Competition aborted.</li>";
             }
-                $('.gameover').show();   
+            	if (!auto_game)
+                	$('.gameover').show();
+                else {
+                	$("#againBtn").click();
+                	$("#controlBtn").click();
+                }   
             };
         </script>
 
@@ -542,6 +548,8 @@ var tank = {
     <script>
     	var last_players = [];
         var controlBtn = document.getElementById("controlBtn");
+        var autoBtn = document.getElementById("autoBtn");
+        var auto_game = false;
         var restart = function() {
         	if (core.competing) {
         		alert('别当逃兵哦！');
@@ -587,6 +595,16 @@ var tank = {
         	last_players.forEach((id)=>{
         		socket.emit('fetch_code', id);
         	});
+        });
+        $("#autoBtn").on('click', ()=>{
+        	if (auto_game === true) {
+        		auto_game = false;
+        		autoBtn.innerHTML = "AUTO";
+        	}
+        	else {
+        		auto_game = true;
+        		autoBtn.innerHTML = "MANUAL";
+        	}
         });
     </script>
 
