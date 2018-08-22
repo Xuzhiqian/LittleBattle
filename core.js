@@ -283,6 +283,7 @@ Q.core = Q.Evented.extend({
 	gameover: function(fail_id) {
 		this.finished = true;
 		this.running = false;
+		this.competing = false;
 		this.clock = 100;
 		if (fail_id!=undefined)
 			this.callback(fail_id, true);
