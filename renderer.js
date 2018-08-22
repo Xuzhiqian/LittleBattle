@@ -1,5 +1,5 @@
 var delta_degree=2 * Math.PI / 360 * 100,
-	color_table = ['aqua', 'Aquamarine', 'Chartreuse', 'Coral', 'LightCyan', 'LightSlateBlue', 'RoyalBlue', 'Violet', 'VioletRed', 'Purple', 'orange'],	
+	color_table = ['aqua', 'Aquamarine', 'Chartreuse', 'Coral', 'LightCyan', 'LightSlateBlue', 'RoyalBlue', 'Violet', 'VioletRed', 'Purple', 'orange'];
 
 Q.renderer = Q.GameObject.extend({
 	init: function (enviroment,size,block_size,terrain) {

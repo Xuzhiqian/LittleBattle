@@ -1116,7 +1116,7 @@ Q.weapon_data['S1897']=function(){ return {
 			ammo : 10
 		}};
 Q.weapon_data['S686']=function(){ return {
-			size : 2.8
+			size : 2.8,
 			speed : 720,
 			reload : 2.2,
 			bias : 0.3,
