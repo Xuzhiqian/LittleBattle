@@ -816,6 +816,7 @@ Q.core = Q.Evented.extend({
 		a.bullet_speed = p.prop.speed;
 		a.dt = dt;
 		a.speed = {x:p.speed.x.cur, y:p.speed.y.cur};
+		a.acc = {x:p.speed.x.acc, y:p.speed.y.acc};
 	},
 
 	replace_context: function(p, a) {
