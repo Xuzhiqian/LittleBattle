@@ -836,7 +836,7 @@ Q.core = Q.Evented.extend({
 					p.pos = {x:Number(a.opSkillArgs[0]) || 300,
 							 y:Number(a.opSkillArgs[1]) || 300};
 				delete a.opSkillArgs;
-				p.skillCD = 12;
+				p.skillCD = 10;
 			}
 		}
 		p.skillCD = Math.max(0, p.skillCD - dt);
