@@ -74,6 +74,15 @@ var prop_special = function(prop, cha) {
 		s.recoil *= 0.5;
 		s.ammo = Math.round(s.ammo * 1.5);
 	}
+	if (cha === 'sorcerer') {
+		s.size *= 0.5;
+		s.speed *= 1.5;
+		s.bias *= 1.1;
+		s.life -= 1;
+		s.damage *= 1.2;
+		s.recoil *= 1.1;
+		s.ammo = Math.round(s.ammo * 0.7);
+	}
 	return s;
 };
 
@@ -94,6 +103,11 @@ var hss_special = function(p) {
 		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc * 0.8}, y: {cur: 0, max: speed_max, acc: speed_acc * 0.8}};
 		p.size = 18;
 		p.p_reflect = true;
+	}
+	if (cha === 'sorcerer') {
+		p.health = {cur: max_health * 0.8, max: max_health *0.8};
+		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc}, y: {cur: 0, max: speed_max, acc: speed_acc}};
+		p.size = 15;
 	}
 };
 
@@ -172,6 +186,7 @@ Q.Auto_player = Q.GameObject.extend({
 
 	skill: function() {
 		this.opSkill = 1;
+		this.opSkillArgs = arguments;
 	}
 });
 
@@ -815,6 +830,13 @@ Q.core = Q.Evented.extend({
 				p.invisible = true;
 				this.add_timer(()=>{delete p.invisible}, 7);
 				p.skillCD = 20;
+			}
+			if (a.character === 'sorcerer') {
+				if (a.opSkillArgs && !isNaN(a.opSkillArgs[0]) && !isNaN(a.opSkillArgs[1]))
+					p.pos = {x:Number(a.opSkillArgs[0]) || 300,
+							 y:Number(a.opSkillArgs[1]) || 300};
+				delete a.opSkillArgs;
+				p.skillCD = 12;
 			}
 		}
 		p.skillCD = Math.max(0, p.skillCD - dt);
