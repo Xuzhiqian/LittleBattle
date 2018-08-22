@@ -104,6 +104,7 @@ Q.Player = Q.GameObject.extend({
 		this.alpha = 1;
 		this.fireCD = 0;
 		this.pickCD = 0;
+		this.skillCD =0;
 		this.size = 15;
 		this.auto = {};
 	},
@@ -793,6 +794,15 @@ Q.core = Q.Evented.extend({
 			p.fireCD = p.prop.reload;
 		}
 		p.fireCD = Math.max(0, p.fireCD - dt);
+
+		if (a.opSkill && p.skillCD <= 0) {
+			if (a.character === 'assassin') {
+				p.invisible = true;
+				this.add_timer(()=>{delete p.invisible}, 6);
+				p.skillCD = 20;
+			}
+		}
+		p.skillCD = Math.max(0, p.skillCD - dt);
 
 
 		return op;
