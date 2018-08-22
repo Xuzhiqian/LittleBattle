@@ -153,7 +153,7 @@ Q.renderer = Q.GameObject.extend({
 			//绘制id
 		ctx.fillStyle = 'white';
 		if (player.auto.msg && player.auto.msg.msg.length>0)
-			ctx.fillText(player.id+" : "+player.auto.msg.msg, -r + 3, -r - 6);
+			ctx.fillText(player.id+" : "+player.auto.msg, -r + 3, -r - 6);
 		else
 			ctx.fillText(player.id, -r + 3, -r - 6);
 

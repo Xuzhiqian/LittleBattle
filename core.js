@@ -39,17 +39,47 @@ var player_size = 15;
 var bullet_size = 5;
 var pickCD = 1;
 var prop_org = function(){
-	return {
-	speed : 240,
-	reload : 0.8,
-	bias : 0.02,
-	life : 4,
-	damage : 10,
-	bounce : false,
-	recoil : 0,
-	penetrate : false
-	};
+		return {
+			speed : 240,
+			reload : 0.8,
+			bias : 0.02,
+			life : 4,
+			damage : 10,
+			bounce : false,
+			recoil : 0,
+			penetrate : false
+		};
 };
+var prop_special = function(prop, cha) {
+	if (!cha) return prop;
+	let s = prop;
+	if (cha === 'assassin') {
+		s.speed *= 1.5;
+		s.reload *= 2;
+		s.bias /= 2;
+		s.life += 2;
+		s.damage *= 2;
+		s.recoil *= 2;
+		s.penetrate = true;
+		s.ammo = Math.round(s.ammo / 2);
+	}
+	return s;
+};
+
+var hss_special = function(p) {
+	let cha = p.auto.character;
+	if (!cha) {
+		p.health = {cur: max_health, max: max_health};
+		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc}, y: {cur: 0, max: speed_max, acc: speed_acc}};
+		p.size = 15;
+	}
+	if (cha === 'assassin') {
+		p.health = {cur: max_health / 3, max: max_health / 3};
+		p.speed = {x: {cur: 0, max: speed_max * 1.5, acc: speed_acc * 2}, y: {cur: 0, max: speed_max * 1.5, acc: speed_acc * 2}};
+		p.size = 10;
+	}
+};
+
 var speed_max = 120;
 var speed_acc = 180;
 var max_health = 300;
@@ -88,7 +118,7 @@ Q.Auto_player = Q.GameObject.extend({
 		this.opPerFrame = newOp();
 		this.opFire = 0;
 		this.opPick = 0;
-		this.msg={msg:'',left_time:0};
+		this.opSkill = 0;
 		for (var event in proto)
 			if (proto.hasOwnProperty(event))
 				this[event] = proto[event];
@@ -119,7 +149,11 @@ Q.Auto_player = Q.GameObject.extend({
 	},
 
 	say: function(msg) {
-		this.msg = {msg:msg.toString(),left_time:4};
+		this.msg = msg.toString();
+	},
+
+	skill: function() {
+		this.opSkill = 1;
 	}
 });
 
@@ -156,10 +190,9 @@ Q.bullet = Q.GameObject.extend({
 });
 
 Q.weapon = Q.GameObject.extend({
-	init : function (pos,id,ammo) {
+	init : function (pos,id) {
 		this.pos = {x:pos.x,y:pos.y};
 		this.id = id;
-		this.ammo = ammo;
 	}
 });
 
@@ -283,14 +316,18 @@ Q.core = Q.Evented.extend({
 			g.auto = new Q.Auto_player(proto);
 			g.color = this.players[pid].color;
 			g.health = {cur:p.health.cur,max:p.health.max};
+			g.speed = {x: {cur: 0, max: p.speed.x.max, acc: p.speed.x.acc}, y: {cur: 0, max: p.speed.y.max, acc: p.speed.y.acc}};
 			g.pos = {x:p.pos.x,y:p.pos.y};
+			g.size = p.size;
 			g.code = code;
 			return;
 		}
 		this.players[pid] = new Q.Player(pid);
 		this.players[pid].auto = new Q.Auto_player(proto);
-
 		p = this.players[pid];
+
+		p.prop = prop_special(prop_org(), p.auto.character);
+		hss_special(p);
 		p.color = Math.floor(Math.random()*11);
 		p.pos = this.random_pos();
 		p.code = code;
@@ -523,11 +560,10 @@ Q.core = Q.Evented.extend({
     	this.terrain = evol(this._terrain,main);
 	},
 
-	generate_weapon: function(_pos,_id,_ammo) {
-		if (_ammo!=undefined && _ammo<=0) return;
+	generate_weapon: function(_pos,_id) {
 		let pos = _pos || this.random_pos();
 		let id = _id || weapons[Math.floor(Math.random()*weapons.length)];
-		let new_wpn = new Q.weapon(pos, id, Q.weapon_ammo[id]);
+		let new_wpn = new Q.weapon(pos, id);
 		this.weapons.push(new_wpn);
 	},
 
@@ -756,12 +792,6 @@ Q.core = Q.Evented.extend({
 		p.fireCD = Math.max(0, p.fireCD - dt);
 
 
-		if (a.msg.left_time > 0) {
-			a.msg.left_time-=dt;
-			if (a.msg.left_time<=0)
-				a.msg = {msg:'',left_time:0};
-		}
-
 		return op;
 	},
 
@@ -871,8 +901,8 @@ Q.core = Q.Evented.extend({
 			if (w)
 				if (dis(p.pos,w.pos)<p.size+35) {
 					p.weapon = w.id;
-					p.ammo = w.ammo;
-					p.prop = Q.weapon_data[w.id]();
+					p.prop = prop_special(Q.weapon_data[w.id](), p.auto.character);
+					p.ammo = p.prop.ammo;
 					this.delete_weapon(index);
 					break;
 				}
@@ -963,7 +993,6 @@ Q.core = Q.Evented.extend({
 
 
 Q.weapon_data = [];
-Q.weapon_ammo = [];
 Q.weapon_data['Vector']=function(){ return {
 			speed : 360,
 			reload : 0.05,
@@ -973,9 +1002,9 @@ Q.weapon_data['Vector']=function(){ return {
 			recoil : 0,
 			size : 1.5,
 			penetrate : false,
-			bounce : false
+			bounce : false,
+			ammo : 80
 		}};
-Q.weapon_ammo['Vector']=80;
 Q.weapon_data['Micro_Uzi']=function(){ return {
 			speed : 280,
 			reload : 0.02,
@@ -985,10 +1014,9 @@ Q.weapon_data['Micro_Uzi']=function(){ return {
 			recoil : 0.1,
 			size : 2,
 			penetrate : false,
-			bounce : false
+			bounce : false,
+			ammo : 200
 		}};
-Q.weapon_ammo['Micro_Uzi']=200;
-
 //突击步枪
 Q.weapon_data['AKM']=function(){ return {
 			speed : 300,
@@ -999,10 +1027,9 @@ Q.weapon_data['AKM']=function(){ return {
 			recoil : 0.5,
 			sight : 1,
 			penetrate : false,
-			bounce : false
+			bounce : false,
+			ammo : 30
 		}};
-Q.weapon_ammo['AKM']=30;
-
 Q.weapon_data['Scar-L']=function(){ return {
 			speed : 310,
 			reload : 0.23,
@@ -1011,10 +1038,9 @@ Q.weapon_data['Scar-L']=function(){ return {
 			damage : 20,
 			recoil : 0.3,
 			penetrate : false,
-			bounce : false
+			bounce : false,
+			ammo : 30
 		}};
-Q.weapon_ammo['Scar-L']=30;
-
 Q.weapon_data['M416']=function(){ return {
 			speed : 330,
 			reload : 0.26,
@@ -1023,10 +1049,9 @@ Q.weapon_data['M416']=function(){ return {
 			damage : 18,
 			recoil : 0.2,
 			penetrate : false,
-			bounce : false
+			bounce : false,
+			ammo : 30
 		}};
-Q.weapon_ammo['M416']=30;
-
 Q.weapon_data['Groza']=function(){ return {
 			speed : 330,
 			reload : 0.3,
@@ -1037,9 +1062,8 @@ Q.weapon_data['Groza']=function(){ return {
 			penetrate : false,
 			bounce : false,
 			bundle : 36,
+			ammo : 12
 		}};
-Q.weapon_ammo['Groza']=12;
-
 //狙击步枪
 Q.weapon_data['Kar-98K']=function(){ return {
 			speed : 900,
@@ -1050,10 +1074,9 @@ Q.weapon_data['Kar-98K']=function(){ return {
 			recoil : 4,
 			size : 3,
 			penetrate : true,
-			bounce : false
+			bounce : false,
+			ammo : 10
 		}};
-Q.weapon_ammo['Kar-98K']=10;
-
 Q.weapon_data['AWM']=function(){ return {
 			speed : 1500,
 			reload : 2.5,
@@ -1063,11 +1086,9 @@ Q.weapon_data['AWM']=function(){ return {
 			recoil : 20,
 			size : 2.5,
 			penetrate : true,
-			bounce : false
+			bounce : false,
+			ammo : 7
 		}};
-Q.weapon_ammo['AWM']=7;
-
-
 //霰弹枪
 Q.weapon_data['S1897']=function(){ return {
 			speed : 600,
@@ -1079,10 +1100,9 @@ Q.weapon_data['S1897']=function(){ return {
 			size : 4,
 			penetrate : false,
 			bounce : false,
-			bundle : 8
+			bundle : 8,
+			ammo : 10
 		}};
-Q.weapon_ammo['S1897']=10;
-
 Q.weapon_data['S686']=function(){ return {
 			speed : 720,
 			reload : 2.2,
@@ -1093,10 +1113,9 @@ Q.weapon_data['S686']=function(){ return {
 			size : 5,
 			penetrate : false,
 			bounce : false,
-			bundle : 15
+			bundle : 15,
+			ammo : 8
 		}};
-Q.weapon_ammo['S686']=8;
-
 //轻机枪
 Q.weapon_data['M249']=function(){ return {
 			speed : 380,
@@ -1107,10 +1126,9 @@ Q.weapon_data['M249']=function(){ return {
 			recoil : 0.2,
 			size : 4,
 			penetrate : false,
-			bounce : false
+			bounce : false,
+			ammo : 80
 		}};
-Q.weapon_ammo['M249']=80;
-
 Q.weapon_data['Minigun']=function(){ return {
 			speed : 400,
 			reload : 0.07,
@@ -1119,15 +1137,14 @@ Q.weapon_data['Minigun']=function(){ return {
 			damage : 8,
 			recoil : 0.15,
 			penetrate : false,
-			bounce : false
+			bounce : false,
+			ammo : 120
 		}};
-Q.weapon_ammo['Minigun']=120;
-
 Q.weapon_data['Pan']=function(){return {
 			reload : 1,
 			damage : 35,
 			recoil : 0,
+			ammo : 0
 		}};
-Q.weapon_ammo['Pan']=0;
 
 

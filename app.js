@@ -112,6 +112,7 @@ io.on("connection", function (socket) {
 	});
 
 	socket.on('update_code', (info)=>{
+		if (!info.code) info.code = "";
 		info.code = info.code.replace(/\'/g,"\\'");
 		info.code = info.code.replace(/\"/g,'\\"');
 		let sql = "UPDATE main SET code = '" + info.code + "' WHERE id = '" + info.id + "';";

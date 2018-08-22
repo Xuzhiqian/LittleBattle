@@ -508,6 +508,10 @@ var tank = {
     	var last_players = [];
         var controlBtn = document.getElementById("controlBtn");
         var restart = function() {
+        	if (core.competing) {
+        		alert('别当逃兵哦！');
+        		return;
+        	}
             window.current_code = editor.getValue();
 
             core.init(enviroment,{width:600,height:600},{width:20,height:20},gameover);
@@ -540,6 +544,10 @@ var tank = {
             }
         });
         $("#againBtn").on('click', ()=>{
+        	if (core.competing) {
+        		alert('别当逃兵哦！');
+        		return;
+        	}
         	restart();
         	last_players.forEach((id)=>{
         		socket.emit('fetch_code', id);
