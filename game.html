@@ -457,8 +457,8 @@ var tank = {
                 	$('.gameover').show();
                 else {
                 	$("#againBtn").click();
-                	$("#controlBtn").click();
-                }   
+                	setTimeout(()=>{$("#controlBtn").click()}, 5);
+                }
             };
         </script>
 
