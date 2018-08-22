@@ -60,7 +60,7 @@ var prop_special = function(prop, cha) {
 		s.reload *= 1.5;
 		s.bias /= 2;
 		s.life += 2;
-		s.damage *= 4;
+		s.damage *= 3;
 		s.recoil *= 2;
 		s.penetrate = true;
 		s.ammo = Math.round(s.ammo / 2);
@@ -76,7 +76,7 @@ var hss_special = function(p) {
 		p.size = 15;
 	}
 	if (cha === 'assassin') {
-		p.health = {cur: max_health / 3, max: max_health / 3};
+		p.health = {cur: max_health / 2, max: max_health / 2};
 		p.speed = {x: {cur: 0, max: speed_max * 2, acc: speed_acc * 2}, y: {cur: 0, max: speed_max * 2, acc: speed_acc * 2}};
 		p.size = 10;
 	}
@@ -1089,7 +1089,7 @@ Q.weapon_data['Kar-98K']=function(){ return {
 		}};
 Q.weapon_data['AWM']=function(){ return {
 			size : 10,
-			speed : 1500,
+			speed : 1000,
 			reload : 2.5,
 			bias : 0,
 			life : 13,
