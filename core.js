@@ -294,7 +294,7 @@ Q.core = Q.Evented.extend({
 				if (id === winner_id)
 					this.stat[id].d_score = Math.round(Math.max(0, f_score(score1/score0))*(k+o)/(d));
 				else
-					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1))+10*(k+o)/d);
+					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1))+5*(k+o)/d);
 			}
 	},
 
@@ -956,7 +956,7 @@ Q.core = Q.Evented.extend({
 					if (p.reflect===true || p.p_reflect===true) {
 						let reflect = true;
 						if (p.p_reflect === true)
-							if (Math.random() < 0.7*p.health.cur/p.health.max + 0.3)
+							if (Math.random() < 0.75*p.health.cur/p.health.max + 0.25)
 								reflect = false;
 						
 						if (reflect) {
