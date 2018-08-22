@@ -173,7 +173,7 @@ Q.renderer = Q.GameObject.extend({
 
 		//炮口绘制
 		ctx.beginPath();									
-		ctx.arc(r * Math.cos(dir), r * Math.sin(dir), 5, 0, 2 * Math.PI);
+		ctx.arc(r * Math.cos(dir), r * Math.sin(dir), r/3, 0, 2 * Math.PI);
 		ctx.stroke();
 		ctx.fillStyle = 'white';
 		ctx.fill();
