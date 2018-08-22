@@ -65,6 +65,14 @@ var prop_special = function(prop, cha) {
 		s.penetrate = true;
 		s.ammo = Math.round(s.ammo / 2);
 	}
+	if (cha === 'worrior') {
+		s.speed *= 0.8;
+		s.bias *= 1.2;
+		s.life += 3;
+		s.damage *=0.8;
+		s.recoil *= 0.5;
+		s.ammo = Math.round(s.ammo * 1.5);
+	}
 	return s;
 };
 
@@ -79,6 +87,12 @@ var hss_special = function(p) {
 		p.health = {cur: max_health / 2, max: max_health / 2};
 		p.speed = {x: {cur: 0, max: speed_max * 1.5, acc: speed_acc * 2}, y: {cur: 0, max: speed_max * 1.5, acc: speed_acc * 2}};
 		p.size = 10;
+	}
+	if (cha === 'worrior') {
+		p.health = {cur: max_health * 1.5, max: max_health * 1.5};
+		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc * 0.8}, y: {cur: 0, max: speed_max, acc: speed_acc * 0.8}};
+		p.size = 18;
+		p.p_reflect = true;
 	}
 };
 
@@ -798,7 +812,7 @@ Q.core = Q.Evented.extend({
 		if (a.opSkill && p.skillCD <= 0) {
 			if (a.character === 'assassin') {
 				p.invisible = true;
-				this.add_timer(()=>{delete p.invisible}, 6);
+				this.add_timer(()=>{delete p.invisible}, 7);
 				p.skillCD = 20;
 			}
 		}
@@ -938,21 +952,22 @@ Q.core = Q.Evented.extend({
 		if (p.id !== bullet.owner_id)
 				if (dis(bullet.pos, p.pos) < bullet.size + p.size) {
 
-					if (p.reflect===true) {
-
-							let a = Math.atan(bullet.dir.y / bullet.dir.x);
-							if (bullet.dir.x<0) a=a+Math.PI;
-							let r = Math.atan((bullet.pos.y - p.pos.y)/(bullet.pos.x - p.pos.x));
-							if (bullet.pos.x<p.pos.x) r=r+Math.PI;
-
-							let new_dir = 2*r+Math.PI - a;
-							bullet.dir = {x:Math.cos(new_dir),y:Math.sin(new_dir)};
+					if (p.reflect===true || p.p_reflect===true) {
+						let reflect = true;
+						if (p.p_reflect === true)
+							if (Math.random() < 0.7*p.health.cur/p.health.max + 0.3)
+								reflect = false;
+						
+						if (reflect) {
+							bullet.dir.x  = -bullet.dir.x;
+							bullet.dir.y  = -bullet.dir.y;
 							bullet.owner_id = p.id;
 							/*
 							if (this.players[id]!=undefined)
 								this.players[id].prop.seek = bullet.seek;*/
 							bullet.color = p.color;
 							return false;
+						}
 
 					}
 
