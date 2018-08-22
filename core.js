@@ -40,6 +40,7 @@ var bullet_size = 5;
 var pickCD = 1;
 var prop_org = function(){
 		return {
+			size : 5,
 			speed : 240,
 			reload : 0.8,
 			bias : 0.02,
@@ -54,7 +55,8 @@ var prop_special = function(prop, cha) {
 	if (!cha) return prop;
 	let s = prop;
 	if (cha === 'assassin') {
-		s.speed *= 1.5;
+		s.size *= 1.5;
+		s.speed *= 2;
 		s.reload *= 2;
 		s.bias /= 2;
 		s.life += 2;
@@ -163,7 +165,7 @@ Q.bullet = Q.GameObject.extend({
 		this.pos = {x: p.pos.x, y: p.pos.y};
 		this.owner_id = p.id;
 		this.alpha = 1;
-		this.size = 5;
+		this.size = p.prop.size;
 
 		this.speed = p.prop.speed;
 		this.life = {cur: 0, max: p.prop.life};
@@ -995,6 +997,7 @@ Q.core = Q.Evented.extend({
 
 Q.weapon_data = [];
 Q.weapon_data['Vector']=function(){ return {
+			size : 3,
 			speed : 360,
 			reload : 0.05,
 			bias : 0.03,
@@ -1007,6 +1010,7 @@ Q.weapon_data['Vector']=function(){ return {
 			ammo : 80
 		}};
 Q.weapon_data['Micro_Uzi']=function(){ return {
+			size : 2,
 			speed : 280,
 			reload : 0.02,
 			bias : 0.5,
@@ -1020,6 +1024,7 @@ Q.weapon_data['Micro_Uzi']=function(){ return {
 		}};
 //突击步枪
 Q.weapon_data['AKM']=function(){ return {
+			size : 6,
 			speed : 300,
 			reload : 0.2,
 			bias : 0.1,
@@ -1032,6 +1037,7 @@ Q.weapon_data['AKM']=function(){ return {
 			ammo : 30
 		}};
 Q.weapon_data['Scar-L']=function(){ return {
+			size : 5,
 			speed : 310,
 			reload : 0.23,
 			bias : 0.03,
@@ -1043,6 +1049,7 @@ Q.weapon_data['Scar-L']=function(){ return {
 			ammo : 30
 		}};
 Q.weapon_data['M416']=function(){ return {
+			size : 5,
 			speed : 330,
 			reload : 0.26,
 			bias : 0.05,
@@ -1054,6 +1061,7 @@ Q.weapon_data['M416']=function(){ return {
 			ammo : 30
 		}};
 Q.weapon_data['Groza']=function(){ return {
+			size :6,
 			speed : 330,
 			reload : 0.3,
 			bias : 1,
@@ -1067,6 +1075,7 @@ Q.weapon_data['Groza']=function(){ return {
 		}};
 //狙击步枪
 Q.weapon_data['Kar-98K']=function(){ return {
+			size : 8,
 			speed : 900,
 			reload : 1.2,
 			bias : 0.02,
@@ -1079,6 +1088,7 @@ Q.weapon_data['Kar-98K']=function(){ return {
 			ammo : 10
 		}};
 Q.weapon_data['AWM']=function(){ return {
+			size : 10,
 			speed : 1500,
 			reload : 2.5,
 			bias : 0,
@@ -1092,6 +1102,7 @@ Q.weapon_data['AWM']=function(){ return {
 		}};
 //霰弹枪
 Q.weapon_data['S1897']=function(){ return {
+			size : 3,
 			speed : 600,
 			reload : 0.8,
 			bias : 0.2,
@@ -1105,6 +1116,7 @@ Q.weapon_data['S1897']=function(){ return {
 			ammo : 10
 		}};
 Q.weapon_data['S686']=function(){ return {
+			size : 2.8
 			speed : 720,
 			reload : 2.2,
 			bias : 0.3,
@@ -1119,6 +1131,7 @@ Q.weapon_data['S686']=function(){ return {
 		}};
 //轻机枪
 Q.weapon_data['M249']=function(){ return {
+			size : 4,
 			speed : 380,
 			reload : 0.12,
 			bias : 0.05,
@@ -1131,6 +1144,7 @@ Q.weapon_data['M249']=function(){ return {
 			ammo : 80
 		}};
 Q.weapon_data['Minigun']=function(){ return {
+			size : 5,
 			speed : 400,
 			reload : 0.07,
 			bias : 0.04,

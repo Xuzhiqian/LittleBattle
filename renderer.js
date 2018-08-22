@@ -1,15 +1,9 @@
 var delta_degree=2 * Math.PI / 360 * 100,
-	color_table = ['aqua', 'Aquamarine', 'Chartreuse', 'Coral', 'LightCyan', 'LightSlateBlue', 'RoyalBlue', 'Violet', 'VioletRed', 'Purple', 'orange'],
-
-	lerp = function(a,b,k) {
-		return a+k*(b-a);
-	}		
+	color_table = ['aqua', 'Aquamarine', 'Chartreuse', 'Coral', 'LightCyan', 'LightSlateBlue', 'RoyalBlue', 'Violet', 'VioletRed', 'Purple', 'orange'],	
 
 Q.renderer = Q.GameObject.extend({
 	init: function (enviroment,size,block_size,terrain) {
 		this.anim_list = [];
-		this.render_list = [];
-		this.loading = true;
 		this.map = enviroment.map;
 		this.ctx = enviroment.ctx;
 		this.terrain = terrain;
@@ -31,8 +25,8 @@ Q.renderer = Q.GameObject.extend({
 	add_animation: function(type,eff,entity) {
 		var anim = {};
 		if (eff=='underatk' || eff=='fadeout') {
-			if (!entity.size) entity.size=player_size;
-			if (!entity.alpha) entity.alpha=1;
+			entity.render_alpha = entity.alpha;
+			entity.render_size = entity.size;
 			anim = {type:type,
 					eff:eff,
 					entity:entity}
@@ -48,7 +42,7 @@ Q.renderer = Q.GameObject.extend({
 
 		ctx.save();
 		ctx.lineWidth = 1;
-		ctx.strokeStyle = 'rgba(136,136,136,0.1)';
+		ctx.strokeStyle = 'rgba(136,136,136,0.07)';
 		
 		var h = this.map.height;
 		var w = this.map.width;
@@ -114,10 +108,10 @@ Q.renderer = Q.GameObject.extend({
 		if (!bullet) return;
 
 		var ctx = this.ctx;
-		var r = bullet.size;
+		var r = bullet.render_size?bullet.render_size:bullet.size;
 		ctx.save();
 
-		ctx.globalAlpha = bullet.alpha || 1;
+		ctx.globalAlpha = bullet.render_alpha?bullet.render_alpha:bullet.alpha;
 		ctx.translate(bullet.pos.x, bullet.pos.y);
 		ctx.beginPath();
 		ctx.arc(0, 0, r, 0, 2 * Math.PI);							//绘制圆形轮廓
@@ -136,14 +130,14 @@ Q.renderer = Q.GameObject.extend({
 		if (!player) return;
 
 		var ctx = this.ctx;
-		var r = this.render_list[player.id]?(this.render_list[player.id].size || player_size):player.size;
-		var pos = this.render_list[player.id]?(this.render_list[player.id].pos || player.pos):player.pos;
-		var dir = this.render_list[player.id]?(this.render_list[player.id].dir || player.dir):player.dir;
-		var health = this.render_list[player.id]?(this.render_list[player.id].health || player.health):player.health;
+		var r = player.render_size?player.render_size:player.size;
+		var pos = player.pos;
+		var dir = player.dir;
+		var health = player.health;
 
 		ctx.save();
 
-		ctx.globalAlpha = this.render_list[player.id]?(this.render_list[player.id].alpha || 1):player.alpha;
+		ctx.globalAlpha = player.render_alpha?player.render_alpha:player.alpha;
 		if (player.invisible)
 			ctx.globalAlpha = 0.25;
 
@@ -192,20 +186,21 @@ Q.renderer = Q.GameObject.extend({
 		if (!anim) return;
 		if (anim.eff==='fadeout') {
 			if (anim.type==='bullet') {
-				anim.entity.alpha-=0.06;
-				anim.entity.size+=0.06;
-				if (anim.entity.alpha>0)
-					this.render_bullet(anim.entity);
-				else
+				anim.entity.render_alpha-=0.06;
+				anim.entity.render_size+=0.06;
+				if (anim.entity.render_alpha <= 0) {
 					anim.anim_destroyable = true;
+					anim.entity.render_alpha = anim.entity.alpha;
+					anim.entity.render_size = anim.entity.size;
+				}
 			}
 		}
 		if (anim.eff==='underatk') {
-				anim.entity.alpha-=0.03;
-				anim.entity.size+=0.08;
-				if (anim.entity.alpha<0.25) {
-					anim.entity.alpha = 1;
-					anim.entity.size = player_size;
+				anim.entity.render_alpha-=0.03;
+				anim.entity.render_size+=0.08;
+				if (anim.entity.render_alpha<0.25) {
+					anim.entity.render_alpha = anim.entity.alpha;
+					anim.entity.render_size = anim.entity.size;
 					anim.anim_destroyable = true;
 				}
 
