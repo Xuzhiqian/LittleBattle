@@ -67,6 +67,7 @@ var prop_special = function(prop, cha) {
 	}
 	if (cha === 'worrior') {
 		s.speed *= 0.8;
+		s.reload *= 0.7;
 		s.bias *= 1.2;
 		s.life += 3;
 		s.damage *=0.8;
@@ -89,7 +90,7 @@ var hss_special = function(p) {
 		p.size = 10;
 	}
 	if (cha === 'worrior') {
-		p.health = {cur: max_health * 1.5, max: max_health * 1.5};
+		p.health = {cur: max_health * 1.6, max: max_health * 1.6};
 		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc * 0.8}, y: {cur: 0, max: speed_max, acc: speed_acc * 0.8}};
 		p.size = 18;
 		p.p_reflect = true;
