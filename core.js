@@ -358,11 +358,13 @@ Q.core = Q.Evented.extend({
 			let g = p.ghost;
 			g.auto = new Q.Auto_player(proto);
 			g.color = this.players[pid].color;
-			g.health = {cur:p.health.cur,max:p.health.max};
-			g.speed = {x: {cur: -p.speed.x.max, max: p.speed.x.max, acc: p.speed.x.acc}, y: {cur: -p.speed.y.max, max: p.speed.y.max, acc: p.speed.y.acc}};
-			g.pos = {x:p.pos.x,y:p.pos.y};
+			g.character = this.players[pid].character;
 			g.skillCD = this.players[pid].skillCD;
-			g.size = p.size;
+
+			hss_special(g);
+			g.prop = prop_special(prop_org(), g.character);	
+			g.speed.x.cur = -g.speed.x.max; g.speed.y.cur = -g.speed.y.max;
+			g.pos = {x:p.pos.x,y:p.pos.y};
 			g.code = code;
 			return;
 		}
