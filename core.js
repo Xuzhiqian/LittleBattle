@@ -370,7 +370,8 @@ Q.core = Q.Evented.extend({
 			g.skillCD = skill_cd[g.character] || 20;
 
 			hss_special(g);
-			g.prop = prop_special(prop_org(), g.character);	
+			g.prop = prop_special(prop_org(), g.character);
+			g.health.cur = p.health.cur;	
 			g.speed.x.cur = Math.random()*g.speed.x.max; g.speed.y.cur = Math.random()*g.speed.y.max;
 			g.pos = {x:p.pos.x,y:p.pos.y};
 			g.code = code;
