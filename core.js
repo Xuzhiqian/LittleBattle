@@ -122,7 +122,7 @@ var hss_special = function(p) {
 var skill_cd = {
 	'assassin' : 20,
 	'sorcerer' : 8,
-	'clone' : 10
+	'clone' : 8
 }
 
 var speed_max = 120;
