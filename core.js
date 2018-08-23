@@ -849,8 +849,8 @@ Q.core = Q.Evented.extend({
 				p.skillCD = 5;
 			}
 			if (a.character === 'clone') {
-				this.add_player(p.id, p.code, null,true, true);
 				p.skillCD = 25;
+				this.add_player(p.id, p.code, null,true, true);
 			}
 		}
 		p.skillCD = Math.max(0, p.skillCD - dt);
