@@ -83,6 +83,10 @@ var prop_special = function(prop, cha) {
 		s.recoil *= 1.1;
 		s.ammo = Math.round(s.ammo * 0.7);
 	}
+	if (cha === 'clone') {
+		s.reload *= 0.6;
+		s.bias *= 1.5;
+	}
 	return s;
 };
 
@@ -106,6 +110,11 @@ var hss_special = function(p) {
 	}
 	if (cha === 'sorcerer') {
 		p.health = {cur: max_health * 0.8, max: max_health *0.8};
+		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc}, y: {cur: 0, max: speed_max, acc: speed_acc}};
+		p.size = 15;
+	}
+	if (cha === 'clone') {
+		p.health = {cur: max_health * 0.6, max: max_health * 0.6};
 		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc}, y: {cur: 0, max: speed_max, acc: speed_acc}};
 		p.size = 15;
 	}
@@ -837,6 +846,10 @@ Q.core = Q.Evented.extend({
 							 y:Number(a.opSkillArgs[1]) || 300};
 				delete a.opSkillArgs;
 				p.skillCD = 5;
+			}
+			if (a.character === 'clone') {
+				this.add_player(p.id, p.code, null,true, true);
+				p.skillCD = 25;
 			}
 		}
 		p.skillCD = Math.max(0, p.skillCD - dt);
