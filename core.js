@@ -122,7 +122,7 @@ var hss_special = function(p) {
 var skill_cd = {
 	'assassin' : 20,
 	'sorcerer' : 8,
-	'clone' : 15
+	'clone' : 10
 }
 
 var speed_max = 120;
@@ -323,7 +323,7 @@ Q.core = Q.Evented.extend({
 				if (id === winner_id)
 					this.stat[id].d_score = Math.round(Math.max(0, f_score(score1/score0))*(k+o)/(d));
 				else
-					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1))+3*(k+o)/d);
+					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1))+5*(k+o)/d);
 			}
 	},
 
