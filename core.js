@@ -70,7 +70,7 @@ var prop_special = function(prop, cha) {
 		s.reload *= 0.7;
 		s.bias *= 1.2;
 		s.life += 3;
-		s.damage *=0.8;
+		s.damage *=0.6;
 		s.recoil *= 0.5;
 		s.ammo = Math.round(s.ammo * 1.5);
 	}
@@ -104,7 +104,7 @@ var hss_special = function(p) {
 	}
 	if (cha === 'worrior') {
 		p.health = {cur: max_health * 2, max: max_health * 2};
-		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc * 0.8}, y: {cur: 0, max: speed_max, acc: speed_acc * 0.8}};
+		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc * 0.6}, y: {cur: 0, max: speed_max, acc: speed_acc * 0.6}};
 		p.size = 18;
 		p.p_reflect = true;
 	}
@@ -323,7 +323,7 @@ Q.core = Q.Evented.extend({
 				if (id === winner_id)
 					this.stat[id].d_score = Math.round(Math.max(0, f_score(score1/score0))*(k+o)/(d));
 				else
-					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1))+5*(k+o)/d);
+					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1))+4*(k+o)/d);
 			}
 	},
 
@@ -448,8 +448,8 @@ Q.core = Q.Evented.extend({
 
 		//后坐力
 		if (!is_no_j) {
-			p.speed.x.cur -= Math.cos(p.dir) * p.prop.recoil * 10;
-			p.speed.y.cur -= Math.sin(p.dir) * p.prop.recoil * 10;
+			p.speed.x.cur -= Math.cos(p.dir) * p.prop.recoil * 20;
+			p.speed.y.cur -= Math.sin(p.dir) * p.prop.recoil * 20;
 			if (speed_limit) {
 				p.speed.x.cur = Math.max(Math.min(p.speed.x.cur,p.speed.x.max),-p.speed.x.max);
 				p.speed.y.cur = Math.max(Math.min(p.speed.y.cur,p.speed.y.max),-p.speed.y.max);
@@ -841,8 +841,10 @@ Q.core = Q.Evented.extend({
 		}
 		p.pickCD = Math.max(0, p.pickCD - dt);
 
+		a.trueFire = 0;
 		if (a.opFire && p.fireCD <= 0) {
 			this.player_shoot(p);
+			a.trueFire = 1;
 			p.fireCD = p.prop.reload;
 		}
 		p.fireCD = Math.max(0, p.fireCD - dt);
@@ -900,7 +902,7 @@ Q.core = Q.Evented.extend({
 		this.replace_context(p, a);
 
 		let op = this.execute_ops(a, p, dt);
-		this.update_player_physics(p, dt, (op.l===0 && op.r===0), (op.u===0 && op.d===0), a.opFire===0);
+		this.update_player_physics(p, dt, (op.l===0 && op.r===0), (op.u===0 && op.d===0), a.trueFire===0);
 		a.opFire = 0;
 		a.opPerFrame = newOp();
 	},
@@ -1078,7 +1080,7 @@ Q.weapon_data['Vector']=function(){ return {
 			bias : 0.03,
 			life : 7,
 			damage : 4,
-			recoil : 0,
+			recoil : 2,
 			size : 1.5,
 			penetrate : false,
 			bounce : false,
@@ -1091,7 +1093,7 @@ Q.weapon_data['Micro_Uzi']=function(){ return {
 			bias : 0.5,
 			life : 7,
 			damage : 3,
-			recoil : 0.1,
+			recoil : 1,
 			size : 2,
 			penetrate : false,
 			bounce : false,
@@ -1105,7 +1107,7 @@ Q.weapon_data['AKM']=function(){ return {
 			bias : 0.1,
 			life : 8,
 			damage : 25,
-			recoil : 0.5,
+			recoil : 5,
 			sight : 1,
 			penetrate : false,
 			bounce : false,
@@ -1118,7 +1120,7 @@ Q.weapon_data['Scar-L']=function(){ return {
 			bias : 0.03,
 			life : 6,
 			damage : 20,
-			recoil : 0.3,
+			recoil : 4,
 			penetrate : false,
 			bounce : false,
 			ammo : 30
@@ -1130,7 +1132,7 @@ Q.weapon_data['M416']=function(){ return {
 			bias : 0.05,
 			life : 6,
 			damage : 18,
-			recoil : 0.2,
+			recoil : 5,
 			penetrate : false,
 			bounce : false,
 			ammo : 30
@@ -1142,7 +1144,7 @@ Q.weapon_data['Groza']=function(){ return {
 			bias : 1,
 			life : 6,
 			damage : 10,
-			recoil : 0.2,
+			recoil : 6,
 			penetrate : false,
 			bounce : false,
 			bundle : 36,
@@ -1156,7 +1158,7 @@ Q.weapon_data['Kar-98K']=function(){ return {
 			bias : 0.02,
 			life : 12,
 			damage : 80,
-			recoil : 4,
+			recoil : 10,
 			size : 3,
 			penetrate : true,
 			bounce : false,
@@ -1169,7 +1171,7 @@ Q.weapon_data['AWM']=function(){ return {
 			bias : 0,
 			life : 13,
 			damage : 200,
-			recoil : 20,
+			recoil : 30,
 			size : 2.5,
 			penetrate : true,
 			bounce : false,
@@ -1183,7 +1185,7 @@ Q.weapon_data['S1897']=function(){ return {
 			bias : 0.2,
 			life : 4,
 			damage : 20,
-			recoil : 5,
+			recoil : 15,
 			size : 4,
 			penetrate : false,
 			bounce : false,
@@ -1197,7 +1199,7 @@ Q.weapon_data['S686']=function(){ return {
 			bias : 0.3,
 			life : 3,
 			damage : 32,
-			recoil : 15,
+			recoil : 16,
 			size : 5,
 			penetrate : false,
 			bounce : false,
@@ -1212,7 +1214,7 @@ Q.weapon_data['M249']=function(){ return {
 			bias : 0.05,
 			life : 12,
 			damage : 8,
-			recoil : 0.2,
+			recoil : 4,
 			size : 4,
 			penetrate : false,
 			bounce : false,
@@ -1225,7 +1227,7 @@ Q.weapon_data['Minigun']=function(){ return {
 			bias : 0.04,
 			life : 10,
 			damage : 8,
-			recoil : 0.15,
+			recoil : 8,
 			penetrate : false,
 			bounce : false,
 			ammo : 120
