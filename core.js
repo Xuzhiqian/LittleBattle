@@ -849,7 +849,7 @@ Q.core = Q.Evented.extend({
 				p.skillCD = 5;
 			}
 			if (a.character === 'clone') {
-				p.skillCD = 25;
+				p.skillCD = 10;
 				this.add_player(p.id, p.code, null,true, true);
 			}
 		}
