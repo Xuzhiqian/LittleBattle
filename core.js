@@ -91,7 +91,7 @@ var prop_special = function(prop, cha) {
 };
 
 var hss_special = function(p) {
-	let cha = p.auto.character;
+	let cha = p.character;
 	if (!cha) {
 		p.health = {cur: max_health, max: max_health};
 		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc}, y: {cur: 0, max: speed_max, acc: speed_acc}};
@@ -370,7 +370,8 @@ Q.core = Q.Evented.extend({
 		this.players[pid].auto = new Q.Auto_player(proto);
 		p = this.players[pid];
 
-		p.prop = prop_special(prop_org(), p.auto.character);
+		p.character = p.auto.character;
+		p.prop = prop_special(prop_org(), p.character);
 		hss_special(p);
 		p.color = Math.floor(Math.random()*11);
 		p.pos = this.random_pos();
@@ -836,19 +837,19 @@ Q.core = Q.Evented.extend({
 		p.fireCD = Math.max(0, p.fireCD - dt);
 
 		if (a.opSkill && p.skillCD <= 0) {
-			if (a.character === 'assassin') {
+			if (p.character === 'assassin') {
 				p.invisible = true;
 				this.add_timer(()=>{delete p.invisible}, 7);
 				p.skillCD = 20;
 			}
-			if (a.character === 'sorcerer') {
+			if (p.character === 'sorcerer') {
 				if (a.opSkillArgs && !isNaN(a.opSkillArgs[0]) && !isNaN(a.opSkillArgs[1]))
 					p.pos = {x:Number(a.opSkillArgs[0]) || 300,
 							 y:Number(a.opSkillArgs[1]) || 300};
 				delete a.opSkillArgs;
 				p.skillCD = 5;
 			}
-			if (a.character === 'clone') {
+			if (p.character === 'clone') {
 				p.skillCD = 10;
 				this.add_player(p.id, p.code, null,true, true);
 			}
@@ -966,7 +967,7 @@ Q.core = Q.Evented.extend({
 			if (w)
 				if (dis(p.pos,w.pos)<p.size+35) {
 					p.weapon = w.id;
-					p.prop = prop_special(Q.weapon_data[w.id](), p.auto.character);
+					p.prop = prop_special(Q.weapon_data[w.id](), p.character);
 					p.ammo = p.prop.ammo;
 					this.delete_weapon(index);
 					break;
