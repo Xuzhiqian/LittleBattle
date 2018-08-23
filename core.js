@@ -119,6 +119,11 @@ var hss_special = function(p) {
 		p.size = 15;
 	}
 };
+var skill_cd = {
+	'assassin' : 20,
+	'sorcerer' : 8,
+	'clone' : 10
+}
 
 var speed_max = 120;
 var speed_acc = 180;
@@ -356,13 +361,13 @@ Q.core = Q.Evented.extend({
 			let msg = p.skillCD.toFixed(2) + '  ';
 			while (p.ghost)  {p = p.ghost; msg=msg+p.skillCD.toFixed(2)+'  ';}
 			console.log(msg);
-			
+
 			p.ghost = new Q.Player(pid);
 			let g = p.ghost;
 			g.auto = new Q.Auto_player(proto);
 			g.color = this.players[pid].color;
 			g.character = this.players[pid].character;
-			g.skillCD = this.players[pid].skillCD;
+			g.skillCD = skill_cd[g.character] || 20;
 
 			hss_special(g);
 			g.prop = prop_special(prop_org(), g.character);	
@@ -845,17 +850,17 @@ Q.core = Q.Evented.extend({
 			if (p.character === 'assassin') {
 				p.invisible = true;
 				this.add_timer(()=>{delete p.invisible}, 7);
-				p.skillCD = 20;
+				p.skillCD = skill_cd[p.character] || 20;
 			}
 			if (p.character === 'sorcerer') {
 				if (a.opSkillArgs && !isNaN(a.opSkillArgs[0]) && !isNaN(a.opSkillArgs[1]))
 					p.pos = {x:Number(a.opSkillArgs[0]) || 300,
 							 y:Number(a.opSkillArgs[1]) || 300};
 				delete a.opSkillArgs;
-				p.skillCD = 5;
+				p.skillCD = skill_cd[p.character] || 8;
 			}
 			if (p.character === 'clone') {
-				p.skillCD = 10;
+				p.skillCD = skill_cd[p.character] || 10;
 				this.add_player(p.id, p.code, null,true, true);
 			}
 		}
