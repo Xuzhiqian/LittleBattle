@@ -122,7 +122,7 @@ var hss_special = function(p) {
 var skill_cd = {
 	'assassin' : 20,
 	'sorcerer' : 8,
-	'clone' : 10
+	'clone' : 18
 }
 
 var speed_max = 120;
@@ -371,7 +371,7 @@ Q.core = Q.Evented.extend({
 
 			hss_special(g);
 			g.prop = prop_special(prop_org(), g.character);	
-			g.speed.x.cur = -g.speed.x.max; g.speed.y.cur = -g.speed.y.max;
+			g.speed.x.cur = Math.random()*g.speed.x.max; g.speed.y.cur = Math.random()*g.speed.y.max;
 			g.pos = {x:p.pos.x,y:p.pos.y};
 			g.code = code;
 			return;
