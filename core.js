@@ -361,6 +361,7 @@ Q.core = Q.Evented.extend({
 			g.health = {cur:p.health.cur,max:p.health.max};
 			g.speed = {x: {cur: 0, max: p.speed.x.max, acc: p.speed.x.acc}, y: {cur: 0, max: p.speed.y.max, acc: p.speed.y.acc}};
 			g.pos = {x:p.pos.x,y:p.pos.y};
+			g.skillCD = p.skillCD;
 			g.size = p.size;
 			g.code = code;
 			return;
