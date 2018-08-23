@@ -103,7 +103,7 @@ var hss_special = function(p) {
 		p.size = 10;
 	}
 	if (cha === 'worrior') {
-		p.health = {cur: max_health * 1.6, max: max_health * 1.6};
+		p.health = {cur: max_health * 2, max: max_health * 2};
 		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc * 0.8}, y: {cur: 0, max: speed_max, acc: speed_acc * 0.8}};
 		p.size = 18;
 		p.p_reflect = true;
@@ -122,7 +122,7 @@ var hss_special = function(p) {
 var skill_cd = {
 	'assassin' : 20,
 	'sorcerer' : 8,
-	'clone' : 8
+	'clone' : 10
 }
 
 var speed_max = 120;
