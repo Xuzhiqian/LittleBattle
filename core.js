@@ -135,12 +135,12 @@ var hss_special = function(p) {
 		p.size = 15;
 	}
 	if (cha === 'arsenal') {
-		p.health = {cur: max_health * 0.75, max: max_health * 0.75};
+		p.health = {cur: max_health * 0.8, max: max_health * 0.8};
 		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc}, y: {cur: 0, max: speed_max, acc: speed_acc}};
 		p.size = 15;
 	}
 	if (cha === 'fort') {
-		p.health = {cur: max_health * 0.6, max: max_health * 0.6};
+		p.health = {cur: max_health, max: max_health};
 		p.speed = {x: {cur: 0, max: 0, acc: 0}, y: {cur: 0, max: 0, acc: 0}};
 		p.size = 16;
 	}
