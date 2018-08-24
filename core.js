@@ -959,7 +959,7 @@ Q.core = Q.Evented.extend({
 	update_players: function(dt) {
 		for (let id in this.players) 
 			if (this.players[id]!=null) {
-				this.player_workflow(this.players[id], a, dt);
+				this.player_workflow(this.players[id], this.players[id].auto, dt);
 
 				for (let desc in descs) {
 					let p = this.players[id];
