@@ -412,7 +412,7 @@ Q.core = Q.Evented.extend({
 			d.color = this.players[pid].color;
 			d.character = derivative;
 			d.is_derivative = true;
-			hss_special(g);
+			hss_special(d);
 			d.prop = prop_special(prop_org(), derivative);
 			return d;
 		}
@@ -422,6 +422,7 @@ Q.core = Q.Evented.extend({
 		p = this.players[pid];
 
 		p.character = p.auto.character;
+		if (p.character in derivatives) p.character = 'normal';
 		p.prop = prop_special(prop_org(), p.character);
 		hss_special(p);
 		p.color = Math.floor(Math.random()*11);
@@ -908,7 +909,7 @@ Q.core = Q.Evented.extend({
 			}
 			if (p.character === 'arsenal') {
 				if (a.opSkillArgs && !isNaN(a.opSkillArgs[0]) && !isNaN(a.opSkillArgs[1])) {
-					let f = this.add_player(p.id, derivatives['fort'], null, true, false, true);
+					let f = this.add_player(p.id, derivatives['fort'], null, true, false, 'fort');
 					f.pos = {x:Number(a.opSkillArgs[0]) || 300,
 							 y:Number(a.opSkillArgs[1]) || 300};
 				}
