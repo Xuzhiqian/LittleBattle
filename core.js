@@ -90,15 +90,15 @@ var prop_special = function(prop, cha) {
 	}
 	if (cha === 'arsenal') {
 		s.size *= 0.8;
-		s.reload *= 0.2;
-		s.bias *= 1.4;
+		s.reload *= 0.25;
+		s.bias *= 1.2;
 		s.life *= 2;
 		s.recoil *= 0.4;
-		s.ammo = Math.round(s.ammo * 5);
+		s.ammo = Math.round(s.ammo * 4);
 	}
 	if (cha === 'fort') {
 		s.speed *= 1.8;
-		s.reload *= 0.05;
+		s.reload *= 0.1;
 		s.bias = 0;
 		s.life += 2;
 		s.recoil = 0;
@@ -135,7 +135,7 @@ var hss_special = function(p) {
 		p.size = 15;
 	}
 	if (cha === 'arsenal') {
-		p.health = {cur: max_health * 0.8, max: max_health * 0.8};
+		p.health = {cur: max_health * 0.75, max: max_health * 0.75};
 		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc}, y: {cur: 0, max: speed_max, acc: speed_acc}};
 		p.size = 15;
 	}
