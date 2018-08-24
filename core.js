@@ -87,6 +87,14 @@ var prop_special = function(prop, cha) {
 		s.reload *= 0.6;
 		s.bias *= 1.5;
 	}
+	if (cha === 'arsenal') {
+		s.size *= 0.8;
+		s.reload *= 0.5;
+		s.bias *= 1.4;
+		s.life *= 2;
+		s.recoil *= 0.4;
+		s.ammo = Math.round(s.ammo * 2.5);
+	}
 	return s;
 };
 
@@ -118,11 +126,16 @@ var hss_special = function(p) {
 		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc}, y: {cur: 0, max: speed_max, acc: speed_acc}};
 		p.size = 15;
 	}
+	if (cha === 'arsenal') {
+		p.health = {cur: max_health * 0.75, max: max_health * 0.75};
+		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc}, y: {cur: 0, max: speed_max, acc: speed_acc}};
+		p.size = 15;
+	}
 };
 var skill_cd = {
 	'assassin' : 20,
 	'sorcerer' : 8,
-	'clone' : 10
+	'clone' : 15
 }
 
 var speed_max = 120;
@@ -448,8 +461,8 @@ Q.core = Q.Evented.extend({
 
 		//后坐力
 		if (!is_no_j) {
-			p.speed.x.cur -= Math.cos(p.dir) * p.prop.recoil * 20;
-			p.speed.y.cur -= Math.sin(p.dir) * p.prop.recoil * 20;
+			p.speed.x.cur -= Math.cos(p.dir) * p.prop.recoil * 10;
+			p.speed.y.cur -= Math.sin(p.dir) * p.prop.recoil * 10;
 			if (speed_limit) {
 				p.speed.x.cur = Math.max(Math.min(p.speed.x.cur,p.speed.x.max),-p.speed.x.max);
 				p.speed.y.cur = Math.max(Math.min(p.speed.y.cur,p.speed.y.max),-p.speed.y.max);
