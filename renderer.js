@@ -214,7 +214,7 @@ Q.renderer = Q.GameObject.extend({
 		this.ctx.restore();
 	},
 
-	render: function (players,bullets,weapons,tools,clock,dt) {
+	render: function (players,descs,bullets,weapons,tools,clock,dt) {
 
 		this.ctx.clearRect(0, 0, this.map.width, this.map.height);
 
@@ -234,12 +234,12 @@ Q.renderer = Q.GameObject.extend({
 		}
 
 		for (var id in players) {
-			let p = players[id];
-			if (p) {
-				this.render_player(p);
-				while (p.ghost) {
-					this.render_player(p.ghost);
-					p = p.ghost;
+			this.render_player(players[id]);
+			for (let desc in descs) {
+				let p = players[id];
+				while (p[desc]) {
+					this.render_player(p[desc]);
+					p = p[desc];
 				}
 			}
 		}

@@ -5,6 +5,7 @@ var Q = Quisus();
 var global_width,global_height;
 var weapons = ['Vector','Micro_Uzi','AKM','Scar-L','M416','Groza','Kar-98K','AWM','S1897','S686','M249','Minigun','Pan'];
 var tools = ['clone','heal','invisible','bounce','jet','gravity'];
+var descs = ['ghost','derivative'];
 
 var v_a=function (a, b) {
 		return {x: a.x + b.x, y: a.y + b.y}
@@ -95,6 +96,13 @@ var prop_special = function(prop, cha) {
 		s.recoil *= 0.4;
 		s.ammo = Math.round(s.ammo * 2.5);
 	}
+	if (cha === 'fort') {
+		s.speed *= 1.5;
+		s.reload *= 0.2;
+		s.bias *= 0.2;
+		s.life += 2;
+		s.recoil = 0;
+	}
 	return s;
 };
 
@@ -131,11 +139,17 @@ var hss_special = function(p) {
 		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc}, y: {cur: 0, max: speed_max, acc: speed_acc}};
 		p.size = 15;
 	}
+	if (cha === 'fort') {
+		p.health = {cur: max_health * 0.6, max: max_health * 0.6};
+		p.speed = {x: {cur: 0, max: 0, acc: 0}, y: {cur: 0, max: 0, acc: 0}};
+		p.size = 16;
+	}
 };
 var skill_cd = {
 	'assassin' : 20,
 	'sorcerer' : 8,
-	'clone' : 15
+	'clone' : 15,
+	'arsenal' : 10
 }
 
 var speed_max = 120;
@@ -353,7 +367,7 @@ Q.core = Q.Evented.extend({
 		}
 	},
 
-	add_player: function (pid, code, score, silent, ghost) {
+	add_player: function (pid, code, score, silent, ghost, derivative) {
 		
 		let proto;
 		let auto;
@@ -371,9 +385,7 @@ Q.core = Q.Evented.extend({
 
 		if (ghost && ghost===true) {
 			let p = this.players[pid];
-			let msg = p.skillCD.toFixed(2) + '  ';
-			while (p.ghost)  {p = p.ghost; msg=msg+p.skillCD.toFixed(2)+'  ';}
-			console.log(msg);
+			while (p.ghost)  p = p.ghost;
 
 			p.ghost = new Q.Player(pid);
 			let g = p.ghost;
@@ -390,6 +402,21 @@ Q.core = Q.Evented.extend({
 			g.code = code;
 			return;
 		}
+		if (derivative) {
+			let p =this.players[pid];
+			while (p.derivative) p = p.derivative;
+
+			p.derivative = new Q.Player(pid);
+			let d = p.derivative;
+			d.auto = new Q.Auto_player(proto);
+			d.color = this.players[pid].color;
+			d.character = derivative;
+			d.is_derivative = true;
+			hss_special(g);
+			d.prop = prop_special(prop_org(), derivative);
+			return d;
+		}
+
 		this.players[pid] = new Q.Player(pid);
 		this.players[pid].auto = new Q.Auto_player(proto);
 		p = this.players[pid];
@@ -451,7 +478,7 @@ Q.core = Q.Evented.extend({
 
 	update_player_physics: function (p, dt, is_no_x, is_no_y, is_no_j) {
 		let speed_limit = true;
-		if (this.gravity && this.gravity_immune_id && this.gravity_immune_id !== p.id) {
+		if (this.gravity && this.gravity_immune_id && this.gravity_immune_id !== p.id && !p.is_derivative) {
 			is_no_x = false;
 			is_no_y = false;
 			speed_limit = false;
@@ -746,7 +773,7 @@ Q.core = Q.Evented.extend({
 				return;
 			}
 		}
-		this.renderer.render(this.players,this.bullets,this.weapons,this.tools,this.clock,dt);
+		this.renderer.render(this.players,descs,this.bullets,this.weapons,this.tools,this.clock,dt);
 	},
 	
 	trigger_events: function(p, auto) {
@@ -879,6 +906,15 @@ Q.core = Q.Evented.extend({
 				p.skillCD = skill_cd[p.character] || 10;
 				this.add_player(p.id, p.code, null,true, true);
 			}
+			if (p.character === 'arsenal') {
+				if (a.opSkillArgs && !isNaN(a.opSkillArgs[0]) && !isNaN(a.opSkillArgs[1])) {
+					let f = this.add_player(p.id, derivatives['fort'], null, true, false, true);
+					f.pos = {x:Number(a.opSkillArgs[0]) || 300,
+							 y:Number(a.opSkillArgs[1]) || 300};
+				}
+				delete a.opSkillArgs;
+				p.skillCD = skill_cd[p.character] || 10;
+			}
 		}
 		p.skillCD = Math.max(0, p.skillCD - dt);
 
@@ -923,13 +959,17 @@ Q.core = Q.Evented.extend({
 	update_players: function(dt) {
 		for (let id in this.players) 
 			if (this.players[id]!=null) {
-				let p = this.players[id];
-				let a = p.auto;
+				this.player_workflow(this.players[id], a, dt);
 
-				this.player_workflow(p, a, dt);
-				while (p.ghost && p.ghost.auto) {
-					this.player_workflow(p.ghost, p.ghost.auto, dt);
-					p = p.ghost;
+				for (let desc in descs) {
+					let p = this.players[id];
+					let a = p.auto;
+
+				
+					while (p[desc] && p[desc].auto) {
+						this.player_workflow(p[desc], p[desc].auto, dt);
+						p = p[desc];
+					}
 				}
 			//TODO
 			/*
@@ -968,9 +1008,20 @@ Q.core = Q.Evented.extend({
 				setTimeout(()=>{p.reflect=false},850);
 				for (let id in this.players) {
 					let q = this.players[id];
-					if (id !== p.id)
+
+					if (id !== p.id) {
 						if (dis(p.pos,q.pos)<5*p.size)
 							this.cause_damage_to_player(p.id,q,p.prop.damage);
+
+						for (let desc in descs) {
+							let q = this.players[id];
+							while (q[desc]) {
+								if (dis(p.pos,q[desc].pos)<5*p.size)
+										this.cause_damage_to_player(p.id,q[desc],p.prop.damage);
+								q = q[desc];
+							}
+						}
+					}
 				}
 				return;
 			}
@@ -1002,6 +1053,7 @@ Q.core = Q.Evented.extend({
 	},
 
 	player_check_tools: function(p) {
+		if (p.is_derivative) return;
 		for (let index in this.tools) {
 			let t = this.tools[index];
 			if (t)
@@ -1046,12 +1098,14 @@ Q.core = Q.Evented.extend({
 		let bullet = this.bullets[bindex];
 		if (!bullet) return;
 		for (let id in this.players) {
-			let p = this.players[id];
-			if (p) {
-				let flag = this.bullet_check_hit_core(bullet, p);
-				while (p.ghost && !flag) {
-					flag = this.bullet_check_hit_core(bullet, p.ghost);
-					p = p.ghost;
+			let flag = this.bullet_check_hit_core(bullet, this.players[id]);
+			if (flag) return;
+			for (let desc in descs) {
+				let p = this.players[id];
+				
+				while (p[desc] && !flag) {
+					flag = this.bullet_check_hit_core(bullet, p[desc]);
+					p = p[desc];
 				}
 				if (flag) return;
 			}
@@ -1070,14 +1124,18 @@ Q.core = Q.Evented.extend({
 				this.remove_player(p.id);
 			}
 			else {
+				let type = 'ghost';
+				if (p.is_derivative)
+					type = 'derivative';
+
 				let f = this.players[p.id];
-				let g = f.ghost;
-				while (g.health.cur > 0 && g.ghost) {
+				let g = f[type];
+				while (g.health.cur > 0 && g[type]) {
 					f = g;
-					g = g.ghost;
+					g = g[type];
 				}
 				if (g.health.cur <= 0)
-					f.ghost = g.ghost;
+					f[type] = g[type];
 			}
 		}
 	}
@@ -1251,5 +1309,8 @@ Q.weapon_data['Pan']=function(){return {
 			recoil : 0,
 			ammo : 0
 		}};
+var derivatives = {
+	'fort' : 'var toTheta=function(x,y){if(Math.abs(x)<0.0001)x=0.000001;var d=Math.atan(y/x);if(x<0)d=d+Math.PI;return d};var tank={onEvent:function(){this.fire()},onEnemySpotted:function(enemies){var minD=100;var r=0;for(var i=0;i<enemies.length;i++){var x=enemies[i].pos.x-this.x;var y=enemies[i].pos.y-this.y;var d=Math.sqrt(x*x+y*y);if(d<minD){minD=d;r=i}}var x=enemies[r].pos.x-this.x;var y=enemies[r].pos.y-this.y;var l=Math.sqrt(x*x+y*y);var vpx=enemies[r].speed.x;var vpy=enemies[r].speed.y;var vp=Math.sqrt(vpx*vpx+vpy*vpy);var vb=this.bullet_speed;var t0=toTheta(x,y);var t1=toTheta(-vpx,-vpy);this.dir=t0+Math.asin(vp/vb*Math.sin(t0-t1))}};'
+}
 
 
