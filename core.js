@@ -97,9 +97,9 @@ var prop_special = function(prop, cha) {
 		s.ammo = Math.round(s.ammo * 5);
 	}
 	if (cha === 'fort') {
-		s.speed *= 1.5;
-		s.reload *= 0.1;
-		s.bias *= 0.2;
+		s.speed *= 1.8;
+		s.reload *= 0.05;
+		s.bias = 0;
 		s.life += 2;
 		s.recoil = 0;
 	}
