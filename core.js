@@ -90,15 +90,15 @@ var prop_special = function(prop, cha) {
 	}
 	if (cha === 'arsenal') {
 		s.size *= 0.8;
-		s.reload *= 0.5;
+		s.reload *= 0.2;
 		s.bias *= 1.4;
 		s.life *= 2;
 		s.recoil *= 0.4;
-		s.ammo = Math.round(s.ammo * 2.5);
+		s.ammo = Math.round(s.ammo * 5);
 	}
 	if (cha === 'fort') {
 		s.speed *= 1.5;
-		s.reload *= 0.2;
+		s.reload *= 0.1;
 		s.bias *= 0.2;
 		s.life += 2;
 		s.recoil = 0;
