@@ -5,7 +5,7 @@ var Q = Quisus();
 var global_width,global_height;
 var weapons = ['Vector','Micro_Uzi','AKM','Scar-L','M416','Groza','Kar-98K','AWM','S1897','S686','M249','Minigun','Pan'];
 var tools = ['clone','heal','invisible','bounce','jet','gravity'];
-var descs = {'ghost':0,'derivative',1};
+var descs = {'ghost':0,'derivative':1};
 
 var v_a=function (a, b) {
 		return {x: a.x + b.x, y: a.y + b.y}
