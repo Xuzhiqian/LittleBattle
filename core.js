@@ -1103,7 +1103,7 @@ Q.core = Q.Evented.extend({
 			if (flag) return;
 			for (let desc in descs) {
 				let p = this.players[id];
-				
+				if (!p) break;
 				while (p[desc] && !flag) {
 					flag = this.bullet_check_hit_core(bullet, p[desc]);
 					p = p[desc];
