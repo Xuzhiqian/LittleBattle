@@ -98,7 +98,7 @@ var prop_special = function(prop, cha) {
 	if (cha === 'fort') {
 		s.speed *= 1.5;
 		s.reload *= 0.2;
-		s.bias *= 1.3;
+		s.bias *= 1.2;
 		s.recoil = 0;
 	}
 	return s;
@@ -147,7 +147,7 @@ var skill_cd = {
 	'assassin' : 20,
 	'sorcerer' : 8,
 	'clone' : 15,
-	'arsenal' : 15
+	'arsenal' : 14
 }
 
 var speed_max = 120;
