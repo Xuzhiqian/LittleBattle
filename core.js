@@ -61,7 +61,7 @@ var prop_special = function(prop, cha) {
 		s.reload *= 1.5;
 		s.bias /= 2;
 		s.life += 2;
-		s.damage *= 2;
+		s.damage *= 3;
 		s.recoil *= 2;
 		s.penetrate = true;
 		s.ammo = Math.round(s.ammo / 2);
@@ -112,7 +112,7 @@ var hss_special = function(p) {
 		p.size = 15;
 	}
 	if (cha === 'assassin') {
-		p.health = {cur: max_health / 2, max: max_health / 2};
+		p.health = {cur: max_health / 1.5, max: max_health / 1.5};
 		p.speed = {x: {cur: 0, max: speed_max * 1.5, acc: speed_acc * 2}, y: {cur: 0, max: speed_max * 1.5, acc: speed_acc * 2}};
 		p.size = 10;
 	}
