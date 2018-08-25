@@ -147,7 +147,7 @@ var skill_cd = {
 	'assassin' : 20,
 	'sorcerer' : 8,
 	'clone' : 15,
-	'arsenal' : 10
+	'arsenal' : 15
 }
 
 var speed_max = 120;
