@@ -59,7 +59,7 @@ var prop_special = function(prop, cha) {
 		s.size *= 1.5;
 		s.speed *= 2;
 		s.reload *= 1.5;
-		s.bias = 0;
+		s.bias *= 0.2;
 		s.life += 2;
 		s.damage *= 3;
 		s.recoil *= 2;
@@ -358,7 +358,7 @@ Q.core = Q.Evented.extend({
 				if (id === winner_id)
 					this.stat[id].d_score = Math.round(Math.max(0, f_score(score1/score0))*(k+o)/(d));
 				else
-					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1))+(k+o)/d);
+					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1)*score0/3000)+(k+o)/d);
 			}
 	},
 
@@ -847,7 +847,9 @@ Q.core = Q.Evented.extend({
 							x : q.speed.x.cur,
 							y : q.speed.y.cur
 						},
-						health : q.health.cur
+						health : q.health.cur,
+						id : q.id,
+						character : q.character
 					});
 					for (let desc in descs) {
 						q = this.players[id];
