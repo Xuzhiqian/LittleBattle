@@ -59,7 +59,7 @@ var prop_special = function(prop, cha) {
 		s.size *= 1.5;
 		s.speed *= 2;
 		s.reload *= 1.5;
-		s.bias /= 2;
+		s.bias = 0;
 		s.life += 2;
 		s.damage *= 3;
 		s.recoil *= 2;
@@ -100,6 +100,10 @@ var prop_special = function(prop, cha) {
 		s.reload *= 0.25;
 		s.bias *= 1.2;
 		s.recoil = 0;
+	}
+	if (cha === 'souldealer') {
+		s.reload *= 1.2;
+		s.damage *= 1.2;
 	}
 	return s;
 };
@@ -142,12 +146,18 @@ var hss_special = function(p) {
 		p.speed = {x: {cur: 0, max: 0, acc: 0}, y: {cur: 0, max: 0, acc: 0}};
 		p.size = 16;
 	}
+	if (cha === 'souldealer') {
+		p.health = {cur: max_health * 0.9, max: max_health * 0.9};
+		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc}, y: {cur: 0, max: speed_max, acc: speed_acc}};
+		p.size = 15;
+	}
 };
 var skill_cd = {
 	'assassin' : 20,
 	'sorcerer' : 8,
 	'clone' : 15,
-	'arsenal' : 14
+	'arsenal' : 14,
+	'souldealer' : 6
 }
 
 var speed_max = 120;
@@ -913,6 +923,18 @@ Q.core = Q.Evented.extend({
 				}
 				delete a.opSkillArgs;
 				p.skillCD = skill_cd[p.character] || 10;
+			}
+			if (p.character === 'souldealer') {
+				if (a.opSkillArgs[0] && a.opSkillArgs[1]) {
+					let p1 = this.players[a.opSkillArgs[0]];
+					let p2 = this.players[a.opSkillArgs[1]];
+					if (p1 && p2 && p1.character && p2.character) {
+						let c = p1.character;
+						p1.character = p2.character;
+						p2.character = c;
+					}
+				}
+				p.skillCD = skill_cd[p.character] || 6;
 			}
 		}
 		p.skillCD = Math.max(0, p.skillCD - dt);
