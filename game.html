@@ -321,6 +321,12 @@ var tank = {
                                                     <td>像素/秒</td>
                                                     <td>否</td>
                                                 </tr>
+                                                <tr>
+                                                    <td>this.id</td>
+                                                    <td>当前玩家id</td>
+                                                    <td>字符串</td>
+                                                    <td>否</td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -350,6 +356,11 @@ var tank = {
         		<h4>军火库</h4>
         		<p>定义：character : 'arsenal'</p>
         		<p>技能：打造一个自动攻击的炮台，使用方法：this.skill(x, y)，其中x、y为炮台位置坐标</p>
+        	</li>
+        	<li>
+        		<h4>黑市摊贩</h4>
+        		<p>定义：character : 'souldealer'</p>
+        		<p>技能：交换两个玩家的职业，使用方法：this.skill(id1, id2)，其中id1、id2为两个玩家的id</p>
         	</li>
         </ul>
         <h2>游戏参数</h2>

@@ -97,7 +97,7 @@ var prop_special = function(prop, cha) {
 	}
 	if (cha === 'fort') {
 		s.speed *= 1.5;
-		s.reload *= 0.2;
+		s.reload *= 0.25;
 		s.bias *= 1.2;
 		s.recoil = 0;
 	}
@@ -138,7 +138,7 @@ var hss_special = function(p) {
 		p.size = 15;
 	}
 	if (cha === 'fort') {
-		p.health = {cur: max_health * 0.8, max: max_health * 0.8};
+		p.health = {cur: max_health * 0.6, max: max_health * 0.6};
 		p.speed = {x: {cur: 0, max: 0, acc: 0}, y: {cur: 0, max: 0, acc: 0}};
 		p.size = 16;
 	}
@@ -928,6 +928,7 @@ Q.core = Q.Evented.extend({
 		a.dir = p.dir;
 		a.bullet_speed = p.prop.speed;
 		a.dt = dt;
+		a.id = p.id;
 		a.speed = {x:p.speed.x.cur, y:p.speed.y.cur};
 		a.acc = {x:p.speed.x.acc, y:p.speed.y.acc};
 	},
