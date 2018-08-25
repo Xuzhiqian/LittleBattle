@@ -69,9 +69,9 @@ var prop_special = function(prop, cha) {
 	if (cha === 'worrior') {
 		s.speed *= 0.8;
 		s.reload *= 0.7;
-		s.bias *= 1.2;
+		s.bias *= 1.3;
 		s.life += 3;
-		s.damage *=0.6;
+		s.damage *=0.5;
 		s.recoil *= 0.5;
 		s.ammo = Math.round(s.ammo * 1.5);
 	}
@@ -1070,7 +1070,7 @@ Q.core = Q.Evented.extend({
 					if (p.reflect===true || p.p_reflect===true) {
 						let reflect = true;
 						if (p.p_reflect === true)
-							if (Math.random() < 0.75*p.health.cur/p.health.max + 0.25)
+							if (Math.random() < 0.65*p.health.cur/p.health.max + 0.35)
 								reflect = false;
 						
 						if (reflect) {
