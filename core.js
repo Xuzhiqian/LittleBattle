@@ -358,7 +358,7 @@ Q.core = Q.Evented.extend({
 				if (id === winner_id)
 					this.stat[id].d_score = Math.round(Math.max(0, f_score(score1/score0))*(k+o)/(d));
 				else
-					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1))+2*(k+o)/d);
+					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1))+(k+o)/d);
 			}
 	},
 
@@ -849,20 +849,24 @@ Q.core = Q.Evented.extend({
 						},
 						health : q.health.cur
 					});
-					while (q.ghost && q.ghost.pos && q.ghost.speed) {
-						enemies.push({
-						pos : {
-							x : q.ghost.pos.x,
-							y : q.ghost.pos.y
-						},
-						speed : {
-							x : q.ghost.speed.x.cur,
-							y : q.ghost.speed.y.cur
-						},
-						health : q.ghost.health.cur
-						});
-						q = q.ghost;
+					for (let desc in descs) {
+						q = this.players[id];
+						while (q[desc] && q[desc].pos && q[desc].speed) {
+							enemies.push({
+							pos : {
+								x : q[desc].pos.x,
+								y : q[desc].pos.y
+							},
+							speed : {
+								x : q[desc].speed.x.cur,
+								y : q[desc].speed.y.cur
+							},
+							health : q[desc].health.cur
+							});
+							q = q[desc];
+						}
 					}
+
 				}
 			}
 			if (enemies.length > 0)
