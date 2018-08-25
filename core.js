@@ -90,16 +90,15 @@ var prop_special = function(prop, cha) {
 	}
 	if (cha === 'arsenal') {
 		s.size *= 0.8;
-		s.reload *= 0.25;
+		s.reload *= 0.3;
 		s.bias *= 1.2;
 		s.life *= 2;
-		s.recoil *= 0.4;
-		s.ammo = Math.round(s.ammo * 4);
+		s.ammo = Math.round(s.ammo * 3);
 	}
 	if (cha === 'fort') {
-		s.speed *= 1.8;
-		s.reload *= 0.1;
-		s.bias = 0;
+		s.speed *= 1.5;
+		s.reload *= 0.2;
+		s.bias *= 1.3;
 		s.life += 2;
 		s.recoil = 0;
 	}
@@ -350,7 +349,7 @@ Q.core = Q.Evented.extend({
 				if (id === winner_id)
 					this.stat[id].d_score = Math.round(Math.max(0, f_score(score1/score0))*(k+o)/(d));
 				else
-					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1))+4*(k+o)/d);
+					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1))+2*(k+o)/d);
 			}
 	},
 
