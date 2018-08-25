@@ -99,7 +99,6 @@ var prop_special = function(prop, cha) {
 		s.speed *= 1.5;
 		s.reload *= 0.2;
 		s.bias *= 1.3;
-		s.life += 2;
 		s.recoil = 0;
 	}
 	return s;
@@ -139,7 +138,7 @@ var hss_special = function(p) {
 		p.size = 15;
 	}
 	if (cha === 'fort') {
-		p.health = {cur: max_health, max: max_health};
+		p.health = {cur: max_health * 0.8, max: max_health * 0.8};
 		p.speed = {x: {cur: 0, max: 0, acc: 0}, y: {cur: 0, max: 0, acc: 0}};
 		p.size = 16;
 	}
