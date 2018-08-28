@@ -968,7 +968,7 @@ Q.core = Q.Evented.extend({
 				if (a.opSkillArgs[0]) {
 					let id1 = a.opSkillArgs[0];
 					let id2 = p.id;
-					if（id1 !== id2) {
+					if (id1 !== id2) {
 						if (!this.ally[id1]) this.ally[id1] = {};
 						if (!this.ally[id2]) this.ally[id2] = {};
 						this.ally[id1][id2] = 1;
