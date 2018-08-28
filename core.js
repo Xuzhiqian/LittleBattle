@@ -105,6 +105,13 @@ var prop_special = function(prop, cha) {
 		s.reload *= 1.2;
 		s.damage *= 1.2;
 	}
+	if (cha === 'diplomatist') {
+		s.bias *= 0.2;
+		s.damage *= 2;
+		s.reload *= 1.5;
+		s.speed *= 1.5;
+		s.recoil *= 2;
+	}
 	return s;
 };
 
@@ -148,7 +155,12 @@ var hss_special = function(p) {
 	}
 	if (cha === 'souldealer') {
 		p.health = {cur: max_health * 0.9, max: max_health * 0.9};
-		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc}, y: {cur: 0, max: speed_max, acc: speed_acc}};
+		p.speed = {x: {cur: 0, max: speed_max * 2, acc: speed_acc * 1.5}, y: {cur: 0, max: speed_max * 2, acc: speed_acc * 1.5}};
+		p.size = 15;
+	}
+	if (cha === 'diplomatist') {
+		p.health = {cur: max_health * 0.8, max: max_health * 0.8};
+		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc * 1.5}, y: {cur: 0, max: speed_max, acc: speed_acc * 1.5}};
 		p.size = 15;
 	}
 };
@@ -157,8 +169,9 @@ var skill_cd = {
 	'sorcerer' : 8,
 	'clone' : 15,
 	'arsenal' : 14,
-	'souldealer' : 6
-}
+	'souldealer' : 6,
+	'diplomatist' : 10
+};
 
 var speed_max = 120;
 var speed_acc = 180;
@@ -302,6 +315,7 @@ Q.core = Q.Evented.extend({
 		this.players = [];
 		this.bullets = [];
 		this.weapons = [];
+		this.ally = [];
 		this.tools = [];
 		this.terrain = [];
 		this.genwpn={cur:0,max:300};
@@ -784,6 +798,13 @@ Q.core = Q.Evented.extend({
 		}
 		this.renderer.render(this.players,descs,this.bullets,this.weapons,this.tools,this.clock,dt);
 	},
+
+	is_ally: function(id1, id2) {
+		if (this.ally[id1] && this.ally[id2])
+			if (this.ally[id1][id2]===1 && this.ally[id2][id1]===1)
+				return true;
+		return false;
+	},
 	
 	trigger_events: function(p, auto) {
 		if (auto.onEvent)
@@ -836,7 +857,8 @@ Q.core = Q.Evented.extend({
 			for (var id in this.players) {
 				let q = this.players[id];
 
-				if (id !== p.id && q.pos && q.speed && !q.invisible) {
+				if (id !== p.id && q.pos && q.speed && !q.invisible && !this.is_ally(p.id, q.id))
+				{
 
 					enemies.push({
 						pos : {
@@ -941,6 +963,23 @@ Q.core = Q.Evented.extend({
 					}
 				}
 				p.skillCD = skill_cd[p.character] || 6;
+			}
+			if (p.character === 'diplomatist') {
+				if (a.opSkillArgs[0]) {
+					let id1 = a.opSkillArgs[0];
+					let id2 = p.id;
+					if（id1 !== id2) {
+						if (!this.ally[id1]) this.ally[id1] = {};
+						if (!this.ally[id2]) this.ally[id2] = {};
+						this.ally[id1][id2] = 1;
+						this.ally[id2][id1] = 1;
+						this.add_timer(()=>{
+							delete this.ally[id1][id2];
+							delete this.ally[id2][id1];
+						}, 5);
+					}
+				}
+				p.skillCD = skill_cd[p.character] || 10;
 			}
 		}
 		p.skillCD = Math.max(0, p.skillCD - dt);
@@ -1093,7 +1132,7 @@ Q.core = Q.Evented.extend({
 	},
 
 	bullet_check_hit_core: function(bullet, p) {
-		if (p.id !== bullet.owner_id)
+		if (p.id !== bullet.owner_id && !this.is_ally(p.id, bullet.owner_id))
 				if (dis(bullet.pos, p.pos) < bullet.size + p.size) {
 
 					if (p.reflect===true || p.p_reflect===true) {
@@ -1142,6 +1181,7 @@ Q.core = Q.Evented.extend({
 
 	cause_damage_to_player: function (oid,p,dmg) {
 		if (dmg===0) return;
+		if (this.is_ally(oid, p.id)) return;
 		p.health.cur -=dmg;
 		this.stat[oid].output += dmg;
 		this.renderer.add_animation('player','underatk',p);
