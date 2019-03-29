@@ -914,7 +914,10 @@ Q.core = Q.Evented.extend({
 		if (op.r) this.move_r(p,dt);
 
 		if (a.opPick && p.pickCD <= 0) {
-			a.pick_callback(this.player_use(p));
+			if (a.pick_callback)
+				a.pick_callback(this.player_use(p));
+			else
+				this.player_use(p);
 			p.pickCD = pickCD;
 		}
 		p.pickCD = Math.max(0, p.pickCD - dt);
