@@ -5,178 +5,175 @@ var server = require("http").Server(app);
 var io = require("socket.io").listen(server);
 var mysql = require("mysql");
 
+var config = {
+        host:'localhost',
+        user:'root',
+        password:'990212Xuzhiqian!',
+        database:'littlebattle'
+};
+
 //连接数据库
-var config = mysql.createConnection({
-	host		: 'localhost',
-	user 		: 'root',
-	password	: '990212',
-	database	: 'littlebattle'
-});
 var connection;
-
-function handleDisconnect() {
-  connection = mysql.createConnection(config); 	  // Recreate the connection, since
-                                                  // the old one cannot be reused.
-
-  connection.connect(function(err) {              // The server is either down
-    if(err) {                                     // or restarting (takes a while sometimes).
-      console.log('error when connecting to db:', err);
-      setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
-    }                                     // to avoid a hot loop, and to allow our node script to
-  });                                     // process asynchronous requests in the meantime.
-                                          // If you're also serving http, display a 503 error.
-  connection.on('error', function(err) {
-    console.log('db error', err);
-    if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
-      handleDisconnect();                         // lost due to either server restart, or a
-    } else {                                      // connnection idle timeout (the wait_timeout
-      throw err;                                  // server variable configures this)
-    }
-  });
+function handleError() {
+        connection = mysql.createConnection(config);
+        connection.connect(function(err) {
+                if (err) {
+                        console.log('error:',err);
+                        setTimeout(handleError, 2000);
+                }
+        });
+        connection.on('error',function(err) {
+                console.log('db error',err);
+                if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+                        handleError();
+                }
+                else throw err;
+        });
 }
+handleError();
 
 
 //响应请求
 app.get('/', function (req, res) {
-	res.sendFile('/index.html', {root: __dirname});
+        res.sendFile('/index.html', {root: __dirname});
 });
 
 app.get('/*', function (req, res, next) {
-	var file = req.params[0];
-	res.sendFile(__dirname + '/' + file);
-	
+        var file = req.params[0];
+        res.sendFile(__dirname + '/' + file);
+
 });
 
 
 io.on("connection", function (socket) {
-	
-	socket.on('login',(user)=>{
 
-		let sql = "SELECT password FROM main WHERE id='" + user.id + "';";
-		connection.query(sql, function(error, results, fields){
-			if (error) throw error;
-			if (results[0] && results[0].password === user.password) {
-				socket.emit('accept',user.id);
-				socket.user_id = user.id;
-			}
-			else
-				socket.emit('wrong');
-		});
-	});
+        socket.on('login',(user)=>{
 
-	socket.on('sign_up',(user)=>{
+                let sql = "SELECT password FROM main WHERE id='" + user.id + "';";
+                connection.query(sql, function(error, results, fields){
+                        if (error) throw error;
+                        if (results[0] && results[0].password === user.password) {
+                                socket.emit('accept',user.id);
+                                socket.user_id = user.id;
+                        }
+                        else
+                                socket.emit('wrong');
+                });
+        });
+
+        socket.on('sign_up',(user)=>{
 
 
-		let sql_query = "SELECT password FROM main WHERE id='" + user.id + "';";
-		connection.query(sql_query, function(error, results, fields){
-			if (error) throw error;
-			if (results[0]!=undefined && results[0].password!=undefined)
-				socket.emit('dup');
-			else {
-				let sql_insert = "INSERT INTO main (id,password,num_kill,num_death,code,score) VALUES ('" +
-				  user.id + "','" +
-				  user.password + "'," +
-				  "0," +
-				  "0," +
-				  "'',1000);";
-		
-				connection.query(sql_insert, function(error, results, fields){
-					if (error) throw error;
-					socket.emit('accept', user.id);
-				});
-			}
-		});
+                let sql_query = "SELECT password FROM main WHERE id='" + user.id + "';";
+                connection.query(sql_query, function(error, results, fields){
+                        if (error) throw error;
+                        if (results[0]!=undefined && results[0].password!=undefined)
+                                socket.emit('dup');
+                        else {
+                                let sql_insert = "INSERT INTO main (id,password,num_kill,num_death,code,score) VALUES ('" +
+                                  user.id + "','" +
+                                  user.password + "'," +
+                                  "0," +
+                                  "0," +
+                                  "'',1000);";
 
-	});
+                                connection.query(sql_insert, function(error, results, fields){
+                                        if (error) throw error;
+                                        socket.emit('accept', user.id);
+                                });
+                        }
+                });
 
-	socket.on('get_repo', ()=>{
+        });
 
-		let sql = "SELECT id, num_kill, num_death, score FROM main;";
+        socket.on('get_repo', ()=>{
 
-		connection.query(sql, function(error, results, fields){
-			if (error) throw error;
-			socket.emit('recv_repo', results);
-		});
-	});
+                let sql = "SELECT id, num_kill, num_death, score FROM main;";
 
-	socket.on('fetch_code', (id)=>{
-		let sql = "SELECT code,score FROM main WHERE id = '" + id + "';";
+                connection.query(sql, function(error, results, fields){
+                        if (error) throw error;
+                        socket.emit('recv_repo', results);
+                });
+        });
 
-		connection.query(sql, function(error, results, fields){
-			if (error) throw error;
-			if (results[0]!=undefined && results[0].code != undefined)
-				socket.emit('recv_code', {id:id,code:results[0].code,score:results[0].score});
-			else
-				socket.emit('unauthorized');
-		});
-	});
+        socket.on('fetch_code', (id)=>{
+                let sql = "SELECT code,score FROM main WHERE id = '" + id + "';";
 
-	socket.on('fetch_all_code', ()=>{
-		let sql = "SELECT id, code, score FROM main;";
+                connection.query(sql, function(error, results, fields){
+                        if (error) throw error;
+                        if (results[0]!=undefined && results[0].code != undefined)
+                                socket.emit('recv_code', {id:id,code:results[0].code,score:results[0].score});
+                        else
+                                socket.emit('unauthorized');
+                });
+        });
 
-		connection.query(sql, function(error, results, fields){
-			if (error) throw error;
-			socket.emit('recv_all_code',results);
-		});
-	});
+        socket.on('fetch_all_code', ()=>{
+                let sql = "SELECT id, code, score FROM main;";
 
-	socket.on('fetch_init_code', (id)=>{
-		let sql = "SELECT code,score FROM main WHERE id = '" + id + "';";
+                connection.query(sql, function(error, results, fields){
+                        if (error) throw error;
+                        socket.emit('recv_all_code',results);
+                });
+        });
 
-		connection.query(sql, function(error, results, fields){
-			if (error) throw error;
-			if (results[0]!=undefined && results[0].code != undefined)
-				socket.emit('init_code', {code:results[0].code,score:results[0].score});
-			else
-				socket.emit('unauthorized');
-		});
-	});
+        socket.on('fetch_init_code', (id)=>{
+                let sql = "SELECT code,score FROM main WHERE id = '" + id + "';";
 
-	socket.on('update_code', (info)=>{
-		if (!info.code) info.code = "";
-		info.code = info.code.replace(/\'/g,"\\'");
-		info.code = info.code.replace(/\"/g,'\\"');
-		let sql = "UPDATE main SET code = '" + info.code + "' WHERE id = '" + info.id + "';";
+                connection.query(sql, function(error, results, fields){
+                        if (error) throw error;
+                        if (results[0]!=undefined && results[0].code != undefined)
+                                socket.emit('init_code', {code:results[0].code,score:results[0].score});
+                        else
+                                socket.emit('unauthorized');
+                });
+        });
 
-		connection.query(sql, function(error, results, fields){
-			if (error) throw error;
-		});
-	});
+        socket.on('update_code', (info)=>{
+                if (!info.code) info.code = "";
+                info.code = info.code.replace(/\'/g,"\\'");
+                info.code = info.code.replace(/\"/g,'\\"');
+                let sql = "UPDATE main SET code = '" + info.code + "' WHERE id = '" + info.id + "';";
 
-	socket.on('update_data', (_stat)=>{
+                connection.query(sql, function(error, results, fields){
+                        if (error) throw error;
+                });
+        });
 
-		let stat = [];
-		for (let i=0; i < _stat.length; i++)
-				if (_stat[i]!=undefined)
-					stat[_stat[i][0]] = {
-						kill : _stat[i][1],
-						death : _stat[i][2],
-						d_score : _stat[i][4]
-					};
+        socket.on('update_data', (_stat)=>{
 
-		let sql_fetch = "SELECT id, num_kill, num_death, score FROM main;";
+                let stat = [];
+                for (let i=0; i < _stat.length; i++)
+                                if (_stat[i]!=undefined)
+                                        stat[_stat[i][0]] = {
+                                                kill : _stat[i][1],
+                                                death : _stat[i][2],
+                                                d_score : _stat[i][4]
+                                        };
 
-		connection.query(sql_fetch, function(error, results){
-		 	if (error) throw error;
-			for (let i=0; i < results.length; i++)
-				if (results[i]!=undefined && stat[results[i].id]!=undefined) {
-					results[i].num_kill += stat[results[i].id].kill;
-					results[i].num_death += stat[results[i].id].death;
-					results[i].score = Math.max(1, results[i].score + stat[results[i].id].d_score);
-				}
-			for (let i = 0; i< results.length; i++)
-			if (results[i]!=undefined) {
-				let sql_update = "UPDATE main SET num_kill = " + results[i].num_kill + ", num_death = " + results[i].num_death + ", score = " +results[i].score + " WHERE id = '" + results[i].id + "';";
-				
-				connection.query(sql_update, function(error, results){
-					if (error) throw error;
-				});
-			}
-		});	
-	});
-	
+                let sql_fetch = "SELECT id, num_kill, num_death, score FROM main;";
+
+                connection.query(sql_fetch, function(error, results){
+                        if (error) throw error;
+                        for (let i=0; i < results.length; i++)
+                                if (results[i]!=undefined && stat[results[i].id]!=undefined) {
+                                        results[i].num_kill += stat[results[i].id].kill;
+                                        results[i].num_death += stat[results[i].id].death;
+                                        results[i].score = Math.max(1, results[i].score + stat[results[i].id].d_score);
+                                }
+                        for (let i = 0; i< results.length; i++)
+                        if (results[i]!=undefined) {
+                                let sql_update = "UPDATE main SET num_kill = " + results[i].num_kill + ", num_death = " + results[i].num_death + ", score = " +results[i].score + " WHERE id = '" + results[i].id + "';";
+
+                                connection.query(sql_update, function(error, results){
+                                        if (error) throw error;
+                                });
+                        }
+                });
+        });
+
 });
 
-server.listen(80, function () {
-	console.log("listening on *:80");
+server.listen(8000, function () {
+        console.log("listening on *:8000");
 });
