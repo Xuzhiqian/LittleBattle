@@ -319,8 +319,8 @@ Q.core = Q.Evented.extend({
 		this.ally = [];
 		this.tools = [];
 		this.terrain = [];
-		this.genwpn={cur:0,max:800};
-		this.gentool={cur:0,max:1200};
+		this.genwpn={cur:Math.floor(Math.random()*800),max:800};
+		this.gentool={cur:Math.floor(Math.random()*1200),max:1200};
 		this.generate_terrain();
 		this.renderer = new Q.renderer(enviroment,size,block_size,this.terrain);
 		this.running = false;
