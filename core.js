@@ -222,8 +222,9 @@ Q.Auto_player = Q.GameObject.extend({
 		this.opFire = 1;
 	},
 
-	pick: function() {
+	pick: function(callback) {
 		this.opPick = 1;
+		this.pick_callback = callback;
 	},
 
 	moveUp: function(pri) {
@@ -318,8 +319,8 @@ Q.core = Q.Evented.extend({
 		this.ally = [];
 		this.tools = [];
 		this.terrain = [];
-		this.genwpn={cur:0,max:300};
-		this.gentool={cur:0,max:500};
+		this.genwpn={cur:0,max:1600};
+		this.gentool={cur:0,max:2400};
 		this.generate_terrain();
 		this.renderer = new Q.renderer(enviroment,size,block_size,this.terrain);
 		this.running = false;
@@ -372,7 +373,7 @@ Q.core = Q.Evented.extend({
 				if (id === winner_id)
 					this.stat[id].d_score = Math.round(Math.max(0, f_score(score1/score0))*(k+o)/(d));
 				else
-					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1)*score0/3000)+(k+o)/d);
+					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1)*score0/1000)+(k+o)/d);
 			}
 	},
 
@@ -715,7 +716,7 @@ Q.core = Q.Evented.extend({
 		this.genwpn.cur+=1;
 		if (this.genwpn.cur>=this.genwpn.max) {
 			this.generate_weapon();
-			this.genwpn.cur=0;
+			this.genwpn.cur=Math.floor(Math.random()*this.genwpn.max);
 		}
 	},
 
@@ -723,7 +724,7 @@ Q.core = Q.Evented.extend({
 		this.gentool.cur+=1;
 		if (this.gentool.cur>=this.gentool.max) {
 			this.generate_tool();
-			this.gentool.cur=0;
+			this.gentool.cur=Math.floor(Math.random()*this.gentool.max);
 		}
 	},
 
@@ -913,7 +914,7 @@ Q.core = Q.Evented.extend({
 		if (op.r) this.move_r(p,dt);
 
 		if (a.opPick && p.pickCD <= 0) {
-			this.player_use(p);
+			a.pick_callback(this.player_use(p));
 			p.pickCD = pickCD;
 		}
 		p.pickCD = Math.max(0, p.pickCD - dt);
@@ -1017,7 +1018,14 @@ Q.core = Q.Evented.extend({
 		}
 		this.replace_context(p, a);
 
-		let op = this.execute_ops(a, p, dt);
+		let op;
+		try {
+			op = this.execute_ops(a, p, dt);
+		}
+		catch (err) {
+			this.gameover(p.id);
+			return;
+		}
 		this.update_player_physics(p, dt, (op.l===0 && op.r===0), (op.u===0 && op.d===0), a.trueFire===0);
 		a.opFire = 0;
 		a.opPerFrame = newOp();
@@ -1114,9 +1122,13 @@ Q.core = Q.Evented.extend({
 					p.prop = prop_special(Q.weapon_data[w.id](), p.character);
 					p.ammo = p.prop.ammo;
 					this.delete_weapon(index);
-					break;
+					return {
+						id : w.id,
+						pos : {x:w.pos.x, y:w.pos.y}
+					};
 				}
 		}
+		return null;
 	},
 
 	player_check_tools: function(p) {
