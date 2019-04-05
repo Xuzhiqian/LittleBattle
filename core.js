@@ -139,7 +139,7 @@ var hss_special = function(p) {
 		p.size = 15;
 	}
 	if (cha === 'clone') {
-		p.health = {cur: max_health * 0.6, max: max_health * 0.6};
+		p.health = {cur: max_health * 0.8, max: max_health * 0.8};
 		p.speed = {x: {cur: 0, max: speed_max, acc: speed_acc}, y: {cur: 0, max: speed_max, acc: speed_acc}};
 		p.size = 15;
 	}
