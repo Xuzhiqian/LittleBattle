@@ -1130,7 +1130,7 @@ Q.core = Q.Evented.extend({
 					if (p.reflect===true || p.p_reflect===true) {
 						let reflect = true;
 						if (p.p_reflect === true)
-							if (Math.random() < 0.65*p.health.cur/p.health.max + 0.35)
+							if (Math.random() < 0.3*p.health.cur/p.health.max + 0.7)
 								reflect = false;
 						
 						if (reflect) {
