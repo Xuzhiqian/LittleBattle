@@ -3,8 +3,8 @@
 var Q = Quisus();
 
 var global_width,global_height;
-var weapons = ['Vector','Micro_Uzi','AKM','Scar-L','M416','Groza','Kar-98K','AWM','S1897','S686','M249','Minigun','Pan'];
-var tools = ['clone','heal','invisible','bounce','jet','gravity'];
+var weapons = ['Vector','Micro_Uzi','AKM','Scar-L','M416','Groza','Kar-98K','AWM','S1897','S686','M249','Minigun','Pan','MK-14'];
+var tools = ['clone','heal','invisible','bounce','jet'];
 var descs = {'ghost':0,'derivative':1};
 
 var v_a=function (a, b) {
@@ -308,9 +308,7 @@ Q.core = Q.Evented.extend({
 		this.block_width = block_size.width;
 		this.block_height = block_size.height;
 		this.player_count = 0;
-		this.clock = 100;
-		delete this.gravity;
-		delete this.gravity_immune_id;
+		this.clock = 60;
 		this.stat = [];
 		this.timers = [];
 		this.players = [];
@@ -371,9 +369,9 @@ Q.core = Q.Evented.extend({
 				let o = this.stat[id].output / max_health;
 
 				if (id === winner_id)
-					this.stat[id].d_score = Math.round(Math.max(0, f_score(score1/score0))*(k+o)/(d));
+					this.stat[id].d_score = Math.round(Math.max(0, f_score(score1/score0))*2*(k+o)/(d));
 				else
-					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1)*score0/1000)+(k+o)/d);
+					this.stat[id].d_score = Math.round(Math.min(0,-f_score(score0/score1)*score0/2000)+2*(k+o)/d);
 			}
 	},
 
@@ -381,7 +379,7 @@ Q.core = Q.Evented.extend({
 		this.finished = true;
 		this.running = false;
 		this.competing = false;
-		this.clock = 100;
+		this.clock = 60;
 		if (fail_id!=undefined)
 			this.callback(fail_id, true);
 		else {
@@ -502,13 +500,6 @@ Q.core = Q.Evented.extend({
 
 	update_player_physics: function (p, dt, is_no_x, is_no_y, is_no_j) {
 		let speed_limit = true;
-		if (this.gravity && this.gravity_immune_id && this.gravity_immune_id !== p.id && !p.is_derivative) {
-			is_no_x = false;
-			is_no_y = false;
-			speed_limit = false;
-			p.speed.x.cur += this.gravity.x.cur * dt * 5;
-			p.speed.y.cur += this.gravity.y.cur * dt * 5;
-		}
 
 		//后坐力
 		if (!is_no_j) {
@@ -562,11 +553,6 @@ Q.core = Q.Evented.extend({
 	},
 	
 	update_bullet_physics:function (b,dt) {
-		if (this.gravity) {
-			let v_speed = v_a(v_n(b.dir, b.speed), {x:this.gravity.x.cur*dt*8,y:this.gravity.y.cur*dt*8});
-			b.dir = v_normal(v_speed);
-			b.speed = v_mod(v_speed);
-		}
 		b.pos = v_a(b.pos, v_n(b.dir, dt * b.speed));
 
 		if (b.pos.x < 0 || b.pos.x > this.width)
@@ -757,15 +743,6 @@ Q.core = Q.Evented.extend({
 				p.speed.x.acc = p.speed.x.acc - speed_acc;
 				p.speed.y.acc = p.speed.y.acc - speed_acc;
 			}, 15);
-		}
-		if (tid === 'gravity' && !this.gravity && !this.gravity_immune_id) {
-
-			this.gravity_immune_id = p.id;
-			this.gravity = p.speed;
-			this.add_timer((()=>{
-				delete this.gravity_immune_id;
-				delete this.gravity;
-			}).bind(this), 10);
 		}
 
 	},
@@ -1109,7 +1086,7 @@ Q.core = Q.Evented.extend({
 			else {
 				p.weapon = '';
 				p.ammo = 0;
-				p.prop = prop_org();
+				p.prop = prop_special(prop_org(), p.character);
 			}
 		}
 		for (let i=0;i<(p.prop.bundle || 1);i++)
@@ -1237,16 +1214,16 @@ Q.weapon_data['Vector']=function(){ return {
 			recoil : 2,
 			size : 1.5,
 			penetrate : false,
-			bounce : false,
+			bounce : true,
 			ammo : 80
 		}};
 Q.weapon_data['Micro_Uzi']=function(){ return {
 			size : 2,
 			speed : 280,
 			reload : 0.02,
-			bias : 0.5,
+			bias : 0.3,
 			life : 7,
-			damage : 3,
+			damage : 4,
 			recoil : 1,
 			size : 2,
 			penetrate : false,
@@ -1301,7 +1278,7 @@ Q.weapon_data['Groza']=function(){ return {
 			recoil : 6,
 			penetrate : false,
 			bounce : false,
-			bundle : 36,
+			bundle : 18,
 			ammo : 12
 		}};
 //狙击步枪
@@ -1317,7 +1294,20 @@ Q.weapon_data['Kar-98K']=function(){ return {
 			penetrate : true,
 			bounce : false,
 			ammo : 10
-		}};
+}};
+Q.weapon_data['MK-14']=function(){ return {
+	size : 8,
+	speed : 800,
+	reload : 0.2,
+	bias : 0.2,
+	life : 12,
+	damage : 80,
+	recoil : 25,
+	size : 3,
+	penetrate : true,
+	bounce : false,
+	ammo : 50
+}};		
 Q.weapon_data['AWM']=function(){ return {
 			size : 10,
 			speed : 1000,
@@ -1388,7 +1378,7 @@ Q.weapon_data['Minigun']=function(){ return {
 		}};
 Q.weapon_data['Pan']=function(){return {
 			reload : 1,
-			damage : 35,
+			damage : 55,
 			recoil : 0,
 			ammo : 0
 		}};
